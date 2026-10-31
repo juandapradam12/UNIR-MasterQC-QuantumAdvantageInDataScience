@@ -1,0 +1,27 @@
+{
+  "model": "SVM",
+  "family": "classical",
+  "protocol": {
+    "dataset": "iris",
+    "test_size": 0.4,
+    "random_state": 123,
+    "stratify": true,
+    "scaler": "MinMaxScaler[0, pi]"
+  },
+  "train": {
+    "accuracy": 0.9777777777777777,
+    "precision": 0.9777777777777779,
+    "recall": 0.9777777777777779,
+    "f1": 0.9777777777777779,
+    "auc": 0.9990740740740741
+  },
+  "test": {
+    "accuracy": 0.9666666666666667,
+    "precision": 0.9696969696969697,
+    "recall": 0.9666666666666667,
+    "f1": 0.9665831244778612,
+    "auc": 0.9983333333333334
+  },
+  "train_time_s": 0.0014450550079345703,
+  "inference_time_s": 0.0002849102020263672
+}
