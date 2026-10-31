@@ -1,0 +1,32 @@
+{
+  "model": "SVM",
+  "family": "classical",
+  "protocol": {
+    "dataset": "bars-and-stripes",
+    "image_size": 4,
+    "n_features": 4,
+    "test_size": 0.4,
+    "random_state": 123,
+    "stratify": true,
+    "scaler": "MinMaxScaler[0, pi]",
+    "labels": "mapped {-1,1}->{0,1}",
+    "pca": "PCA(n_components=4)",
+    "n_qubits": 4
+  },
+  "train": {
+    "accuracy": 0.8916666666666667,
+    "precision": 0.9051214473965382,
+    "recall": 0.8956521739130435,
+    "f1": 0.89129677374399,
+    "auc": 0.9442086956521738
+  },
+  "test": {
+    "accuracy": 0.8708333333333333,
+    "precision": 0.8921960072595281,
+    "recall": 0.8758260869565218,
+    "f1": 0.8699300699300699,
+    "auc": 0.9360347826086957
+  },
+  "train_time_s": 0.003245115280151367,
+  "inference_time_s": 0.006676912307739258
+}
