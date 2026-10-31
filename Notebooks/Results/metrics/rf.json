@@ -1,0 +1,27 @@
+{
+  "model": "Random Forest",
+  "family": "classical",
+  "protocol": {
+    "dataset": "iris",
+    "test_size": 0.4,
+    "random_state": 123,
+    "stratify": true,
+    "scaler": "MinMaxScaler[0, pi]"
+  },
+  "train": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "auc": 1.0
+  },
+  "test": {
+    "accuracy": 0.95,
+    "precision": 0.9507101086048454,
+    "recall": 0.9499999999999998,
+    "f1": 0.9499687304565354,
+    "auc": 0.9910416666666665
+  },
+  "train_time_s": 0.056982994079589844,
+  "inference_time_s": 0.0039789676666259766
+}
