@@ -1,0 +1,69 @@
+% !TEX root = main.tex
+\documentclass[11pt,a4paper,spanish]{book}
+\PassOptionsToPackage{table}{xcolor}  % evita conflicto tikz/colortbl
+\usepackage{tikz}                     % figuras vectoriales (diagramas, arquitecturas)
+\usetikzlibrary{babel}               % compatibilidad con babel/español (shorthands)
+\usetikzlibrary{shapes.geometric}    % formas: diamond, ellipse, etc. (diagramas de flujo)
+\usetikzlibrary{positioning}         % sintaxis: below=Xcm of nodo
+\usetikzlibrary{decorations.pathreplacing} % llaves y anotaciones de rango
+\usetikzlibrary{fit}                       % envolver nodos con una caja (fit=()())
+\usepackage{Estilos/unir}
+
+% Paleta de las figuras: azules y grises de la plantilla de defensa de UNIR.
+% Los diagramas TikZ usan los nombres estándar (blue, orange, ...) y los remapeamos.
+\definecolor{unirazul}{HTML}{219BC3}
+\definecolor{unirnavy}{HTML}{0E4A75}
+\definecolor{unirgris}{HTML}{858591}
+\definecolor{unirclaro}{HTML}{C0C0C8}
+\colorlet{blue}{unirazul}
+\colorlet{orange}{unirnavy}
+\colorlet{teal}{unirnavy}
+\colorlet{violet}{unirgris}
+\colorlet{green}{unirazul}
+\colorlet{yellow}{unirclaro}
+\colorlet{red}{unirgris}
+
+%---------------------------
+% Rellenar con la información apropiada al Trabajo.
+%---------------------------
+\usepackage{tabularx}   % tablas de ancho variable
+\usepackage{booktabs}   % líneas profesionales (\toprule, \midrule, \bottomrule)
+\newtheorem{conjetura}{Conjetura}[chapter]  % entorno para conjeturas originales del TFM
+\usepackage{caption}    % personalización de captions
+% Añade "Fuente: elaboración propia." debajo de cada figura
+\DeclareCaptionTextFormat{fuente}{#1\par\footnotesize\normalfont\textit{Fuente: elaboración propia.}}
+\captionsetup[figure]{textformat=fuente}
+
+\title{La Evolución de la Ciencia de Datos hacia la Computación Cuántica: Análisis de la Ventaja Cuántica en Casos Aplicados}
+\titulacion{Máster en Computación Cuántica}
+\author{Juan David Prada Malagón}
+\date{\today}
+\director{Ricardo Rafael Domínguez Reyes}
+\nombreciudad{Barcelona, España}
+
+\begin{document}
+
+\pagenumbering{alph}
+\maketitle
+
+\frontmatter
+\tableofcontents
+\listoffigures
+\listoftables
+\include{Capitulos/resumen}
+\include{Capitulos/abstract}
+
+\mainmatter
+\include{Capitulos/introduccion}
+\include{Capitulos/contexto}
+\include{Capitulos/objetivos}
+\include{Capitulos/desarrollo}
+\include{Capitulos/evaluacion}
+\include{Capitulos/investigacion_original}
+\include{Capitulos/conclusiones}
+\include{Capitulos/futuro}
+\include{Capitulos/referencias}
+\appendix
+\include{Capitulos/anexos}
+
+\end{document}
