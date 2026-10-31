@@ -1,6 +1,6 @@
 {
-  "model": "VQC",
-  "family": "quantum",
+  "model": "Random Forest",
+  "family": "classical",
   "protocol": {
     "dataset": "iris",
     "test_size": 0.4,
@@ -9,19 +9,19 @@
     "scaler": "MinMaxScaler[0, pi]"
   },
   "train": {
-    "accuracy": 0.9444444444444444,
-    "precision": 0.946236559139785,
-    "recall": 0.9444444444444443,
-    "f1": 0.9447899001319012,
-    "auc": null
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "auc": 1.0
   },
   "test": {
     "accuracy": 0.95,
     "precision": 0.9507101086048454,
     "recall": 0.9499999999999998,
     "f1": 0.9499687304565354,
-    "auc": null
+    "auc": 0.9910416666666665
   },
-  "train_time_s": 49.87028789520264,
-  "inference_time_s": 0.16051101684570312
+  "train_time_s": 0.046788930892944336,
+  "inference_time_s": 0.004364728927612305
 }
