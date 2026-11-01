@@ -71,8 +71,8 @@ Todo lo marcado como **por verificar** no debe citarse hasta comprobar la fuente
    Con datos clásicos, un paso no trivial es **cómo embeber** la información en el sistema cuántico (angle / amplitude / basis embedding, feature maps, etc.). PennyLane lo trata como campo activo de investigación; los *embedding templates* automatizan parte del preproceso hacia vectores ortonormalizados u otras entradas compatibles con el circuito.
 
 5. *Cómo encaja este TFM (mapa de carpetas).*
-   - `Notebooks/ClassicalClassification/` (Iris): dataset convencional clásico + embedding / prep compartida para comparar baselines clásicos vs QSVM/QNN/VQC.
-   - `Notebooks/QuantumClassification/` (Bars and Stripes, catálogo PennyLane): también es **dato clásico etiquetado** (patrones) usado como benchmark QML; el nombre de carpeta no implica “dato de sistema cuántico”. Ver §3.
+   - `Notebooks/Classification/IrisClassification/` (Iris): dataset convencional clásico + embedding / prep compartida para comparar baselines clásicos vs QSVM/QNN/VQC.
+   - `Notebooks/Classification/BSClassification/` (Bars and Stripes, catálogo PennyLane): también es **dato clásico etiquetado** (patrones) usado como benchmark QML; el nombre de carpeta no implica “dato de sistema cuántico”. Ver §3.
    - La comparación justa (mismo PCA a 4 + mismo `MinMaxScaler[0, π]`) mide **modelo / representación**, no la ontología del dato.
 
 **Por verificar.**
