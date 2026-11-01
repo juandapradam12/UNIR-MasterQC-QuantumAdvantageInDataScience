@@ -10,7 +10,8 @@
     "shots": 4000,
     "cobyla_maxiter": 100,
     "n_qubits": 6,
-    "backend": "aer_statevector"
+    "backend": "aer_statevector",
+    "success_max_size": 3
   },
   "instance": {
     "nodes": [

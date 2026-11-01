@@ -23,7 +23,8 @@
     "backend": "qiskit_aer_statevector",
     "n_qubits": 6,
     "circuit_depth_ref": 23,
-    "n_parameters": 6
+    "n_parameters": 6,
+    "success_max_size": 3
   },
   "instance": {
     "nodes": [

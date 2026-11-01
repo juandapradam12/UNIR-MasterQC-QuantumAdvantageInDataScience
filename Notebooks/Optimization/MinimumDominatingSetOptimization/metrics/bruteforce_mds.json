@@ -4,7 +4,8 @@
   "family": "classical",
   "protocol": {
     "n_runs": 1,
-    "method": "enumerate_2^n"
+    "method": "enumerate_2^n",
+    "success_max_size": 3
   },
   "instance": {
     "nodes": [
@@ -54,9 +55,9 @@
   },
   "success_rate": 1.0,
   "time_s": {
-    "mean": 0.00011113499931525439,
+    "mean": 0.00011364999954821542,
     "std": 0.0,
-    "total": 0.00011113499931525439
+    "total": 0.00011364999954821542
   },
   "effort": {
     "subsets_evaluated": 64
@@ -70,7 +71,7 @@
       ],
       "cost": 2.0,
       "success": true,
-      "time_s": 0.00011113499931525439
+      "time_s": 0.00011364999954821542
     }
   ]
 }

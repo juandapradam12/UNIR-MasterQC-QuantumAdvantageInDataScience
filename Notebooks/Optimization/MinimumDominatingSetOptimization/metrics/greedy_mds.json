@@ -4,7 +4,8 @@
   "family": "classical",
   "protocol": {
     "n_runs": 1,
-    "method": "max_coverage_closed_neighborhood"
+    "method": "max_coverage_closed_neighborhood",
+    "success_max_size": 3
   },
   "instance": {
     "nodes": [
@@ -52,11 +53,11 @@
     "cost_best": 3.0,
     "gap_mean": 1.0
   },
-  "success_rate": 0.0,
+  "success_rate": 1.0,
   "time_s": {
-    "mean": 2.5025001377798617e-05,
+    "mean": 1.6530997527297586e-05,
     "std": 0.0,
-    "total": 2.5025001377798617e-05
+    "total": 1.6530997527297586e-05
   },
   "effort": {
     "constructive_steps": 3
@@ -71,8 +72,8 @@
       ],
       "cost": 3.0,
       "feasible": true,
-      "success": false,
-      "time_s": 2.5025001377798617e-05
+      "success": true,
+      "time_s": 1.6530997527297586e-05
     }
   ]
 }
