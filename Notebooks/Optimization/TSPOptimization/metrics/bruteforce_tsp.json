@@ -1,0 +1,60 @@
+{
+  "problem": "tsp",
+  "solver": "brute_force",
+  "family": "classical",
+  "protocol": {
+    "n_runs": 1,
+    "method": "enumerate_feasible_routes"
+  },
+  "instance": {
+    "nodes": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "origin": 0,
+    "d02": 4
+  },
+  "quality": {
+    "optimal_cost": 16.0,
+    "optimal_route": [
+      0,
+      4,
+      2,
+      3,
+      1,
+      0
+    ],
+    "cost_mean": 16.0,
+    "cost_best": 16.0,
+    "gap_mean": 0.0
+  },
+  "success_rate": 1.0,
+  "time_s": {
+    "mean": 1.824999344535172e-06,
+    "std": 0.0,
+    "total": 1.824999344535172e-06
+  },
+  "effort": {
+    "routes_evaluated": 6,
+    "energy_evals_mean": 6
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "cost": 16.0,
+      "route": [
+        0,
+        4,
+        2,
+        3,
+        1,
+        0
+      ],
+      "success": true,
+      "time_s": 1.824999344535172e-06
+    }
+  ]
+}

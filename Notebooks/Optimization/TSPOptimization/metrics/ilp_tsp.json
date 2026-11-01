@@ -1,0 +1,62 @@
+{
+  "problem": "tsp",
+  "solver": "ilp",
+  "family": "classical",
+  "protocol": {
+    "n_runs": 1,
+    "method": "pulp_cbc_position_assignment",
+    "constraint": "x[2,2]=1"
+  },
+  "instance": {
+    "nodes": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "origin": 0,
+    "d02": 4
+  },
+  "quality": {
+    "optimal_cost": 16.0,
+    "optimal_route": [
+      0,
+      4,
+      2,
+      3,
+      1,
+      0
+    ],
+    "cost_mean": 16.0,
+    "cost_best": 16.0,
+    "gap_mean": 0.0
+  },
+  "success_rate": 1.0,
+  "time_s": {
+    "mean": 0.011724229007086251,
+    "std": 0.0,
+    "total": 0.011724229007086251
+  },
+  "effort": {
+    "milp_status": "Optimal",
+    "n_binary_vars_positions": 16
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "cost": 16.0,
+      "route": [
+        0,
+        4,
+        2,
+        3,
+        1,
+        0
+      ],
+      "feasible": true,
+      "success": true,
+      "time_s": 0.011724229007086251
+    }
+  ]
+}

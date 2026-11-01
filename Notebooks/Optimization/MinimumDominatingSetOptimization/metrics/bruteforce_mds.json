@@ -1,0 +1,76 @@
+{
+  "problem": "mds",
+  "solver": "brute_force",
+  "family": "classical",
+  "protocol": {
+    "n_runs": 1,
+    "method": "enumerate_2^n"
+  },
+  "instance": {
+    "nodes": [
+      "Mario",
+      "Sarah",
+      "Raul",
+      "Ana",
+      "Enrique",
+      "Saul"
+    ],
+    "edges": [
+      [
+        "Mario",
+        "Sarah"
+      ],
+      [
+        "Mario",
+        "Raul"
+      ],
+      [
+        "Mario",
+        "Ana"
+      ],
+      [
+        "Enrique",
+        "Sarah"
+      ],
+      [
+        "Enrique",
+        "Raul"
+      ],
+      [
+        "Saul",
+        "Ana"
+      ]
+    ]
+  },
+  "quality": {
+    "optimal_cost": 2.0,
+    "optimal_solution": [
+      "Ana",
+      "Enrique"
+    ],
+    "cost_mean": 2.0,
+    "cost_best": 2.0,
+    "gap_mean": 0.0
+  },
+  "success_rate": 1.0,
+  "time_s": {
+    "mean": 0.00011113499931525439,
+    "std": 0.0,
+    "total": 0.00011113499931525439
+  },
+  "effort": {
+    "subsets_evaluated": 64
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "success": true,
+      "time_s": 0.00011113499931525439
+    }
+  ]
+}

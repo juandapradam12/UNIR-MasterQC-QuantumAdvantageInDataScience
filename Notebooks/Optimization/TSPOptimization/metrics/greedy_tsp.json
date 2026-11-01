@@ -1,0 +1,60 @@
+{
+  "problem": "tsp",
+  "solver": "greedy",
+  "family": "classical",
+  "protocol": {
+    "n_runs": 1,
+    "method": "prefix0x2_sorted_then_feasible_perm_rest"
+  },
+  "instance": {
+    "nodes": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "origin": 0,
+    "d02": 4
+  },
+  "quality": {
+    "optimal_cost": 16.0,
+    "optimal_route": [
+      0,
+      4,
+      2,
+      3,
+      1,
+      0
+    ],
+    "cost_mean": 16.0,
+    "cost_best": 16.0,
+    "gap_mean": 0.0
+  },
+  "success_rate": 1.0,
+  "time_s": {
+    "mean": 2.4421002308372408e-05,
+    "std": 0.0,
+    "total": 2.4421002308372408e-05
+  },
+  "effort": {
+    "constructive_steps": 4
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "cost": 16.0,
+      "route": [
+        0,
+        4,
+        2,
+        3,
+        1,
+        0
+      ],
+      "feasible": true,
+      "success": true,
+      "time_s": 2.4421002308372408e-05
+    }
+  ]
+}

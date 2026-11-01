@@ -107,3 +107,4 @@ wcwidth==0.9.4
 webencodings==0.6.1
 yarl==1.25.1
 xgboost==3.1.2
+pulp==2.9.0

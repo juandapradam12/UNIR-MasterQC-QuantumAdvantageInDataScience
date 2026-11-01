@@ -1,0 +1,370 @@
+{
+  "problem": "mds",
+  "solver": "simulated_annealing",
+  "family": "classical",
+  "protocol": {
+    "n_runs": 20,
+    "max_iter": 4000,
+    "T0": 5.0,
+    "cooling": 0.995,
+    "A": 1.0,
+    "B": 2.0
+  },
+  "instance": {
+    "nodes": [
+      "Mario",
+      "Sarah",
+      "Raul",
+      "Ana",
+      "Enrique",
+      "Saul"
+    ],
+    "edges": [
+      [
+        "Mario",
+        "Sarah"
+      ],
+      [
+        "Mario",
+        "Raul"
+      ],
+      [
+        "Mario",
+        "Ana"
+      ],
+      [
+        "Enrique",
+        "Sarah"
+      ],
+      [
+        "Enrique",
+        "Raul"
+      ],
+      [
+        "Saul",
+        "Ana"
+      ]
+    ]
+  },
+  "quality": {
+    "optimal_cost": 2.0,
+    "optimal_solution": [
+      "Ana",
+      "Enrique"
+    ],
+    "cost_mean": 2.0,
+    "cost_best": 2.0,
+    "gap_mean": 0.0
+  },
+  "success_rate": 1.0,
+  "time_s": {
+    "mean": 0.00909952600050019,
+    "std": 0.0009597484276980601,
+    "total": 0.18199052001000382
+  },
+  "effort": {
+    "energy_evals_mean": 4001.0
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008720919999177568,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 1,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008685255997988861,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 2,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008537986002920661,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 3,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008594279002863914,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 4,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008986665001430083,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 5,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.01252491299965186,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 6,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.010980905004544184,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 7,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.009910307999234647,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 8,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.009001561003969982,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 9,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008848511999531183,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 10,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008642820997920353,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 11,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008618389001640026,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 12,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008749779000936542,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 13,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008765760998358019,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 14,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.00865515299665276,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 15,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008666936999361496,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 16,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008782827004324645,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 17,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008860719994117972,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 18,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008850958001858089,
+      "energy_evals": 4001
+    },
+    {
+      "seed": 19,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "payments": 2,
+      "qubo_energy": 2.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 0.008605870003520977,
+      "energy_evals": 4001
+    }
+  ]
+}
