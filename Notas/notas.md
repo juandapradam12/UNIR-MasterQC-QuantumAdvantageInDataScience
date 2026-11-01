@@ -1,7 +1,8 @@
-# Argumentos para el documento y la defensa
+# Notas para el documento y la defensa
 
-Cada argumento va con: afirmación, desarrollo, qué falta por verificar y dónde se usará.
+Cada nota/argumento va con: afirmación, desarrollo, qué falta por verificar y dónde se usará.
 Todo lo marcado como **por verificar** no debe citarse hasta comprobar la fuente.
+Las limitaciones/conclusiones empíricas de los approaches cuánticos se concentran en el §8.
 
 ---
 
@@ -194,6 +195,69 @@ La representación no sustituye a clasificación u optimización: es el **puente
 **Por verificar.** Ninguno (marco conceptual; conectar con capítulos de feature maps / QUBO cuando se edite el `.tex`).
 
 **Dónde se usa.** Documento: contexto/metodología (embedding y formulación). Defensa: respuesta a “¿qué aporta lo cuántico si el modelo luego es SVM/QAOA clásico-simulado?” → el valor está también en la **representación**.
+
+---
+
+## 8. Limitaciones y conclusiones de los approaches cuánticos (en este TFM)
+
+**Afirmación.** En el régimen estudiado (pocos qubits, simulación clásica, instancias pequeñas), los approaches cuánticos **no demuestran ventaja** en precisión ni en coste/tiempo. Lo que sí aportan es un marco experimental para medir *hasta dónde llega* la representación cuántica y qué habría que mejorar (hardware, feature maps, escala) para que la pregunta de ventaja tenga sentido.
+
+**Cinco conclusiones encadenadas.**
+
+### 8.1 Hardware y pocos qubits → poco cómputo útil
+
+- NISQ: qubits ruidosos, conectividad limitada, circuitos profundos degradan la señal.
+- En simulación, el estado crece como \(2^n\); por eso el TFM se queda en \(n \sim 4\) (clasificación) y \(n \sim 6\)–pocas variables (optimización).
+- **Conclusión:** con el hardware/simulación actual solo se puede *probar el pipeline*, no reclamar *ventaja computacional*.
+
+*(Detalle y paradoja pocos/muchos qubits: §1.)*
+
+### 8.2 Pocos qubits → pocas features → reducción de dimensionalidad
+
+- Feature maps tipo ZZ suelen usar **1 qubit ≈ 1 feature** (o un bloque acotado).
+- Datasets reales (o incluso Iris expandido / imágenes) exceden ese presupuesto → **PCA u otra proyección** a \(k\) componentes = número de qubits.
+- PCA es un cuello de botella **compartido** (clásico y cuántico reciben las mismas \(k\) features), así que una derrota/empate del modelo cuántico no se puede atribuir solo a “perder información en PCA”; pero tampoco se puede atribuir una victoria a “el Hilbert space mágico” si el input ya está comprimido.
+- **Conclusión:** la dimensionalidad del dato queda **amarrada al hardware**, no a la complejidad intrínseca del problema. Eso sesga a favor de datasets pequeños o muy proyectados.
+
+### 8.3 Oportunidad: mejores feature maps / representaciones
+
+- Los mapas usados (ZZ, angle encoding, ansatz VQC/QNN) son **plantillas heredadas**, no mapas derivados de la estructura de cada dataset (salvo el criterio débil de “alineación mapa–generador” en Ising/BS).
+- Elecciones abiertas: tipo de entrelazamiento, repeticiones, escalado tipo `gamma`, data re-uploading, embeddings trainables, mapas informados por la física del dato.
+- **Conclusión / oportunidad:** si la representación es el tercer eje (§7), **evolucionar el feature map** es la palanca más creíble a corto plazo —más que “más capas del mismo mapa”— antes de que exista hardware grande y fiable.
+- **Pregunta abierta del TFM:** ¿existe un mapa que, *con el mismo presupuesto de qubits*, aporte estructura que el kernel/modelo clásico no capture fácilmente?
+
+### 8.4 Hoy no ganan en precisión (calidad de la solución / métrica)
+
+- **Clasificación (Iris, BS, Ising):** en Acc/F1 los baselines clásicos (SVM, RF, XGBoost) igualan o superan a QSVM/QNN/VQC en el protocolo justo (mismo preproceso). El cuántico, en el mejor caso, *se acerca*.
+- **Optimización (TSP, MDS, MaxCut):** en instancias pequeñas, ILP/fuerza bruta/greedy bien diseñados alcanzan el óptimo; QAOA/VQE/SA no aportan mejor coste —a menudo empatan o quedan por debajo con más varianza.
+- **Conclusión:** *en estos benchmarks*, “quantum” no es sinónimo de “más preciso”. La narrativa correcta es **paridad o déficit**, no superioridad.
+
+*(Contrastar siempre con tablas/figuras de `ResultsClassification` / `ResultsOptimization`.)*
+
+### 8.5 Coste computacional y tiempo tampoco compensan
+
+- Simular el circuito (statevector / shots) + bucles híbridos (optimizar \(\theta\), \(\beta/\gamma\)) multiplica wall-clock frente a un `fit` clásico o a CBC/SA pura.
+- En optimización, el overhead de construir el QUBO y correr QAOA/VQE no se traduce en mejor gap ni en menos evaluaciones cuando \(n\) es pequeño; cuando \(n\) crece, la simulación se vuelve inviable antes de que aparezca ventaja.
+- **Conclusión:** aunque la precisión empatara, **el esfuerzo no compensaría** en el régimen actual. Ventaja habría que medirla en *escala* (instancias donde el clásico se degrada y el cuántico no), no en demos de juguete.
+
+**Síntesis para documento / defensa (orden de ideas).**
+
+1. Pocos qubits ⇒ poco cómputo y pocas features.  
+2. Pocas features ⇒ PCA obligatorio ⇒ el dato ya llega comprimido.  
+3. El margen de mejora creíble hoy está en **mejores representaciones / feature maps**, no en reclamar precisión.  
+4. En precisión, los cuánticos **no ganan** en este TFM.  
+5. En coste/tiempo, **tampoco compensan**.  
+6. Por tanto: el valor del trabajo es **metodológico y crítico** (protocolo justo + límites honestos), no la demostración de *quantum advantage*.
+
+**Frase fuerte.**  
+«Con el hardware y los mapas actuales, el approach cuántico ni mejora la métrica ni reduce el esfuerzo; su interés está en entender la representación y en dejar el banco de pruebas listo para cuando qubits y embeddings escalen.»
+
+**Por verificar.**
+
+- Anclar 8.4 y 8.5 a números concretos de los CSV/`Results_*` (Acc, gap_rel, tiempos) al cerrar el capítulo de conclusiones.
+- Cita opcional: Huang et al. / Schuld–Killoran sobre cuándo un feature map puede aportar; Thanasilp et al. si se menciona concentration (§1).
+
+**Dónde se usa.** Documento: conclusiones y limitaciones. Defensa: diapositiva “¿ganan los cuánticos?” → No en precisión ni en coste; sí en marco experimental y pregunta abierta de representación.
 
 ---
 
