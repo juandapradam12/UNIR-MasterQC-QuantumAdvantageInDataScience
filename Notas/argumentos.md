@@ -124,11 +124,20 @@ Todo lo marcado como **por verificar** no debe citarse hasta comprobar la fuente
 
 ---
 
-## 6. Clasificación y optimización como familias fundamentales
+## 6. Clasificación y optimización como familias fundamentales (ciencia de datos)
 
-**Afirmación.** Para aplicaciones de ciencia de datos / computación cuántica, las dos familias de problemas **más fundamentales** son **clasificación** y **optimización**. El resto (regresión, anomalías, clustering, series temporales) se reduce a ellas por etiquetado, umbral o formulación QUBO/loss — no hace falta tratarlas como pilares al mismo nivel en este TFM.
+**Afirmación.** En **ciencia de datos**, las dos familias de problemas **más fundamentales** son **clasificación** y **optimización**, en el sentido de que **las demás se derivan de ellas** (regresión, anomalías, clustering, series temporales) por etiquetado, umbral o formulación QUBO/loss. No hace falta tratar esas otras como pilares al mismo nivel en este TFM.
 
-**Dos preguntas guía (guardar para documento / defensa).**
+**Matiz.** “Más fundamentales” no significa “las únicas tareas de la informática”, sino las **canónicas para problemas de datos**: a partir de ellas se reconstruyen las demás familias habituales del catálogo aplicado.
+
+**Qué / cómo (marco conceptual).**
+
+- **Clasificación = el qué:** el problema práctico que queremos resolver (asignar una decisión / etiqueta a partir de datos).
+- **Optimización = el cómo:** el marco matemático que permite encontrar la mejor solución bajo un coste o restricción (y, a menudo, el motor interno de muchos modelos).
+
+Ambas son pilares esenciales y canónicos en sus respectivos campos; juntas cubren *decidir* y *buscar lo óptimo*.
+
+**Dos preguntas guía (documento / defensa).**
 
 1. *Clasificación:* dato etiquetado → modelo / representación (kernel, circuito, embedding).  
    **Pregunta:** ¿el mapa cuántico aporta estructura útil?
@@ -138,16 +147,19 @@ Todo lo marcado como **por verificar** no debe citarse hasta comprobar la fuente
 
 **Desarrollo.**
 
-1. *Por qué son canónicas.* Clasificar es **decidir** (asignar etiqueta); optimizar es **elegir la mejor configuración** bajo un coste. Cubren supervisión con etiquetas y búsqueda combinatoria — los dos modos en los que suele plantearse “ventaja cuántica” en datos.
-2. *Reducciones habituales.*  
+1. *Por qué son canónicas en ciencia de datos.* Clasificar es **decidir**; optimizar es **elegir la mejor configuración** bajo un coste. Son los dos modos en los que suele plantearse “ventaja cuántica” sobre datos.
+2. *Reducciones habituales (las demás familias se derivan).*  
    - Regresión → mismo pipeline de representación; logística → clasificación.  
    - Anomalías → clasificación one-class / umbral sobre score.  
    - Clustering → geometría de kernel/distancia (solapa con clasificación sin etiqueta).  
-   - Series temporales → forecasting por lags = regresión o clasificación sobre ventanas.
+   - Series temporales → forecasting por lags = regresión o clasificación sobre ventanas.  
+   - Entrenar muchos modelos = optimizar pesos/parámetros (el *cómo* detrás del *qué*).
 3. *Consecuencia para el TFM.* Con Classification + Optimization (TSP, MDS, MaxCut) basta para el arco científico; una tercera familia solo aportaría volumen, no un tercer tipo de pregunta.
 
-**Frase fuerte para la defensa.**  
-«Partimos de las dos tareas canónicas (*decidir* / *optimizar*); el resto se reduce a ellas por etiquetado, umbral o formulación QUBO/loss.»
+**Frases fuertes para la defensa.**
+
+1. «Partimos de las dos tareas canónicas (*decidir* / *optimizar*); el resto se reduce a ellas por etiquetado, umbral o formulación QUBO/loss.»
+2. «La clasificación es el *qué* (problema práctico); la optimización es el *cómo* (marco para hallar la mejor solución). Ambas son pilares canónicos; en ciencia de datos, las demás familias se derivan de ellas.»
 
 **Por verificar.** Ninguno (marco conceptual del TFM; alinear redacción con capítulos de contexto/objetivos cuando se edite el `.tex`).
 
