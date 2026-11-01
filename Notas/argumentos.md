@@ -124,5 +124,36 @@ Todo lo marcado como **por verificar** no debe citarse hasta comprobar la fuente
 
 ---
 
+## 6. Clasificación y optimización como familias fundamentales
+
+**Afirmación.** Para aplicaciones de ciencia de datos / computación cuántica, las dos familias de problemas **más fundamentales** son **clasificación** y **optimización**. El resto (regresión, anomalías, clustering, series temporales) se reduce a ellas por etiquetado, umbral o formulación QUBO/loss — no hace falta tratarlas como pilares al mismo nivel en este TFM.
+
+**Dos preguntas guía (guardar para documento / defensa).**
+
+1. *Clasificación:* dato etiquetado → modelo / representación (kernel, circuito, embedding).  
+   **Pregunta:** ¿el mapa cuántico aporta estructura útil?
+
+2. *Optimización:* coste / QUBO → búsqueda.  
+   **Pregunta:** ¿el método cuántico/híbrido mejora calidad o esfuerzo frente a baselines clásicos?
+
+**Desarrollo.**
+
+1. *Por qué son canónicas.* Clasificar es **decidir** (asignar etiqueta); optimizar es **elegir la mejor configuración** bajo un coste. Cubren supervisión con etiquetas y búsqueda combinatoria — los dos modos en los que suele plantearse “ventaja cuántica” en datos.
+2. *Reducciones habituales.*  
+   - Regresión → mismo pipeline de representación; logística → clasificación.  
+   - Anomalías → clasificación one-class / umbral sobre score.  
+   - Clustering → geometría de kernel/distancia (solapa con clasificación sin etiqueta).  
+   - Series temporales → forecasting por lags = regresión o clasificación sobre ventanas.
+3. *Consecuencia para el TFM.* Con Classification + Optimization (TSP, MDS, MaxCut) basta para el arco científico; una tercera familia solo aportaría volumen, no un tercer tipo de pregunta.
+
+**Frase fuerte para la defensa.**  
+«Partimos de las dos tareas canónicas (*decidir* / *optimizar*); el resto se reduce a ellas por etiquetado, umbral o formulación QUBO/loss.»
+
+**Por verificar.** Ninguno (marco conceptual del TFM; alinear redacción con capítulos de contexto/objetivos cuando se edite el `.tex`).
+
+**Dónde se usa.** Documento: contexto, objetivos, cierre de evaluación. Defensa: respuesta a “¿por qué no hiciste regresión / anomalías / clustering?”.
+
+---
+
 <!-- Siguiente argumento: copiar la plantilla de arriba -->
 
