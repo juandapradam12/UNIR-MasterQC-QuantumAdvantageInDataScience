@@ -1,0 +1,36 @@
+{
+  "model": "QSVM",
+  "family": "quantum",
+  "protocol": {
+    "dataset": "qspin-ising",
+    "layouts": [
+      "open/chain/1x4",
+      "closed/chain/1x4"
+    ],
+    "features": "ground_state Re||Im (32) -> PCA(4)",
+    "label_rule": "y=(h > |J|) with J=-1 (1D TFIM critical field)",
+    "n_features": 4,
+    "n_qubits": 4,
+    "test_size": 0.4,
+    "random_state": 123,
+    "stratify": true,
+    "scaler": "MinMaxScaler[0, pi]",
+    "pca": "PCA(n_components=4)"
+  },
+  "train": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "auc": 1.0
+  },
+  "test": {
+    "accuracy": 0.9875,
+    "precision": 0.9912280701754386,
+    "recall": 0.9791666666666667,
+    "f1": 0.9849369233665977,
+    "auc": 1.0
+  },
+  "train_time_s": 0.1527271270751953,
+  "inference_time_s": 0.2057332992553711
+}
