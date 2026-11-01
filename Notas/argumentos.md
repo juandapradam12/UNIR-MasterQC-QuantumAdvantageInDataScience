@@ -71,17 +71,46 @@ Todo lo marcado como **por verificar** no debe citarse hasta comprobar la fuente
    Con datos clásicos, un paso no trivial es **cómo embeber** la información en el sistema cuántico (angle / amplitude / basis embedding, feature maps, etc.). PennyLane lo trata como campo activo de investigación; los *embedding templates* automatizan parte del preproceso hacia vectores ortonormalizados u otras entradas compatibles con el circuito.
 
 5. *Cómo encaja este TFM (mapa de carpetas).*
-   - `Notebooks/ClassicalClassification/` (Iris): dataset **convencional** clásico, embebido / procesado para comparar baselines clásicos vs modelos cuánticos (QSVM, QNN, VQC). Encaja directamente en *Conventional Datasets for QML*.
-   - `Notebooks/QuantumClassification/` (Bars and Stripes de PennyLane Datasets): dataset de **benchmark QML** alojado en el catálogo PennyLane (patrones imagen → vectores + etiquetas). Es útil como “dato de la literatura QML”, pero **no** es, en el sentido estricto de *What is a Quantum Dataset?*, un Hamiltoniano / estado / sombra clásica de un sistema físico. Hay que decirlo con cuidado en el documento: “dataset de clasificación usado en benchmarking QML (PennyLane)”, no “dato cuántico nativo del sistema”.
-   - La comparación justa (mismo PCA a 4 componentes + mismo `MinMaxScaler[0, π]`) mide diferencia de **modelo / representación**, no diferencia de *naturaleza ontológica* del dato.
+   - `Notebooks/ClassicalClassification/` (Iris): dataset convencional clásico + embedding / prep compartida para comparar baselines clásicos vs QSVM/QNN/VQC.
+   - `Notebooks/QuantumClassification/` (Bars and Stripes, catálogo PennyLane): también es **dato clásico etiquetado** (patrones) usado como benchmark QML; el nombre de carpeta no implica “dato de sistema cuántico”. Ver §3.
+   - La comparación justa (mismo PCA a 4 + mismo `MinMaxScaler[0, π]`) mide **modelo / representación**, no la ontología del dato.
 
 **Por verificar.**
 
-- Confirmar en el paper de origen de *Bars and Stripes* en PennyLane (candidato: Bowles, Ahmed y Schuld, 2024, *Better than classical?*) cómo presentan el dataset: ¿synthetic classical patterns for QML benchmarks? ¿alguna interpretación como distribución de Born / QCBM?
-- Revisar si en el documento conviene una tabla “tipo de dato × carpeta × qué se concluye”.
-- Cita adicional opcional sobre embedding: glosario PennyLane *quantum embedding* y demos de Angle/Amplitude embedding (solo si se desarrolla el capítulo de codificación).
+- Confirmar presentación de *Bars and Stripes* en Bowles, Ahmed y Schuld (2024), *Better than classical?*.
+- Citas de embedding (glosario PennyLane / demos) si se abre capítulo de codificación.
 
-**Dónde se usa.** Documento: capítulo de contexto / datasets (antes de resultados Iris y Bars and Stripes). Defensa: diapositiva “qué es (y no es) un dataset cuántico” para anticipar la pregunta de rigor metodológico.
+**Dónde se usa.** Documento: contexto / datasets. Defensa: rigor sobre qué se compara. Completar con §3.
+
+---
+
+## 3. En la práctica de clasificación QML casi nadie opera la distinción classical vs quantum data
+
+**Afirmación.** La distinción PennyLane (§2) es útil como **taxonomía pedagógica / de catálogo**, pero en la literatura de **clasificación QML** casi no es el eje del experimento: lo habitual es tomar datos clásicos etiquetados y aplicar un **feature map / embedding** al espacio de Hilbert. Datos que ya “viven” en Hilbert (estados, sombras, muestras de un sistema cuántico) existen, pero son escasos, a menudo sin labels de clasificación listas, y poco usables en el mismo protocolo Acc/F1 que Iris o Bars and Stripes.
+
+**Desarrollo.**
+
+1. *Lo que sí existe como dato de fenómeno cuántico.*  
+   Catálogos tipo `qchem` / `qspin`: Hamiltonianos, ground states, classical shadows, etc. Ejemplo revisado: Ising (`qspin`) trae `ground_states`, `shadow_meas`, `order_params`, `num_phases=2`, pero **no** un campo `labels`. Para clasificar fases hay que **derivar** la etiqueta (p. ej. \(h \lessgtr |J|\)), con pocas muestras por layout. Eso cambia el problema (reconocimiento de fase), no es un drop-in del pipeline Iris/BS.
+
+2. *Lo que hace la literatura de benchmarks de clasificadores.*  
+   Trabajos del estilo *Better than classical?* y demos PennyLane usan Iris, MNIST/downscaled, Bars and Stripes, plus-minus, hiperplanos, etc.: vectores clásicos + modelos cuánticos. MNISQ tampoco “salva” la nativez: son imágenes clásicas **pre-codificadas** en circuitos; el origen sigue siendo clásico.
+
+3. *Consecuencia metodológica para el TFM.*  
+   - No vender Bars and Stripes (ni Iris) como ventaja por ser “datos cuánticos”.  
+   - Sí afirmar con honestidad: **el cuello de botella compartido es el feature map** (y el régimen de pocos qubits / PCA).  
+   - La pregunta empírica del TFM es si, *dado el mismo dato clásico embebido*, el modelo cuántico mejora al clásico — no si el dataset “nació” cuántico.  
+   - Reservar “dato de sistema cuántico” para un capítulo/experiencia aparte (p. ej. fases Ising), si se aborda.
+
+4. *Frase útil para documento/defensa.*  
+   “En clasificación QML casi siempre partimos de datos clásicos; el paso cuántico empieza en el embedding. La distinción classical/quantum dataset importa para no confundir catálogos, pero no define el diseño experimental estándar de Acc/F1.”
+
+**Por verificar.**
+
+- 1–2 papers de phase classification con Ising/spins como contraste explícito (dato de sistema + labels derivadas).
+- Comprobar en el sample de literatura del TFM que los benchmarks citados son todos classical+embedding (esperado).
+
+**Dónde se usa.** Documento: cierre del apartado de datasets / limitaciones. Defensa: respuesta a “¿por qué no usaste un dataset cuántico de verdad?”.
 
 ---
 
