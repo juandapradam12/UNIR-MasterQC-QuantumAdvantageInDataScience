@@ -1,0 +1,36 @@
+{
+  "model": "Random Forest",
+  "family": "classical",
+  "protocol": {
+    "dataset": "qspin-ising",
+    "layouts": [
+      "open/chain/1x4",
+      "closed/chain/1x4"
+    ],
+    "features": "ground_state Re||Im (32) -> PCA(4)",
+    "label_rule": "y=(h > |J|) with J=-1 (1D TFIM critical field)",
+    "n_features": 4,
+    "n_qubits": 4,
+    "test_size": 0.4,
+    "random_state": 123,
+    "stratify": true,
+    "scaler": "MinMaxScaler[0, pi]",
+    "pca": "PCA(n_components=4)"
+  },
+  "train": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "auc": 1.0
+  },
+  "test": {
+    "accuracy": 0.975,
+    "precision": 0.9827586206896552,
+    "recall": 0.9583333333333333,
+    "f1": 0.969488939740656,
+    "auc": 1.0
+  },
+  "train_time_s": 0.06199049949645996,
+  "inference_time_s": 0.004087209701538086
+}
