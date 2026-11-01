@@ -54,9 +54,9 @@
   },
   "success_rate": 0.0,
   "time_s": {
-    "mean": 3.687499702209607e-05,
+    "mean": 3.5832999856211245e-05,
     "std": 0.0,
-    "total": 3.687499702209607e-05
+    "total": 3.5832999856211245e-05
   },
   "effort": {
     "constructive_steps": 3
@@ -72,7 +72,7 @@
       "cost": 3.0,
       "feasible": true,
       "success": false,
-      "time_s": 3.687499702209607e-05
+      "time_s": 3.5832999856211245e-05
     }
   ]
 }

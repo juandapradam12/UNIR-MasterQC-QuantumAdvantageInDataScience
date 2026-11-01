@@ -55,9 +55,9 @@
   },
   "success_rate": 1.0,
   "time_s": {
-    "mean": 0.6657965420017717,
+    "mean": 0.0498597499972675,
     "std": 0.0,
-    "total": 0.6657965420017717
+    "total": 0.0498597499972675
   },
   "effort": {
     "milp_status": "Optimal",
@@ -73,7 +73,7 @@
       "cost": 2.0,
       "feasible": true,
       "success": true,
-      "time_s": 0.6657965420017717
+      "time_s": 0.0498597499972675
     }
   ]
 }

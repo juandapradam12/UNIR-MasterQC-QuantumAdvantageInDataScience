@@ -60,9 +60,9 @@
   },
   "success_rate": 1.0,
   "time_s": {
-    "mean": 1.5614991915994323,
-    "std": 0.026514936683912402,
-    "total": 7.807495957997162
+    "mean": 1.5938328583986732,
+    "std": 0.11003895293503081,
+    "total": 7.969164291993366
   },
   "effort": {
     "energy_evals_mean": 600.0,
@@ -80,7 +80,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.592543917002331,
+      "time_s": 1.4913069579997682,
       "energy_evals": 600,
       "expected_energy": -13.962595882849403
     },
@@ -95,7 +95,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.5138098750030622,
+      "time_s": 1.5625280829990515,
       "energy_evals": 600,
       "expected_energy": -12.464757337141588
     },
@@ -110,7 +110,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.5617694579996169,
+      "time_s": 1.7404241249969346,
       "energy_evals": 600,
       "expected_energy": -13.7658109416988
     },
@@ -125,7 +125,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.578143041995645,
+      "time_s": 1.470232916995883,
       "energy_evals": 600,
       "expected_energy": -10.914429877079648
     },
@@ -140,7 +140,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.5612296659965068,
+      "time_s": 1.7046722090017283,
       "energy_evals": 600,
       "expected_energy": -13.492188452707799
     }

@@ -39,9 +39,9 @@
   },
   "success_rate": 1.0,
   "time_s": {
-    "mean": 1.9089666913991095,
-    "std": 0.07833909825274109,
-    "total": 9.544833456995548
+    "mean": 2.0210119166004006,
+    "std": 0.04872857384995354,
+    "total": 10.105059583002003
   },
   "effort": {
     "energy_evals_mean": 720.0,
@@ -71,7 +71,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.7913877079990925,
+      "time_s": 2.0692821249976987,
       "energy_evals": 720,
       "expected_energy": -767.5569052925048,
       "n_parameters": 24
@@ -98,7 +98,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 2.0240293340029893,
+      "time_s": 2.068017959005374,
       "energy_evals": 720,
       "expected_energy": -763.6804517921684,
       "n_parameters": 24
@@ -125,7 +125,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.950916916001006,
+      "time_s": 1.9908312499974272,
       "energy_evals": 720,
       "expected_energy": -762.7914952626255,
       "n_parameters": 24
@@ -152,7 +152,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.9125253329984844,
+      "time_s": 1.9420787909984938,
       "energy_evals": 720,
       "expected_energy": -766.0596539396015,
       "n_parameters": 24
@@ -179,7 +179,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.8659741659939755,
+      "time_s": 2.034849458003009,
       "energy_evals": 720,
       "expected_energy": -766.520165886237,
       "n_parameters": 24

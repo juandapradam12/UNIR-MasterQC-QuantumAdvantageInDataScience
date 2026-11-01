@@ -33,9 +33,9 @@
   },
   "success_rate": 1.0,
   "time_s": {
-    "mean": 0.0005486250011017546,
+    "mean": 8.67080016178079e-05,
     "std": 0.0,
-    "total": 0.0005486250011017546
+    "total": 8.67080016178079e-05
   },
   "effort": {
     "constructive_steps": 4
@@ -54,7 +54,7 @@
       ],
       "feasible": true,
       "success": true,
-      "time_s": 0.0005486250011017546
+      "time_s": 8.67080016178079e-05
     }
   ]
 }

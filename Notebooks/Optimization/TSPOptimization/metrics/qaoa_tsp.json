@@ -38,9 +38,9 @@
   },
   "success_rate": 1.0,
   "time_s": {
-    "mean": 1.0587758920009946,
-    "std": 0.14568456212623587,
-    "total": 5.293879460004973
+    "mean": 1.1217344502001652,
+    "std": 0.04831491132205442,
+    "total": 5.608672251000826
   },
   "effort": {
     "energy_evals_mean": 356.0,
@@ -71,7 +71,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.3411546669958625,
+      "time_s": 1.20478366700263,
       "energy_evals": 359,
       "expected_energy": -479.41767297337753,
       "circuit_depth": 20
@@ -98,7 +98,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.0539900419971673,
+      "time_s": 1.147805792003055,
       "energy_evals": 368,
       "expected_energy": -527.5985576000385,
       "circuit_depth": 20
@@ -125,7 +125,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.9507056670045131,
+      "time_s": 1.091883124994638,
       "energy_evals": 351,
       "expected_energy": -676.5120522643898,
       "circuit_depth": 20
@@ -152,7 +152,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.9864872090038261,
+      "time_s": 1.0876612499996554,
       "energy_evals": 347,
       "expected_energy": -356.02863683353104,
       "circuit_depth": 20
@@ -179,7 +179,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.9615418750036042,
+      "time_s": 1.0765384170008474,
       "energy_evals": 355,
       "expected_energy": -474.3827457192467,
       "circuit_depth": 20
