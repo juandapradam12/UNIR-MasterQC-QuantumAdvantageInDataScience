@@ -1,0 +1,7 @@
+solver,display,family,success_rate,cost_mean,cost_best,gap_mean,optimal_cost,time_mean_s,time_std_s,energy_evals_mean
+brute_force,Brute force,classical,1.0,16.0,16.0,0.0,16.0,0.0008721249978407286,0.0,6.0
+greedy,Greedy,classical,1.0,16.0,16.0,0.0,16.0,0.0005486250011017546,0.0,
+ilp,ILP,classical,1.0,16.0,16.0,0.0,16.0,0.013019894999160897,0.0,
+simulated_annealing,QUBO + SA,classical,0.9,16.3,16.0,0.3,16.0,0.01720587920026446,0.00283052704467963,5001.0
+qaoa,QAOA,quantum_inspired,1.0,16.0,16.0,0.0,16.0,1.0587758920009946,0.14568456212623587,356.0
+vqe,VQE,quantum_inspired,1.0,16.0,16.0,0.0,16.0,1.9089666913991095,0.07833909825274109,720.0
