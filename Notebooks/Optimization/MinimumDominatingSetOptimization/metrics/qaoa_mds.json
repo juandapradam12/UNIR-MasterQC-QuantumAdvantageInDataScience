@@ -1,0 +1,230 @@
+{
+  "problem": "mds",
+  "solver": "qaoa",
+  "family": "quantum_inspired",
+  "protocol": {
+    "n_runs": 8,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "p": 3,
+    "restarts": 20,
+    "shots": 4000,
+    "cobyla_maxiter": 200,
+    "A": 1.0,
+    "B": 2.0,
+    "backend": "qiskit_aer_statevector",
+    "n_qubits": 6,
+    "circuit_depth_ref": 23,
+    "n_parameters": 6
+  },
+  "instance": {
+    "nodes": [
+      "Mario",
+      "Sarah",
+      "Raul",
+      "Ana",
+      "Enrique",
+      "Saul"
+    ],
+    "edges": [
+      [
+        "Mario",
+        "Sarah"
+      ],
+      [
+        "Mario",
+        "Raul"
+      ],
+      [
+        "Mario",
+        "Ana"
+      ],
+      [
+        "Enrique",
+        "Sarah"
+      ],
+      [
+        "Enrique",
+        "Raul"
+      ],
+      [
+        "Saul",
+        "Ana"
+      ]
+    ]
+  },
+  "quality": {
+    "optimal_cost": 2.0,
+    "optimal_solution": [
+      "Ana",
+      "Enrique"
+    ],
+    "cost_mean": 2.25,
+    "cost_std": 0.6614378277661477,
+    "cost_best": 2.0,
+    "gap_mean": 0.25,
+    "p_opt_measured_mean": 0.5249375000000001
+  },
+  "success_rate": 0.875,
+  "time_s": {
+    "mean": 23.541526676501235,
+    "std": 0.08843485743283797,
+    "total": 188.33221341200988,
+    "optimize_mean": 23.52653980787545,
+    "measure_mean": 0.0068339147519509424
+  },
+  "effort": {
+    "energy_evals_mean": 3998.25,
+    "restarts": 20,
+    "p": 3,
+    "shots": 4000,
+    "circuit_depth": 23,
+    "n_parameters": 6
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "solution": [
+        "Raul",
+        "Saul"
+      ],
+      "cost": 4.0,
+      "gap": 2.0,
+      "feasible": false,
+      "success": false,
+      "expected_energy": -9.961451503975113,
+      "p_opt_measured": 0.0,
+      "time_s": 23.674703828997735,
+      "time_optimize_s": 23.660023872005695,
+      "time_measure_s": 0.006735246999596711,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 1,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "gap": 0.0,
+      "feasible": true,
+      "success": true,
+      "expected_energy": -11.179144556994814,
+      "p_opt_measured": 0.54075,
+      "time_s": 23.381282549002208,
+      "time_optimize_s": 23.366384517998085,
+      "time_measure_s": 0.0068323450032039545,
+      "energy_evals": 3986
+    },
+    {
+      "seed": 2,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "gap": 0.0,
+      "feasible": true,
+      "success": true,
+      "expected_energy": -12.395723584995304,
+      "p_opt_measured": 0.72725,
+      "time_s": 23.442718363003223,
+      "time_optimize_s": 23.427078107000852,
+      "time_measure_s": 0.006963137006096076,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 3,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "gap": 0.0,
+      "feasible": true,
+      "success": true,
+      "expected_energy": -12.422813182401926,
+      "p_opt_measured": 0.75075,
+      "time_s": 23.625327232002746,
+      "time_optimize_s": 23.610528588003945,
+      "time_measure_s": 0.006710461006150581,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 4,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "gap": 0.0,
+      "feasible": true,
+      "success": true,
+      "expected_energy": -10.036415135264885,
+      "p_opt_measured": 0.10775,
+      "time_s": 23.53787131200079,
+      "time_optimize_s": 23.52288047500042,
+      "time_measure_s": 0.007088265003403649,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 5,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "gap": 0.0,
+      "feasible": true,
+      "success": true,
+      "expected_energy": -11.909150771151499,
+      "p_opt_measured": 0.622,
+      "time_s": 23.528505694004707,
+      "time_optimize_s": 23.513454986998113,
+      "time_measure_s": 0.006703437997202855,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 6,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "gap": 0.0,
+      "feasible": true,
+      "success": true,
+      "expected_energy": -12.400860197519084,
+      "p_opt_measured": 0.71375,
+      "time_s": 23.555784520998714,
+      "time_optimize_s": 23.541059703995415,
+      "time_measure_s": 0.006607973999052774,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 7,
+      "solution": [
+        "Ana",
+        "Enrique"
+      ],
+      "cost": 2.0,
+      "gap": 0.0,
+      "feasible": true,
+      "success": true,
+      "expected_energy": -12.487071735258999,
+      "p_opt_measured": 0.73725,
+      "time_s": 23.586019911999756,
+      "time_optimize_s": 23.570908212001086,
+      "time_measure_s": 0.007030451000900939,
+      "energy_evals": 4000
+    }
+  ]
+}
