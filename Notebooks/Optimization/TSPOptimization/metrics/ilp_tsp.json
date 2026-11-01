@@ -5,7 +5,8 @@
   "protocol": {
     "n_runs": 1,
     "method": "pulp_cbc_position_assignment",
-    "constraint": "x[2,2]=1"
+    "constraint": "x[2,2]=1",
+    "pulp_version": "2.9.0"
   },
   "instance": {
     "nodes": [
@@ -34,9 +35,9 @@
   },
   "success_rate": 1.0,
   "time_s": {
-    "mean": 0.011724229007086251,
+    "mean": 0.013019894999160897,
     "std": 0.0,
-    "total": 0.011724229007086251
+    "total": 0.013019894999160897
   },
   "effort": {
     "milp_status": "Optimal",
@@ -56,7 +57,7 @@
       ],
       "feasible": true,
       "success": true,
-      "time_s": 0.011724229007086251
+      "time_s": 0.013019894999160897
     }
   ]
 }
