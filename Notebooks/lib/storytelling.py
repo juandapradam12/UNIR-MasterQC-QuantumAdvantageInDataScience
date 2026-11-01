@@ -67,11 +67,12 @@ def resolve_figures_dir(family: str, case: str) -> Path:
 
 
 def _savefig(fig: plt.Figure, path: Path) -> Path:
-    """Save PNG and show inline (do not close before show)."""
+    """Save PNG and show inline; close only after show so the notebook displays it."""
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, bbox_inches="tight", facecolor="white", dpi=150)
     print(f"Saved figure: {path}")
     plt.show()
+    plt.close(fig)
     return path
 
 
