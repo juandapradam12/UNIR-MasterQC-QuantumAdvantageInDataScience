@@ -71,18 +71,18 @@
     "cost_std": 0.6614378277661477,
     "cost_best": 2.0,
     "gap_mean": 0.25,
-    "p_opt_measured_mean": 0.5249375000000001
+    "p_opt_measured_mean": 0.5314687499999999
   },
   "success_rate": 0.875,
   "time_s": {
-    "mean": 23.541526676501235,
-    "std": 0.08843485743283797,
-    "total": 188.33221341200988,
-    "optimize_mean": 23.52653980787545,
-    "measure_mean": 0.0068339147519509424
+    "mean": 12.231631921876215,
+    "std": 0.7743121281697086,
+    "total": 97.85305537500972,
+    "optimize_mean": 12.220108374875053,
+    "measure_mean": 0.00610109912486223
   },
   "effort": {
-    "energy_evals_mean": 3998.25,
+    "energy_evals_mean": 4000.0,
     "restarts": 20,
     "p": 3,
     "shots": 4000,
@@ -100,11 +100,11 @@
       "gap": 2.0,
       "feasible": false,
       "success": false,
-      "expected_energy": -9.961451503975113,
+      "expected_energy": -9.961451471486946,
       "p_opt_measured": 0.0,
-      "time_s": 23.674703828997735,
-      "time_optimize_s": 23.660023872005695,
-      "time_measure_s": 0.006735246999596711,
+      "time_s": 13.322707750005065,
+      "time_optimize_s": 13.310538625002664,
+      "time_measure_s": 0.005823125000461005,
       "energy_evals": 4000
     },
     {
@@ -117,12 +117,12 @@
       "gap": 0.0,
       "feasible": true,
       "success": true,
-      "expected_energy": -11.179144556994814,
-      "p_opt_measured": 0.54075,
-      "time_s": 23.381282549002208,
-      "time_optimize_s": 23.366384517998085,
-      "time_measure_s": 0.0068323450032039545,
-      "energy_evals": 3986
+      "expected_energy": -11.790589197584397,
+      "p_opt_measured": 0.63075,
+      "time_s": 11.467659125002683,
+      "time_optimize_s": 11.455782582997927,
+      "time_measure_s": 0.00644845900387736,
+      "energy_evals": 4000
     },
     {
       "seed": 2,
@@ -134,11 +134,11 @@
       "gap": 0.0,
       "feasible": true,
       "success": true,
-      "expected_energy": -12.395723584995304,
-      "p_opt_measured": 0.72725,
-      "time_s": 23.442718363003223,
-      "time_optimize_s": 23.427078107000852,
-      "time_measure_s": 0.006963137006096076,
+      "expected_energy": -12.266931011188317,
+      "p_opt_measured": 0.7035,
+      "time_s": 11.240003208004055,
+      "time_optimize_s": 11.229203082999447,
+      "time_measure_s": 0.005910542000492569,
       "energy_evals": 4000
     },
     {
@@ -151,11 +151,11 @@
       "gap": 0.0,
       "feasible": true,
       "success": true,
-      "expected_energy": -12.422813182401926,
-      "p_opt_measured": 0.75075,
-      "time_s": 23.625327232002746,
-      "time_optimize_s": 23.610528588003945,
-      "time_measure_s": 0.006710461006150581,
+      "expected_energy": -12.422813182234854,
+      "p_opt_measured": 0.74175,
+      "time_s": 11.388626250001835,
+      "time_optimize_s": 11.377550582998083,
+      "time_measure_s": 0.006042374996468425,
       "energy_evals": 4000
     },
     {
@@ -168,11 +168,11 @@
       "gap": 0.0,
       "feasible": true,
       "success": true,
-      "expected_energy": -10.036415135264885,
-      "p_opt_measured": 0.10775,
-      "time_s": 23.53787131200079,
-      "time_optimize_s": 23.52288047500042,
-      "time_measure_s": 0.007088265003403649,
+      "expected_energy": -10.036415145855457,
+      "p_opt_measured": 0.1025,
+      "time_s": 12.640982749995601,
+      "time_optimize_s": 12.62966208299622,
+      "time_measure_s": 0.006096582997997757,
       "energy_evals": 4000
     },
     {
@@ -185,11 +185,11 @@
       "gap": 0.0,
       "feasible": true,
       "success": true,
-      "expected_energy": -11.909150771151499,
-      "p_opt_measured": 0.622,
-      "time_s": 23.528505694004707,
-      "time_optimize_s": 23.513454986998113,
-      "time_measure_s": 0.006703437997202855,
+      "expected_energy": -11.909149501047567,
+      "p_opt_measured": 0.6335,
+      "time_s": 12.489009458004148,
+      "time_optimize_s": 12.477828750001208,
+      "time_measure_s": 0.006146624997199979,
       "energy_evals": 4000
     },
     {
@@ -202,11 +202,11 @@
       "gap": 0.0,
       "feasible": true,
       "success": true,
-      "expected_energy": -12.400860197519084,
-      "p_opt_measured": 0.71375,
-      "time_s": 23.555784520998714,
-      "time_optimize_s": 23.541059703995415,
-      "time_measure_s": 0.006607973999052774,
+      "expected_energy": -12.382723985552294,
+      "p_opt_measured": 0.713,
+      "time_s": 13.260762041994894,
+      "time_optimize_s": 13.248519125001621,
+      "time_measure_s": 0.0062163339971448295,
       "energy_evals": 4000
     },
     {
@@ -219,11 +219,11 @@
       "gap": 0.0,
       "feasible": true,
       "success": true,
-      "expected_energy": -12.487071735258999,
-      "p_opt_measured": 0.73725,
-      "time_s": 23.586019911999756,
-      "time_optimize_s": 23.570908212001086,
-      "time_measure_s": 0.007030451000900939,
+      "expected_energy": -12.487071736031554,
+      "p_opt_measured": 0.72675,
+      "time_s": 12.043304792001436,
+      "time_optimize_s": 12.031782167003257,
+      "time_measure_s": 0.006124750005255919,
       "energy_evals": 4000
     }
   ]

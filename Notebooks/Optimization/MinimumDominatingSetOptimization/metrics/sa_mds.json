@@ -58,9 +58,9 @@
   },
   "success_rate": 1.0,
   "time_s": {
-    "mean": 0.00909952600050019,
-    "std": 0.0009597484276980601,
-    "total": 0.18199052001000382
+    "mean": 0.007878570950197172,
+    "std": 0.0009535267979615369,
+    "total": 0.15757141900394345
   },
   "effort": {
     "energy_evals_mean": 4001.0
@@ -78,7 +78,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008720919999177568,
+      "time_s": 0.008173499998520128,
       "energy_evals": 4001
     },
     {
@@ -93,7 +93,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008685255997988861,
+      "time_s": 0.010700875005568378,
       "energy_evals": 4001
     },
     {
@@ -108,7 +108,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008537986002920661,
+      "time_s": 0.007919541996670887,
       "energy_evals": 4001
     },
     {
@@ -123,7 +123,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008594279002863914,
+      "time_s": 0.008270625003206078,
       "energy_evals": 4001
     },
     {
@@ -138,7 +138,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008986665001430083,
+      "time_s": 0.008550792001187801,
       "energy_evals": 4001
     },
     {
@@ -153,7 +153,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.01252491299965186,
+      "time_s": 0.00831704099982744,
       "energy_evals": 4001
     },
     {
@@ -168,7 +168,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.010980905004544184,
+      "time_s": 0.00970920899999328,
       "energy_evals": 4001
     },
     {
@@ -183,7 +183,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.009910307999234647,
+      "time_s": 0.00817362499947194,
       "energy_evals": 4001
     },
     {
@@ -198,7 +198,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.009001561003969982,
+      "time_s": 0.008318207997945137,
       "energy_evals": 4001
     },
     {
@@ -213,7 +213,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008848511999531183,
+      "time_s": 0.007208167000499088,
       "energy_evals": 4001
     },
     {
@@ -228,7 +228,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008642820997920353,
+      "time_s": 0.0070167920057429,
       "energy_evals": 4001
     },
     {
@@ -243,7 +243,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008618389001640026,
+      "time_s": 0.008034958002099302,
       "energy_evals": 4001
     },
     {
@@ -258,7 +258,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008749779000936542,
+      "time_s": 0.0071882920019561425,
       "energy_evals": 4001
     },
     {
@@ -273,7 +273,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008765760998358019,
+      "time_s": 0.007110874998033978,
       "energy_evals": 4001
     },
     {
@@ -288,7 +288,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.00865515299665276,
+      "time_s": 0.007426791999023408,
       "energy_evals": 4001
     },
     {
@@ -303,7 +303,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008666936999361496,
+      "time_s": 0.006962250001379289,
       "energy_evals": 4001
     },
     {
@@ -318,7 +318,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008782827004324645,
+      "time_s": 0.0073739579966058955,
       "energy_evals": 4001
     },
     {
@@ -333,7 +333,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008860719994117972,
+      "time_s": 0.007029083993984386,
       "energy_evals": 4001
     },
     {
@@ -348,7 +348,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008850958001858089,
+      "time_s": 0.007084709002810996,
       "energy_evals": 4001
     },
     {
@@ -363,7 +363,7 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 0.008605870003520977,
+      "time_s": 0.007002124999416992,
       "energy_evals": 4001
     }
   ]
