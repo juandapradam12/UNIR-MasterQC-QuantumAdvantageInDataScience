@@ -135,7 +135,7 @@ Todo lo marcado como **por verificar** no debe citarse hasta comprobar la fuente
 - **Clasificación = el qué:** el problema práctico que queremos resolver (asignar una decisión / etiqueta a partir de datos).
 - **Optimización = el cómo:** el marco matemático que permite encontrar la mejor solución bajo un coste o restricción (y, a menudo, el motor interno de muchos modelos).
 
-Ambas son pilares esenciales y canónicos en sus respectivos campos; juntas cubren *decidir* y *buscar lo óptimo*.
+Ambas son pilares esenciales y canónicos en sus respectivos campos; juntas cubren *decidir* y *buscar lo óptimo*. El **tercer eje** —*representar* el dato/problema en el espacio cuántico— se desarrolla en el §7.
 
 **Dos preguntas guía (documento / defensa).**
 
@@ -164,6 +164,36 @@ Ambas son pilares esenciales y canónicos en sus respectivos campos; juntas cubr
 **Por verificar.** Ninguno (marco conceptual del TFM; alinear redacción con capítulos de contexto/objetivos cuando se edite el `.tex`).
 
 **Dónde se usa.** Documento: contexto, objetivos, cierre de evaluación. Defensa: respuesta a “¿por qué no hiciste regresión / anomalías / clustering?”.
+
+---
+
+## 7. Representación: el tercer eje (dato → espacio cuántico)
+
+**Afirmación.** Este TFM no solo estudia *clasificar* y *optimizar*: también estudia **representar**. La representación responde a: *«Simplifica / transforma estos datos sin perder su esencia»* — en el caso cuántico, **mapear un dato (o un problema) a un estado / Hamiltoniano** mediante una transformación elegida según la naturaleza del dato o del coste.
+
+**Cómo encaja con qué / cómo.**
+
+| Eje | Pregunta corta | En el TFM |
+|---|---|---|
+| **Clasificación (qué)** | ¿Qué decisión tomamos? | Etiqueta / clase |
+| **Optimización (cómo buscar)** | ¿Cuál es la mejor configuración? | Solvers clásicos vs QAOA/VQE/SA |
+| **Representación (en qué espacio)** | ¿Cómo se lleva el problema al sitio donde el método opera? | Feature map / embedding; QUBO–Ising |
+
+La representación no sustituye a clasificación u optimización: es el **puente** que las hace cuánticas. Sin un mapa fiel, el circuito no “ve” la estructura del dato; sin un QUBO bien planteado, el annealer/QAOA optimiza otra cosa.
+
+**Dos caras de la representación en este TFM.**
+
+1. *Clasificación (QML).* Dato clásico $\mathbf{x}$ → estado $\lvert\phi(\mathbf{x})\rangle$ (angle encoding, ZZFeatureMap, PCA + escalado $[0,\pi]$, etc.).  
+   **Pregunta:** ¿el mapa cuántico aporta estructura útil (alineación mapa–generador)?
+2. *Optimización.* Problema combinatorio → QUBO / Ising (Lucas, MaxCut HamLib, TSP reducido).  
+   **Pregunta:** ¿la codificación preserva el coste/factibilidad que nos importa?
+
+**Frase útil para documento / defensa.**  
+«Además de *decidir* y *optimizar*, estudiamos *representar*: cómo transformar el dato o el problema al espacio cuántico sin perder su esencia, eligiendo el mapa según la naturaleza del dato.»
+
+**Por verificar.** Ninguno (marco conceptual; conectar con capítulos de feature maps / QUBO cuando se edite el `.tex`).
+
+**Dónde se usa.** Documento: contexto/metodología (embedding y formulación). Defensa: respuesta a “¿qué aporta lo cuántico si el modelo luego es SVM/QAOA clásico-simulado?” → el valor está también en la **representación**.
 
 ---
 
