@@ -39,9 +39,9 @@
   },
   "success_rate": 1.0,
   "time_s": {
-    "mean": 3.806764100001601,
-    "std": 0.039866446240875174,
-    "total": 19.033820500008005
+    "mean": 1.9089666913991095,
+    "std": 0.07833909825274109,
+    "total": 9.544833456995548
   },
   "effort": {
     "energy_evals_mean": 720.0,
@@ -71,9 +71,9 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 3.819724271001178,
+      "time_s": 1.7913877079990925,
       "energy_evals": 720,
-      "expected_energy": -747.4080070088421,
+      "expected_energy": -767.5569052925048,
       "n_parameters": 24
     },
     {
@@ -98,9 +98,9 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 3.775565871001163,
+      "time_s": 2.0240293340029893,
       "energy_evals": 720,
-      "expected_energy": -758.0942568648022,
+      "expected_energy": -763.6804517921684,
       "n_parameters": 24
     },
     {
@@ -125,9 +125,9 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 3.877379427998676,
+      "time_s": 1.950916916001006,
       "energy_evals": 720,
-      "expected_energy": -764.5827977032408,
+      "expected_energy": -762.7914952626255,
       "n_parameters": 24
     },
     {
@@ -152,9 +152,9 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 3.795528030001151,
+      "time_s": 1.9125253329984844,
       "energy_evals": 720,
-      "expected_energy": -767.2737331023225,
+      "expected_energy": -766.0596539396015,
       "n_parameters": 24
     },
     {
@@ -179,9 +179,9 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 3.7656229000058374,
+      "time_s": 1.8659741659939755,
       "energy_evals": 720,
-      "expected_energy": -764.5458306036212,
+      "expected_energy": -766.520165886237,
       "n_parameters": 24
     }
   ]

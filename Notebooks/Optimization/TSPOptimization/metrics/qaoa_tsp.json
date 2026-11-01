@@ -38,12 +38,12 @@
   },
   "success_rate": 1.0,
   "time_s": {
-    "mean": 2.1195897491983486,
-    "std": 0.13280179107630374,
-    "total": 10.597948745991744
+    "mean": 1.0587758920009946,
+    "std": 0.14568456212623587,
+    "total": 5.293879460004973
   },
   "effort": {
-    "energy_evals_mean": 356.2,
+    "energy_evals_mean": 356.0,
     "p": 2,
     "shots": 3000,
     "circuit_depth": 20
@@ -71,9 +71,9 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 2.247829260995786,
-      "energy_evals": 374,
-      "expected_energy": -484.6784654703572,
+      "time_s": 1.3411546669958625,
+      "energy_evals": 359,
+      "expected_energy": -479.41767297337753,
       "circuit_depth": 20
     },
     {
@@ -98,9 +98,9 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 2.281772935995832,
-      "energy_evals": 383,
-      "expected_energy": -513.1341135417649,
+      "time_s": 1.0539900419971673,
+      "energy_evals": 368,
+      "expected_energy": -527.5985576000385,
       "circuit_depth": 20
     },
     {
@@ -125,9 +125,9 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.9618496539987973,
-      "energy_evals": 334,
-      "expected_energy": -676.3463157747119,
+      "time_s": 0.9507056670045131,
+      "energy_evals": 351,
+      "expected_energy": -676.5120522643898,
       "circuit_depth": 20
     },
     {
@@ -152,9 +152,9 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 1.9766046419972554,
-      "energy_evals": 327,
-      "expected_energy": -356.02914211092843,
+      "time_s": 0.9864872090038261,
+      "energy_evals": 347,
+      "expected_energy": -356.02863683353104,
       "circuit_depth": 20
     },
     {
@@ -179,9 +179,9 @@
       "feasible": true,
       "success": true,
       "gap": 0.0,
-      "time_s": 2.1298922530040727,
-      "energy_evals": 363,
-      "expected_energy": -470.0623697508855,
+      "time_s": 0.9615418750036042,
+      "energy_evals": 355,
+      "expected_energy": -474.3827457192467,
       "circuit_depth": 20
     }
   ]
