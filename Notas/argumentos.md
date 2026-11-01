@@ -35,4 +35,54 @@ Todo lo marcado como **por verificar** no debe citarse hasta comprobar la fuente
 
 ---
 
+## 2. Distinción entre datos cuánticos y datos clásicos (convencionales) para QML
+
+**Afirmación.** En la literatura de PennyLane, un *quantum dataset* no es “cualquier dataset usado en un circuito”, sino una colección de **datos que describen sistemas cuánticos y su evolución** (entradas/salidas de una función cuántica). En paralelo, el QML también trabaja con **datos convencionales / clásicos** (imágenes, tablas, series, etiquetas), que hay que **embeber** en un estado cuántico. Confundir ambos sesga la interpretación de “ventaja” y de qué se está midiendo en el TFM.
+
+**Fuentes (base de esta nota).**
+
+- PennyLane Datasets — *What is a Quantum Dataset?*  
+  https://pennylane.ai/datasets/what-is-a-quantum-dataset
+- PennyLane Datasets — *Conventional Datasets for QML*  
+  https://pennylane.ai/datasets/conventional-datasets-for-qml
+- Complemento de catálogo / definición operativa:  
+  https://pennylane.ai/blog/2023/08/introducing-pennylane-datasets/  
+  (“Quantum data is any data that goes in or comes out of a quantum system.”)
+
+**Desarrollo.**
+
+1. *Qué es un quantum dataset (PennyLane).*  
+   Una colección de datos que describe sistemas cuánticos y su evolución. En programación cuántica, esas *features* son tipicamente argumentos de entrada y salidas de una **quantum function** que define el sistema. Ejemplos explícitos en la página:
+   - **Hamiltoniano** del sistema y otros observables.
+   - **Estado** de interés (p. ej. ground state) y un circuito eficiente de **state preparation**.
+   - **Unitarias** útiles (p. ej. operadores Clifford para *qubit tapering*).
+   - **Medidas / proyectores**, distribuciones y valores esperados.
+   - Parámetros de **evolución** y descripciones de **ruido** (p. ej. operadores de Kraus).
+
+2. *Por qué catalogar datos cuánticos.* PennyLane motiva tres puntos:
+   - Como en ML clásico, datasets accesibles y de calidad catalizan algoritmos nuevos y mejoras.
+   - Aprender de datos cuánticos es un candidato más *intuitivo* a ventaja computacional cuántica que forzar datos clásicos en un circuito.
+   - Datos listos reducen fricción interdisciplinar y aceleran trabajo reproducible.
+
+3. *Qué son datos convencionales / clásicos para QML.*  
+   Además de quantum data, los algoritmos cuánticos pueden trabajar con datos convencionales (“classical” data): imágenes, vídeo, audio, tablas etiquetadas, etc. La pregunta de investigación suele ser si un modelo QML puede etiquetar, categorizar o reconocer rasgos en esos objetos. Datasets estándar (Iris 1936, MNIST 1994, etc.) se usan como *benchmark*; muchos son demasiado grandes para modelos cuánticos actuales, así que se recurre a datasets históricos pequeños y/o a **reducción de dimensionalidad**.
+
+4. *El cuello de botella no es solo el modelo: es el embedding.*  
+   Con datos clásicos, un paso no trivial es **cómo embeber** la información en el sistema cuántico (angle / amplitude / basis embedding, feature maps, etc.). PennyLane lo trata como campo activo de investigación; los *embedding templates* automatizan parte del preproceso hacia vectores ortonormalizados u otras entradas compatibles con el circuito.
+
+5. *Cómo encaja este TFM (mapa de carpetas).*
+   - `Notebooks/ClassicalClassification/` (Iris): dataset **convencional** clásico, embebido / procesado para comparar baselines clásicos vs modelos cuánticos (QSVM, QNN, VQC). Encaja directamente en *Conventional Datasets for QML*.
+   - `Notebooks/QuantumClassification/` (Bars and Stripes de PennyLane Datasets): dataset de **benchmark QML** alojado en el catálogo PennyLane (patrones imagen → vectores + etiquetas). Es útil como “dato de la literatura QML”, pero **no** es, en el sentido estricto de *What is a Quantum Dataset?*, un Hamiltoniano / estado / sombra clásica de un sistema físico. Hay que decirlo con cuidado en el documento: “dataset de clasificación usado en benchmarking QML (PennyLane)”, no “dato cuántico nativo del sistema”.
+   - La comparación justa (mismo PCA a 4 componentes + mismo `MinMaxScaler[0, π]`) mide diferencia de **modelo / representación**, no diferencia de *naturaleza ontológica* del dato.
+
+**Por verificar.**
+
+- Confirmar en el paper de origen de *Bars and Stripes* en PennyLane (candidato: Bowles, Ahmed y Schuld, 2024, *Better than classical?*) cómo presentan el dataset: ¿synthetic classical patterns for QML benchmarks? ¿alguna interpretación como distribución de Born / QCBM?
+- Revisar si en el documento conviene una tabla “tipo de dato × carpeta × qué se concluye”.
+- Cita adicional opcional sobre embedding: glosario PennyLane *quantum embedding* y demos de Angle/Amplitude embedding (solo si se desarrolla el capítulo de codificación).
+
+**Dónde se usa.** Documento: capítulo de contexto / datasets (antes de resultados Iris y Bars and Stripes). Defensa: diapositiva “qué es (y no es) un dataset cuántico” para anticipar la pregunta de rigor metodológico.
+
+---
+
 <!-- Siguiente argumento: copiar la plantilla de arriba -->
