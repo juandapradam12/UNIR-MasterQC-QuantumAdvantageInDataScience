@@ -1,0 +1,7 @@
+solver,family,problems,success_rate,gap_rel,time_mean_s,success_tsp,success_mds,gap_rel_tsp,gap_rel_mds,time_tsp,time_mds,display
+brute_force,classical,"['tsp', 'mds']",1.0,0.0,0.0005306454986566678,1.0,1.0,0.0,0.0,0.0008721249978407286,0.00018916599947260693,Brute force
+greedy,classical,"['tsp', 'mds']",0.5,0.25,0.00029274999906192534,1.0,0.0,0.0,0.5,0.0005486250011017546,3.687499702209607e-05,Greedy
+ilp,classical,"['tsp', 'mds']",1.0,0.0,0.9712788755023212,1.0,1.0,0.0,0.0,1.2767612090028706,0.6657965420017717,ILP
+simulated_annealing,classical,"['tsp', 'mds']",0.95,0.009375,0.012542225075230817,0.9,1.0,0.01875,0.0,0.01720587920026446,0.007878570950197172,QUBO + SA
+qaoa,quantum_inspired,"['tsp', 'mds']",0.9375,0.0625,6.645203906938605,1.0,0.875,0.0,0.125,1.0587758920009946,12.231631921876215,QAOA
+vqe,quantum_inspired,"['tsp', 'mds']",1.0,0.0,1.7352329414992709,1.0,1.0,0.0,0.0,1.9089666913991095,1.5614991915994323,VQE
