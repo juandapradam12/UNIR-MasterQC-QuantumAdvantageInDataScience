@@ -114,4 +114,15 @@ Todo lo marcado como **por verificar** no debe citarse hasta comprobar la fuente
 
 ---
 
+## 5. MaxCut (HamLib + demo PennyLane) como tercer problema de optimización
+
+**Afirmación.** MaxCut completa el trío TSP / MDS / MaxCut: partición de grafo con QUBO/Ising canónico de QAOA, instancia de **HamLib** (`hamlib-maxcut`) y circuito al estilo del [demo PennyLane QAOA MaxCut](https://pennylane.ai/demos/tutorial_qaoa_maxcut).
+
+**Desarrollo.** Misma matriz de solvers que TSP/MDS. En $n=6$ todos alcanzan el óptimo; el interés es metodológico (protocolo justo + referencia canónica), no ventaja.
+
+**Dónde se usa.** Documento: evaluación optimización. Defensa: “¿por qué MaxCut?” → benchmark Farhi / HamLib.
+
+---
+
 <!-- Siguiente argumento: copiar la plantilla de arriba -->
+

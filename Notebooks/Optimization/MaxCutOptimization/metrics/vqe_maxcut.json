@@ -1,0 +1,171 @@
+{
+  "problem": "maxcut",
+  "solver": "vqe",
+  "family": "quantum_inspired",
+  "protocol": {
+    "n_runs": 5,
+    "ansatz": "RY_ring_CNOT",
+    "reps": 2,
+    "restarts": 3,
+    "shots": 500,
+    "cobyla_maxiter": 80,
+    "backend": "pennylane_default.qubit",
+    "sense": "maximize_cut",
+    "hamlib_index": 8,
+    "hamlib_id": "circ_offsets-1-2"
+  },
+  "instance": {
+    "n": 6,
+    "edges": [
+      [
+        0,
+        5
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        5,
+        1
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "source": "pennylane.data other/hamlib-maxcut"
+  },
+  "quality": {
+    "optimal_cost": 8.0,
+    "optimal_bits": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "cost_mean": 8.0,
+    "cost_best": 8.0,
+    "gap_mean": 0.0
+  },
+  "success_rate": 1.0,
+  "time_s": {
+    "mean": 1.7992486748014926,
+    "std": 0.043858490061030236,
+    "total": 8.996243374007463
+  },
+  "effort": {
+    "energy_evals_mean": 240.0
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "bits": [
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 1.8840446379981586,
+      "energy_evals": 240
+    },
+    {
+      "seed": 1,
+      "bits": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 1.799091999004304,
+      "energy_evals": 240
+    },
+    {
+      "seed": 2,
+      "bits": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 1.7761037560048862,
+      "energy_evals": 240
+    },
+    {
+      "seed": 3,
+      "bits": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 1.7692050100013148,
+      "energy_evals": 240
+    },
+    {
+      "seed": 4,
+      "bits": [
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 1.7677979709987994,
+      "energy_evals": 240
+    }
+  ]
+}
