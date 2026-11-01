@@ -8,13 +8,15 @@ in the notebook — they never call ``model.predict`` again.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional, Sequence
+from typing import Callable, Optional, Sequence
 
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import LinearSegmentedColormap, ListedColormap
 from sklearn.decomposition import PCA
+
+PredictFn = Callable[[np.ndarray], np.ndarray]
 
 # Paleta UNIR: azules + grises (misma familia que Results_*)
 UNIR_NAVY = "#0B1F33"
@@ -106,91 +108,91 @@ def _pca2(X_train, X_test):
     pca = PCA(n_components=2, random_state=123)
     tr2 = pca.fit_transform(X_train)
     te2 = pca.transform(X_test)
-    return tr2, te2
+    return pca, tr2, te2
 
 
-def plot_pca_true_and_pred(
+def plot_pca_true_and_boundary(
     X_train,
     y_train,
     X_test,
     y_test,
     y_pred_test,
+    predict_fn: PredictFn,
     figures_dir: Path,
     stem: str,
     title_model: str,
     dataset_tag: str,
 ) -> list[Path]:
-    """PCA(2): (1) etiquetas verdaderas (2) predicciones ya evaluadas en el notebook.
+    """PCA(2): scatter sin frontera + scatter con frontera del modelo ya entrenado.
 
-    No llama al modelo: solo proyecta y pinta ``y_pred_test``.
+    - ``y_pred_test``: predicciones **ya calculadas** en el notebook (no se re-evalúa el test).
+    - ``predict_fn``: ``modelo.predict`` del notebook (solo para pintar la malla 2D);
+      no se reentrena ni se crea otro clasificador.
+    - PCA solo proyecta para visualizar.
     """
     y_train = _as_numpy(y_train).astype(int)
     y_test = _as_numpy(y_test).astype(int)
     y_pred_test = _as_numpy(y_pred_test).astype(int)
-    tr2, te2 = _pca2(X_train, X_test)
+    X_train_np = _as_numpy(X_train).astype(float)
+    X_test_np = _as_numpy(X_test).astype(float)
+    pca, tr2, te2 = _pca2(X_train_np, X_test_np)
     classes = np.unique(np.concatenate([y_train, y_test]))
+    listed = ListedColormap([_class_color(c) for c in classes])
 
     # --- sin frontera: etiquetas verdaderas ---
     fig, ax = plt.subplots(figsize=(6.2, 5.0), dpi=140)
     for c in classes:
         col = _class_color(c)
         ax.scatter(
-            tr2[y_train == c, 0],
-            tr2[y_train == c, 1],
-            s=36,
-            color=col,
-            alpha=0.85,
-            label=f"train c{c}",
-            edgecolors="none",
+            tr2[y_train == c, 0], tr2[y_train == c, 1],
+            s=36, color=col, alpha=0.85, label=f"train c{c}", edgecolors="none",
         )
         ax.scatter(
-            te2[y_test == c, 0],
-            te2[y_test == c, 1],
-            s=42,
-            facecolors="none",
-            edgecolors=col,
-            linewidths=1.2,
-            label=f"test c{c}",
+            te2[y_test == c, 0], te2[y_test == c, 1],
+            s=42, facecolors="none", edgecolors=col, linewidths=1.2, label=f"test c{c}",
         )
     ax.set_xlabel("PC1")
     ax.set_ylabel("PC2")
-    ax.set_title(f"{dataset_tag} PCA(2) — etiquetas verdaderas ({title_model})")
+    ax.set_title(f"{dataset_tag} PCA(2) — sin frontera ({title_model})")
     ax.legend(fontsize=8, frameon=False, ncol=2)
     _style_axes(ax)
     p1 = _savefig(fig, figures_dir / f"{stem}_{dataset_tag.lower()}_pca_scatter.png")
 
-    # --- con resultado del clasificador: predicciones existentes ---
+    # --- con frontera: malla con el predict del modelo YA fit + puntos test con preds existentes ---
+    pad = 0.35
+    xx, yy = np.meshgrid(
+        np.linspace(tr2[:, 0].min() - pad, tr2[:, 0].max() + pad, 220),
+        np.linspace(tr2[:, 1].min() - pad, tr2[:, 1].max() + pad, 220),
+    )
+    grid_x = pca.inverse_transform(np.c_[xx.ravel(), yy.ravel()])
+    z = np.asarray(predict_fn(grid_x)).astype(int).reshape(xx.shape)
+
     fig, ax = plt.subplots(figsize=(6.2, 5.0), dpi=140)
+    ax.contourf(
+        xx, yy, z,
+        levels=np.arange(z.min(), z.max() + 2) - 0.5,
+        cmap=listed, alpha=0.28,
+    )
+    ax.contour(xx, yy, z, levels=np.sort(classes) + 0.5, colors=UNIR_NAVY, linewidths=0.7, alpha=0.55)
     for c in classes:
         col = _class_color(c)
-        mask = y_pred_test == c
         ax.scatter(
-            te2[mask, 0],
-            te2[mask, 1],
-            s=48,
-            color=col,
-            alpha=0.9,
-            label=f"pred c{c}",
-            edgecolors="white",
-            linewidths=0.4,
+            te2[y_test == c, 0], te2[y_test == c, 1],
+            s=48, color=col, alpha=0.95, label=f"test c{c}",
+            edgecolors="white", linewidths=0.4,
         )
     wrong = y_pred_test != y_test
     if np.any(wrong):
         ax.scatter(
-            te2[wrong, 0],
-            te2[wrong, 1],
-            s=100,
-            facecolors="none",
-            edgecolors=UNIR_NAVY,
-            linewidths=1.6,
-            label="error test",
+            te2[wrong, 0], te2[wrong, 1],
+            s=100, facecolors="none", edgecolors=UNIR_NAVY, linewidths=1.6, label="error (preds notebook)",
         )
     ax.set_xlabel("PC1")
     ax.set_ylabel("PC2")
-    ax.set_title(f"{dataset_tag} PCA(2) — predicciones test ({title_model})")
+    ax.set_title(f"{dataset_tag} PCA(2) — con frontera ({title_model})")
     ax.legend(fontsize=8, frameon=False)
     _style_axes(ax)
-    p2 = _savefig(fig, figures_dir / f"{stem}_{dataset_tag.lower()}_pca_pred.png")
+    p2 = _savefig(fig, figures_dir / f"{stem}_{dataset_tag.lower()}_pca_boundary.png")
     return [p1, p2]
 
 
@@ -200,12 +202,13 @@ def plot_iris_pca_story(
     X_test,
     y_test,
     y_pred_test,
+    predict_fn: PredictFn,
     figures_dir: Path,
     stem: str,
     title_model: str,
 ) -> list[Path]:
-    return plot_pca_true_and_pred(
-        X_train, y_train, X_test, y_test, y_pred_test,
+    return plot_pca_true_and_boundary(
+        X_train, y_train, X_test, y_test, y_pred_test, predict_fn,
         figures_dir, stem, title_model, dataset_tag="Iris",
     )
 
@@ -244,12 +247,13 @@ def plot_bs_pca_story(
     X_test,
     y_test,
     y_pred_test,
+    predict_fn: PredictFn,
     figures_dir: Path,
     stem: str,
     title_model: str,
 ) -> list[Path]:
-    return plot_pca_true_and_pred(
-        X_train, y_train, X_test, y_test, y_pred_test,
+    return plot_pca_true_and_boundary(
+        X_train, y_train, X_test, y_test, y_pred_test, predict_fn,
         figures_dir, stem, title_model, dataset_tag="BS",
     )
 
@@ -285,8 +289,9 @@ def plot_ising_story(
     X_test=None,
     y_test=None,
     y_pred_test=None,
+    predict_fn: Optional[PredictFn] = None,
 ) -> list[Path]:
-    """Spin ⟨Z⟩ heatmap + chain + optional PCA true/pred (reuses notebook preds)."""
+    """Spin ⟨Z⟩ heatmap + chain + PCA sin/con frontera (modelo ya fit del notebook)."""
     saved: list[Path] = []
     X_train_raw = _as_numpy(X_train_raw).astype(float)
     y_train = _as_numpy(y_train).astype(int)
@@ -324,10 +329,11 @@ def plot_ising_story(
         and X_test is not None
         and y_test is not None
         and y_pred_test is not None
+        and predict_fn is not None
     ):
         saved.extend(
-            plot_pca_true_and_pred(
-                X_train, y_train, X_test, y_test, y_pred_test,
+            plot_pca_true_and_boundary(
+                X_train, y_train, X_test, y_test, y_pred_test, predict_fn,
                 figures_dir, stem, title_model, dataset_tag="Ising",
             )
         )
