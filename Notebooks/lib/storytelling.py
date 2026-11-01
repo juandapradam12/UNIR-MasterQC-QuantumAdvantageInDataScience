@@ -289,30 +289,21 @@ def plot_ising_story(
     y_test=None,
     y_pred_test=None,
     predict_fn: Optional[PredictFn] = None,
+    h_train=None,
+    h_test=None,
+    X_test_raw=None,
+    h_c: float = 1.0,
 ) -> list[Path]:
-    """Spin ⟨Z⟩ heatmap + chain + PCA sin/con frontera (modelo ya fit del notebook)."""
+    """Cadena 1D + M(h) + perfiles ⟨Z⟩ + PCA (sin heatmap).
+
+    ``h_train``/``h_test`` vienen del mismo split del notebook (no son features).
+    """
     saved: list[Path] = []
     X_train_raw = _as_numpy(X_train_raw).astype(float)
     y_train = _as_numpy(y_train).astype(int)
-    zs = _z_expectations_from_amplitudes(X_train_raw, n_qubits=4)
+    zs_tr = _z_expectations_from_amplitudes(X_train_raw, n_qubits=4)
 
-    order = np.argsort(y_train)
-    zs_o = zs[order]
-    y_o = y_train[order]
-
-    fig, ax = plt.subplots(figsize=(6.5, 5.5), dpi=140)
-    im = ax.imshow(zs_o, aspect="auto", cmap=HEAT_CMAP, vmin=-1, vmax=1, interpolation="nearest")
-    ax.set_xlabel("sitio de spin")
-    ax.set_ylabel("muestra (ordenada por fase)")
-    ax.set_xticks(range(zs.shape[1]))
-    ax.set_xticklabels([f"q{i}" for i in range(zs.shape[1])])
-    if len(y_o):
-        for b in np.where(np.diff(y_o) != 0)[0]:
-            ax.axhline(b + 0.5, color=UNIR_NAVY, lw=0.8, alpha=0.6)
-    fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label=r"$\langle Z_i\rangle$")
-    ax.set_title(f"Ising — magnetización local ⟨Z⟩ ({title_model})")
-    saved.append(_savefig(fig, figures_dir / f"{stem}_ising_spin_heatmap.png"))
-
+    # --- cadena 1D ---
     fig, ax = plt.subplots(figsize=(6.0, 1.8), dpi=140)
     G = nx.path_graph(4)
     pos = {i: (i, 0.0) for i in range(4)}
@@ -322,6 +313,60 @@ def plot_ising_story(
     ax.set_axis_off()
     ax.set_title("Ising 1D — cadena de 4 spins (layouts open/closed)")
     saved.append(_savefig(fig, figures_dir / f"{stem}_ising_chain.png"))
+
+    # --- perfiles ⟨Z⟩ 1D (ordenado vs desordenado) ---
+    fig, ax = plt.subplots(figsize=(6.2, 4.2), dpi=140)
+    sites = np.arange(zs_tr.shape[1])
+    for c, name, col in [(0, "ordenado", UNIR_CYAN), (1, "desordenado", UNIR_BLUE)]:
+        idx = np.where(y_train == c)[0]
+        if len(idx) == 0:
+            continue
+        # muestra "típica": mediana de |M|
+        mabs = np.mean(np.abs(zs_tr[idx]), axis=1)
+        pick = idx[int(np.argsort(mabs)[len(mabs) // 2])]
+        ax.plot(sites, zs_tr[pick], marker="o", color=col, lw=2.0, label=f"{name} (ejemplo)")
+        ax.plot(sites, np.mean(zs_tr[idx], axis=0), color=col, ls="--", alpha=0.55, label=f"{name} (media)")
+    ax.axhline(0.0, color=UNIR_CLARO, lw=1.0)
+    ax.set_xticks(sites)
+    ax.set_xticklabels([f"q{i}" for i in sites])
+    ax.set_ylabel(r"$\langle Z_i\rangle$")
+    ax.set_xlabel("sitio")
+    ax.set_ylim(-1.05, 1.05)
+    ax.set_title(f"Ising — perfiles 1D ⟨Z⟩ ({title_model})")
+    ax.legend(fontsize=8, frameon=False)
+    _style_axes(ax)
+    saved.append(_savefig(fig, figures_dir / f"{stem}_ising_z_profiles.png"))
+
+    # --- M vs h (transición) ---
+    if h_train is not None:
+        h_train = _as_numpy(h_train).astype(float)
+        m_train = np.mean(np.abs(zs_tr), axis=1)
+        fig, ax = plt.subplots(figsize=(6.8, 4.6), dpi=140)
+        for c, name, col in [(0, "ordenado", UNIR_CYAN), (1, "desordenado", UNIR_BLUE)]:
+            mask = y_train == c
+            ax.scatter(h_train[mask], m_train[mask], s=28, color=col, alpha=0.75, label=f"train {name}")
+        if h_test is not None and X_test_raw is not None and y_test is not None:
+            h_test = _as_numpy(h_test).astype(float)
+            y_test = _as_numpy(y_test).astype(int)
+            zs_te = _z_expectations_from_amplitudes(_as_numpy(X_test_raw).astype(float), n_qubits=4)
+            m_test = np.mean(np.abs(zs_te), axis=1)
+            ax.scatter(h_test, m_test, s=36, facecolors="none", edgecolors=UNIR_GRIS, linewidths=1.1, label="test")
+            if y_pred_test is not None:
+                y_pred_test = _as_numpy(y_pred_test).astype(int)
+                wrong = y_pred_test != y_test
+                if np.any(wrong):
+                    ax.scatter(
+                        h_test[wrong], m_test[wrong], s=90,
+                        facecolors="none", edgecolors=UNIR_NAVY, linewidths=1.6,
+                        label="error test",
+                    )
+        ax.axvline(h_c, color=UNIR_NAVY, ls="--", lw=1.4, label=fr"$h_c=|J|={h_c:g}$")
+        ax.set_xlabel(r"campo transverso $h$")
+        ax.set_ylabel(r"$\overline{|\langle Z_i\rangle|}$")
+        ax.set_title(f"Ising — transición (M vs h) ({title_model})")
+        ax.legend(fontsize=8, frameon=False)
+        _style_axes(ax)
+        saved.append(_savefig(fig, figures_dir / f"{stem}_ising_M_vs_h.png"))
 
     if (
         X_train is not None
