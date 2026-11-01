@@ -114,4 +114,21 @@ Todo lo marcado como **por verificar** no debe citarse hasta comprobar la fuente
 
 ---
 
+## 4. Fuerza bruta “gana” en MDS/TSP solo porque la instancia es pequeña
+
+**Afirmación.** En las POCs de optimización (MDS $n=6$; TSP restringido con pocas rutas candidatas), la fuerza bruta aparece como el método más rápido con éxito perfecto. Eso **no** es un resultado de escalado: es un artefacto del tamaño. Hay que decirlo explícitamente en el documento y en la defensa.
+
+**Desarrollo.**
+
+1. *Por qué ahora “funciona”.* En MDS se enumeran $2^n$ subconjuntos. Con $n=6$ son 64 candidatos: barato en CPU y exacto. En el TSP de la POC el espacio de rutas factibles también es diminuto frente a $(n-1)!/2$.
+2. *Por qué no escala.* MDS exacto por enumeración es $O(2^n)$; el TSP completo es factorial. En redes o ciudades realistas la enumeración deja de ser baseline competitivo frente a ILP, greedy, SA o métodos QI.
+3. *Qué sí aporta en el TFM.* Óptimo de **referencia** para gap/éxito y para calibrar QUBO+SA / QAOA / VQE bajo el mismo protocolo. El plot success-vs-runtime no se lee como “brute force es el mejor solver en general”.
+4. *Frase útil.* “Brute force gana aquí porque el grafo es pequeño; el experimento no pretende que la enumeración escale — sirve como óptimo de referencia.”
+
+**Por verificar.** Ninguno (hecho empírico de las POCs actuales).
+
+**Dónde se usa.** Documento: evaluación / limitaciones de las POCs de optimización (MDS y TSP). Defensa: respuesta a “¿entonces para qué QAOA si brute force es mejor?”. Ya anotado en los markdowns de `BruteForce.ipynb` y en los notebooks de comparación.
+
+---
+
 <!-- Siguiente argumento: copiar la plantilla de arriba -->
