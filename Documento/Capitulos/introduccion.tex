@@ -1,37 +1,39 @@
 % !TEX root = ../main.tex
 \chapter{Introducción}
 
-La computación cuántica y la ciencia de datos convergen en un campo activo ---aprendizaje automático cuántico (QML) y optimización cuántico-inspirada--- cuyas promesas de ventaja frente a métodos clásicos siguen sin evidencia empírica clara en el régimen NISQ \citep{preskill2018, biamonte2017}. Los algoritmos variacionales (QAOA, VQE, VQC) y los kernels cuánticos son candidatos naturales en hardware de escala intermedia \citep{farhi2014, cerezo2021, havlicek2019}, pero benchmarks sistemáticos en demos pequeñas suelen favorecer a baselines clásicos \citep{bowles2024, yu2026}.
+La computación cuántica y la ciencia de datos convergen en aprendizaje automático cuántico (QML) y optimización cuántico-inspirada. En la era NISQ, la ventaja práctica frente a métodos clásicos sigue sin estar demostrada de forma sistemática \citep{preskill2018, biamonte2017}. Los algoritmos variacionales (QAOA, VQE, VQC) y los kernels cuánticos son el enfoque habitual en hardware intermedio \citep{farhi2014, cerezo2021, havlicek2019}; en demos pequeñas y con protocolo justo, los baselines clásicos suelen igualar o ganar \citep{bowles2024, yu2026}.
 
-Este TFM responde con un estudio comparativo acotado y reproducible en \textbf{simulación}: tres problemas de clasificación y tres de optimización combinatoria, mismo protocolo de preproceso y métricas de calidad y de esfuerzo. El marco distingue tres ejes: el \emph{qué} (clasificar), el \emph{cómo} (optimizar) y la \emph{representación} (mapear el dato o el coste al espacio cuántico: feature map / QUBO--Ising) \citep{lloyd2020, pennylaneEmbedBlog, parzygnat2025}.
+Este TFM hace una comparación reproducible en \textbf{simulación clásica}: tres tareas de clasificación y tres de optimización combinatoria, con el mismo preproceso y con métricas de calidad y de tiempo. El marco usa tres ejes: \emph{qué} (clasificar), \emph{cómo} (optimizar) y \emph{representación} (feature map / QUBO--Ising) \citep{lloyd2020, pennylaneEmbedBlog, parzygnat2025}.
 
 \section{Motivación y justificación del tema}
 
-En ciencia de datos, clasificación y optimización son dos familias canónicas: a partir de ellas se plantean, por etiquetado, umbral o formulación QUBO/loss, tareas como regresión lineal, clustering, series temporales, detección de anomalías, reinforcement learning, modelos generativos o simulación. Preguntar por ventaja cuántica en ciencia de datos es, en la práctica, preguntar si el mapa o el solver cuántico mejora la decisión o el óptimo ---y a qué coste--- frente a SVM, bosques, ILP o annealing simulado \citep{jordan2015, cortes1995, breiman2001}.
+Clasificación y optimización son las dos familias con las que se construye el corpus. Con el mismo criterio de comparación se puede extender después a otras aplicaciones (regresión, clustering, series temporales, anomalías, reinforcement learning, generativa, simulación), pero esas no forman parte de los experimentos de este trabajo.
 
-La teoría ofrece aceleraciones en casos concretos (p.~ej.\ Grover, Shor) \citep{grover1996, shor1994} y, en QML, kernels que en principio exploran espacios de características grandes \citep{havlicek2019, schuld2021}. Esa ventaja depende de la geometría del dato respecto al mapa \citep{huang2021} y choca con límites del régimen actual: pocos qubits útiles, ruido, concentración del kernel al crecer $n$ \citep{preskill2018, thanasilp2022, mcclean2018}. Con pocos qubits un experimento no demuestra ventaja computacional frente a la simulación clásica; con muchos, la ventaja es más plausible pero ya no se simula ni se ejecuta de forma fiable. Estudios de benchmarking recientes confirman que, en tareas pequeñas y protocolos justos, los clásicos suelen igualar o superar a los modelos QML \citep{bowles2024}.
-
-La motivación de este trabajo es cubrir esa lectura con un corpus propio, comparable y honesto: no más demos asimétricas, sino el mismo split, el mismo escalado y las mismas métricas de precisión y wall-clock en clasificación y en optimización.
+La teoría apunta aceleraciones en casos concretos \citep{grover1996, shor1994} y, en QML, a kernels en espacios de características grandes \citep{havlicek2019, schuld2021}. En la práctica la ventaja depende de la alineación dato--mapa \citep{huang2021} y queda limitada por pocos qubits, ruido y concentración del kernel \citep{preskill2018, thanasilp2022, mcclean2018}. Hace falta medir precisión y wall-clock con el mismo protocolo, no demos asimétricas \citep{bowles2024}.
 
 \section{Planteamiento del problema}
 
-La pregunta central es: \textit{\textquestiondown{}En las instancias y el régimen NISQ simulados de este TFM, los enfoques cuánticos o cuántico-inspirados mejoran la calidad o el esfuerzo frente a baselines clásicos en clasificación y optimización?}
-
-El diseño responde con dos pilares y un eje transversal:
+Pregunta: \textit{\textquestiondown{}En las instancias y el régimen NISQ simulados aquí, los enfoques cuánticos o cuántico-inspirados mejoran la calidad o el esfuerzo frente a baselines clásicos?}
 
 \begin{enumerate}
-    \item \textbf{Clasificación} (el \emph{qué}). Datasets: Iris \citep{sklearnIris}, Bars and Stripes \citep{pennylaneBarsAndStripes, pennylaneConventionalDatasets} e Ising unidimensional (fases) \citep{pennylaneIsing, pennylaneWhatIsQuantumDataset}. Modelos: SVM, Random Forest y XGBoost frente a QSVM, QNN y VQC \citep{pennylaneVariationalClassifier}. Protocolo compartido de partición, escalado $\mathrm{MinMax}$ a $[0,\pi]$ y PCA a cuatro componentes cuando el ancho supera el presupuesto de qubits.
-    \item \textbf{Optimización} (el \emph{cómo}). Problemas: TSP restringido, Minimum Dominating Set (MDS) y Maximum Cut sobre una instancia de HamLib \citep{sawaya2024hamlib, pennylaneHamlibMaxcut, pennylaneQaoaMaxcut}. Solvers: fuerza bruta, greedy, ILP \citep{gurobiIlp} y QUBO+Simulated Annealing frente a QAOA y VQE \citep{farhi2014, peruzzo2014, lubinski2024}. Métricas: coste/corte, gap relativo, tasa de éxito y tiempo.
-    \item \textbf{Representación} (el puente). En QML, embedding / feature map (p.~ej.\ angle encoding, ZZ) \citep{pennylaneGlossaryEmbedding, pennylaneEmbedBlog}; en optimización, formulación QUBO--Ising \citep{lucas2014}. Sin un mapa fiel, el circuito no ve la estructura del dato; sin un QUBO bien planteado, QAOA optimiza otra función.
+    \item \textbf{Clasificación.} Datasets: Iris \citep{sklearnIris}, Bars and Stripes \citep{pennylaneBarsAndStripes, pennylaneConventionalDatasets} e Ising 1D (fases) \citep{pennylaneIsing, pennylaneWhatIsQuantumDataset}. Modelos: SVM, Random Forest, XGBoost frente a QSVM, QNN, VQC \citep{pennylaneVariationalClassifier}. Mismo split, escalado $\mathrm{MinMax}[0,\pi]$ y PCA a 4 cuando $d>4$.
+    \item \textbf{Optimización.} Problemas: TSP, Minimum Dominating Set (MDS) y MaxCut (HamLib) \citep{sawaya2024hamlib, pennylaneHamlibMaxcut, pennylaneQaoaMaxcut}. Solvers: fuerza bruta, greedy, ILP \citep{gurobiIlp}, QUBO+SA frente a QAOA y VQE \citep{farhi2014, peruzzo2014, lubinski2024}. Métricas: coste/corte, gap, éxito y tiempo.
+    \item \textbf{Representación.} Embedding / feature map en QML \citep{pennylaneGlossaryEmbedding, pennylaneEmbedBlog}; QUBO--Ising en optimización \citep{lucas2014}.
 \end{enumerate}
 
-No se incluyen como pilares regresión, anomalías ni datos empresariales: aportan volumen, no un tercer tipo de pregunta. Iris y Bars and Stripes son datasets \emph{convencionales} para QML; Ising aporta el contraste de dato de sistema con etiqueta de fase derivada \citep{pennylaneWhatIsQuantumDataset, pennylaneConventionalDatasets}. MaxCut vía HamLib fija una instancia canónica de la literatura de benchmarks \citep{sawaya2024hamlib}.
-
-La aportación esperada no es reclamar ventaja cuántica en este régimen, sino un protocolo justo, resultados anclados a métricas del repositorio y una lectura explícita de límites: en las instancias estudiadas, los clásicos igualan o superan en precisión y en tiempo \citep{bowles2024}.
+Iris y Bars and Stripes son datasets convencionales para QML; Ising es dato de sistema con etiqueta de fase \citep{pennylaneWhatIsQuantumDataset, pennylaneConventionalDatasets}. No hay datasets de empresa en este corpus. La aportación es el protocolo y la lectura de límites, no un claim de ventaja en este régimen \citep{bowles2024}.
 
 \section{Estructura del trabajo}
 
-El \textbf{Capítulo~2} sitúa el estado de la técnica (NISQ, QML, QAOA/VQE) y el marco qué/cómo/representación. El \textbf{Capítulo~3} fija objetivos. El \textbf{Capítulo~4} describe metodología, datasets, modelos y solvers. El \textbf{Capítulo~5} reporta Acc/F1, gap/éxito y tiempos. El \textbf{Capítulo~6} desarrolla la contribución conceptual (representación como eje). Los \textbf{Capítulos~7--8} cierran con conclusiones, limitaciones y trabajo futuro.
+\begin{itemize}
+    \item \textbf{Capítulo~2 -- Contexto:} NISQ, QML, QAOA/VQE y el marco qué/cómo/representación.
+    \item \textbf{Capítulo~3 -- Objetivos:} objetivo general y específicos del estudio actual.
+    \item \textbf{Capítulo~4 -- Metodología:} pipelines en \texttt{Notebooks/Classification/} y \texttt{Notebooks/Optimization/}.
+    \item \textbf{Capítulo~5 -- Evaluación:} Acc/F1, gap/éxito y tiempos (\texttt{Results*/metrics}).
+    \item \textbf{Capítulo~6 -- Representación:} contribución conceptual (el puente dato/problema $\mapsto$ estado/QUBO).
+    \item \textbf{Capítulo~7 -- Conclusiones.}
+    \item \textbf{Capítulo~8 -- Trabajo futuro.}
+\end{itemize}
 
 \begin{figure}[!htbp]
 \centering
@@ -54,19 +56,19 @@ El \textbf{Capítulo~2} sitúa el estado de la técnica (NISQ, QML, QAOA/VQE) y 
   \node[capnodo, draw=violet!60!black, fill=violet!7] (c7) at (10.8, -2.6) {\textbf{Cap. 7}\\\footnotesize Conclusiones};
   \node[capnodo, draw=violet!60!black, fill=violet!7] (c8) at (10.8, -4.2) {\textbf{Cap. 8}\\\footnotesize Trabajo futuro};
 
-  \node[bloque, draw=blue!40,   fit=(c1)(c2)(c3),
-        label={[blue!60!black, font=\footnotesize\bfseries]above:Marco}]   {};
+  \node[bloque, draw=blue!40, fit=(c1)(c2)(c3),
+        label={[blue!60!black, font=\footnotesize\bfseries]above:Marco}] {};
   \node[bloque, draw=orange!45, fit=(c4)(c5),
         label={[orange!65!black, font=\footnotesize\bfseries]above:Experimentos}] {};
   \node[bloque, draw=violet!45, fit=(c6)(c7)(c8),
         label={[violet!60!black, font=\footnotesize\bfseries]above:Cierre}] {};
 
-  \draw[arr] (c3.east)  -- ++(0.65, 0) |- (c4.west);
+  \draw[arr] (c3.east) -- ++(0.65,0) |- (c4.west);
   \draw[arr] (c4.south) -- (c5.north);
-  \draw[arr] (c5.east)  -- ++(0.65, 0) |- (c6.west);
+  \draw[arr] (c5.east) -- ++(0.65,0) |- (c6.west);
   \draw[arr] (c6.south) -- (c7.north);
   \draw[arr] (c7.south) -- (c8.north);
 \end{tikzpicture}
-\caption{Estructura del TFM: marco (Cap.~1--3), corpus experimental (Cap.~4--5) y contribución conceptual / cierre (Cap.~6--8).}
+\caption{Estructura del TFM alineada al corpus actual (clasificación + optimización + representación).}
 \label{fig:estructura_tfm}
 \end{figure}
