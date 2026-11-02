@@ -141,7 +141,7 @@ Director: Ricardo Rafael Domínguez Reyes}
     \textcolor{unirclaro}{04 --}\,\textcolor{unirnavy}{Contexto y estado de la técnica}\\[0.32cm]
     \textcolor{unirclaro}{05 --}\,\textcolor{unirnavy}{Resultados y análisis}\\[0.32cm]
     \textcolor{unirclaro}{06 --}\,\textcolor{unirnavy}{Conclusiones}\\[0.32cm]
-    \textcolor{unirclaro}{07 --}\,\textcolor{unirnavy}{Trabajo futuro}
+    \textcolor{unirclaro}{07 --}\,\textcolor{unirnavy}{Líneas futuras de investigación}
     };
 \end{tikzpicture}
 \end{frame}
@@ -533,20 +533,20 @@ VQE & 1 & 1 & 1 \\
 \end{frame}
 
 % =====================================================================
-\section{Trabajo futuro}
+\section{Líneas futuras de investigación}
 % =====================================================================
-\begin{frame}{Trabajo futuro}
+\begin{frame}{Líneas futuras de investigación}
 \centering
 \begin{tikzpicture}[font=\small]
-  \node[tile=unirazul] at (0,0)      {\textbf{Escala}\\ \scriptsize cadenas de Ising de 8 y 16 espines};
-  \node[tile=unirnavy] at (4.1,0)    {\textbf{QUBO mayores}\\ \scriptsize probabilidad del óptimo; QAOA con $p$ creciente frente a SA};
-  \node[tile=unirazul] at (8.2,0)    {\textbf{Hardware real}\\ \scriptsize shots y mitigación de errores};
-  \node[tile=unirnavy] at (0,-1.9)   {\textbf{Representación}\\ \scriptsize basis encoding y embeddings entrenables};
-  \node[tile=unirazul] at (4.1,-1.9) {\textbf{Entrenabilidad}\\ \scriptsize barren plateaus e hiperparámetros};
-  \node[tile=unirnavy] at (8.2,-1.9) {\textbf{Otras familias}\\ \scriptsize regresión y clustering};
+  \node[tile=unirazul] at (0,0)      {\textbf{Más qubits}\\ \scriptsize en hardware cuántico real};
+  \node[tile=unirnavy] at (4.1,0)    {\textbf{Mapeos de}\\ \textbf{representación}\\ \scriptsize otros feature maps y codificaciones};
+  \node[tile=unirazul] at (8.2,0)    {\textbf{Más casos de uso}\\ \scriptsize clusterización, series de tiempo, regresión, simulación};
+  \node[tile=unirnavy] at (0,-1.9)   {\textbf{Reducción de}\\ \textbf{dimensionalidad}\\ \scriptsize alternativas a la PCA};
+  \node[tile=unirazul] at (4.1,-1.9) {\textbf{Instancias no QUBO}\\ \scriptsize no cuadráticas,\\ como Max-$k$-SAT};
+  \node[tile=unirnavy] at (8.2,-1.9) {\textbf{Otros datasets}\\ \scriptsize reales y sintéticos};
 \end{tikzpicture}
 \\[0.6em]
-{\footnotesize\color{unirgris}\citet{zhou2020, haug2023, lloyd2020, mcclean2018, sentis2019}}
+{\footnotesize\color{unirgris}\citet{haug2023, lloyd2020, sentis2019, bowles2024}}
 \end{frame}
 
 \begin{frame}[plain]
@@ -650,12 +650,6 @@ VQE & 1 & 1 & 1 \\
 	\emph{Quantum vs.\ classical machine learning: A unified empirical comparison}.
 	arXiv preprint arXiv:2607.01197.
 	\url{https://doi.org/10.48550/arXiv.2607.01197}
-
-\bibitem[Zhou et~al.(2020)]{zhou2020}
-	Zhou, L., Wang, S.-T., Choi, S., Pichler, H., \& Lukin, M. D. (2020).
-	\emph{Quantum approximate optimization algorithm: Performance, mechanism, and implementation on near-term devices}.
-	Physical Review X, 10(2), 021067.
-	\url{https://doi.org/10.1103/PhysRevX.10.021067}
 \end{thebibliography}
 \end{frame}
 
