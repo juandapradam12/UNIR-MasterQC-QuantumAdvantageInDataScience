@@ -173,7 +173,7 @@ Los seis clasificadores se evalúan sobre las mismas particiones y el mismo $\ma
 
 \subsection{Métricas de clasificación y latencia}
 
-El protocolo registra calidad y latencia en las dos familias, con la misma unidad de tiempo (wall-clock en simulación). La Tabla~\ref{tab:metricas} fija las definiciones; F1 (macro) ordena los clasificadores y el gap al óptimo ordena los solvers \citep{lubinski2024, bowles2024}.
+Tras el ajuste, la calidad se mide en el conjunto de test; el conjunto de train entra solo en el gap de generalización. La Tabla~\ref{tab:metricas_clasif} fija las definiciones. F1 macro es la métrica de ordenación entre modelos.
 
 \begin{table}[!htbp]
 \centering
@@ -182,26 +182,16 @@ El protocolo registra calidad y latencia en las dos familias, con la misma unida
 \toprule
 \textbf{Métrica} & \textbf{Definición} \\
 \midrule
-\multicolumn{2}{@{}l}{\textit{Clasificación} (sobre el conjunto de test, salvo el gap)} \\
-\addlinespace[2pt]
 Accuracy & Fracción de etiquetas correctas, $\mathrm{Acc}=\frac{1}{N}\sum_i\mathbf{1}[\hat{y}_i=y_i]$. \\
 Precision, recall & Medias macro sobre las clases. \\
 F1 & Media armónica macro de precision y recall. \\
 AUC & Área bajo la curva ROC cuando el modelo produce scores. \\
 Gap de generalización & $\mathrm{Acc}_{\mathrm{train}}-\mathrm{Acc}_{\mathrm{test}}$. \\
 Latencia & Wall-clock de entrenamiento (\texttt{fit}) y de inferencia sobre el test. \\
-\midrule
-\multicolumn{2}{@{}l}{\textit{Optimización} ($C$ coste o corte; $C^\star$ óptimo conocido)} \\
-\addlinespace[2pt]
-Coste / corte & Valor medio y mejor de la función objetivo (longitud, tamaño del dominante o corte). \\
-Gap absoluto & $|C-C^\star|$. \\
-Gap relativo & $|C-C^\star|/|C^\star|$. \\
-Success rate & Fracción de ejecuciones con $C=C^\star$. \\
-Latencia & Tiempo medio wall-clock y, si el solver evalúa un Hamiltoniano, número medio de evaluaciones de energía. \\
 \bottomrule
 \end{tabularx}
-\caption{Métricas de calidad y latencia. El gap de generalización y el gap al óptimo no son la misma cantidad: el primero mide sobreajuste; el segundo, distancia a $C^\star$.}
-\label{tab:metricas}
+\caption{Métricas de calidad y latencia en clasificación.}
+\label{tab:metricas_clasif}
 \end{table}
 
 \section{Optimización}
@@ -212,7 +202,7 @@ Latencia & Tiempo medio wall-clock y, si el solver evalúa un Hamiltoniano, núm
 Grafo completo pequeño sobre 5 nodos con distancias fijas; origen fijado. Óptimo por enumeración (fuerza bruta). Formulación QUBO reducida: variables binarias sobre rutas candidatas factibles (una sola familia de selección), compatible con SA/QAOA/VQE \citep{lucas2014}.
 
 \paragraph{Minimum Dominating Set (MDS).}
-Grafo social de 6 vértices y 6 aristas (instancia fija en el notebook). Objetivo: mínimo conjunto dominante. ILP de cobertura con PuLP/CBC; QUBO para SA/QAOA/VQE.
+Grafo social de 6 vértices y 6 aristas. Objetivo: mínimo conjunto dominante. ILP de cobertura con PuLP/CBC; QUBO para SA/QAOA/VQE.
 
 \paragraph{MaxCut (HamLib).}
 Instancia HamLib (\texttt{hamlib\_maxcut.json}: $n=6$, 12 aristas, corte óptimo 8, id \texttt{circ\_offsets-1-2}) \citep{sawaya2024hamlib, pennylaneHamlibMaxcut}. Circuito QAOA al estilo del demo PennyLane MaxCut \citep{pennylaneQaoaMaxcut, farhi2014}.
@@ -261,19 +251,46 @@ QAOA/VQE se ejecutan en simulación de estado (\texttt{default.qubit}); se repor
 
 \subsection{Métricas de optimización y latencia}
 
-Coste, gap absoluto y relativo, success rate y latencia están definidos en la Tabla~\ref{tab:metricas}. Se agregan por problema (TSP, MDS, MaxCut) y se leen en curvas gap--runtime, success--runtime y heatmaps \citep{lubinski2024}.
+La calidad se mide respecto del óptimo conocido $C^\star$ de cada instancia (TSP, MDS, MaxCut). La Tabla~\ref{tab:metricas_opt} fija las definiciones. Las series por problema se leen en curvas gap--runtime, success--runtime y heatmaps \citep{lubinski2024}.
+
+\begin{table}[!htbp]
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.15cm} >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Métrica} & \textbf{Definición} \\
+\midrule
+Coste / corte & Valor medio y mejor de la función objetivo (longitud, tamaño del dominante o corte). \\
+Gap absoluto & $|C-C^\star|$. \\
+Gap relativo & $|C-C^\star|/|C^\star|$. \\
+Success rate & Fracción de ejecuciones con $C=C^\star$. \\
+Latencia & Tiempo medio wall-clock y, si el solver evalúa un Hamiltoniano, número medio de evaluaciones de energía. \\
+\bottomrule
+\end{tabularx}
+\caption{Métricas de calidad y latencia en optimización. $C$ es el coste o el corte obtenido; $C^\star$ es el óptimo de la instancia.}
+\label{tab:metricas_opt}
+\end{table}
+
 \section{Comparación clásico vs cuántico}
 
-La comparación no es ``el mejor cuántico contra un clásico débil'', sino:
+Clásico y cuántico se comparan a lo largo de todo el ciclo de modelado: representación, elección del modelo o del solver, ajuste y lectura del resultado. Cada etapa tiene una lectura cualitativa, que fija la hipótesis del método, y una cuantitativa, que la mide con las métricas de las Tablas~\ref{tab:metricas_clasif} y~\ref{tab:metricas_opt} \citep{bowles2024, lubinski2024, yu2026}.
 
-\begin{enumerate}
-    \item Mismo dato preparado (clasificación) o misma instancia/QUBO (optimización).
-    \item Mismas métricas de calidad.
-    \item Latencia reportada en la misma unidad (segundos wall-clock en simulación).
-    \item Lectura conjunta calidad--coste: un empate en Acc/gap con órdenes de magnitud más de tiempo no se interpreta como ventaja \citep{bowles2024, yu2026}.
-\end{enumerate}
-
-Esa lectura se materializa en series de storytelling (clásico vs cuántico, rankings, calidad vs coste temporal).
+\begin{table}[!htbp]
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{2.15cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Etapa} & \textbf{Cualitativo} & \textbf{Cuantitativo} \\
+\midrule
+Representación & En clasificación, $\mathbf{x}\in\mathbb{R}^{n}$ frente a $\lvert\phi(\mathbf{x})\rangle$; en optimización, formulación nativa frente a QUBO/Ising. & Dimensión de $\mathcal{H}$ ($n=4$) y número de variables binarias. \\
+Modelo / solver & Regla de decisión: kernel, árboles, boosting, ansatz variacional, enumeración, ILP o annealing. & Familia (clásica, cuántica o cuántico-inspirada) y criterio de parada. \\
+Ajuste & Mismo split y escalado, o la misma instancia y el mismo $C^\star$. & Wall-clock de entrenamiento u optimización; evaluaciones de energía cuando el solver las cuenta. \\
+Lectura & Generalización del clasificador, o distancia de la solución a $C^\star$, junto con su coste temporal. & Accuracy, F1, AUC, gap de generalización; coste, gap a $C^\star$, success rate y latencia. \\
+\bottomrule
+\end{tabularx}
+\caption{Ciclo de modelado comparado. La columna cualitativa delimita qué es común y qué es propio de cada familia; la cuantitativa aplica las métricas de calidad y latencia.}
+\label{tab:ciclo}
+\end{table}
 
 \section{Reproducibilidad}
 
@@ -286,4 +303,9 @@ Esa lectura se materializa en series de storytelling (clásico vs cuántico, ran
 
 \section{Limitaciones del diseño}
 
-Instancias pequeñas y $n=4$ qubits: el estudio valida pipelines y cercanía C--Q, no ventaja asintótica \citep{preskill2018, thanasilp2022}. Simulación ideal (sin ruido). Hiperparámetros cuánticos fijados por protocolo, no barridos exhaustivos. Ising con etiquetas derivadas y $N$ moderado por layout.
+\begin{itemize}
+    \item El cómputo cuántico es simulación de estado ideal (\texttt{default.qubit}, \texttt{lightning.qubit}). No hay ejecución en hardware cuántico, así que ruido, conectividad del chip y tiempo de cola quedan fuera del diseño \citep{preskill2018}.
+    \item El presupuesto es $n=4$ qubits y las instancias combinatorias son pequeñas. El alcance es ese régimen de pocas variables \citep{thanasilp2022}.
+    \item Los hiperparámetros cuánticos quedan fijados por el protocolo, sin barrido exhaustivo.
+    \item En Ising la etiqueta se deriva del campo transversal y el tamaño muestral lo marca el dataset.
+\end{itemize}
