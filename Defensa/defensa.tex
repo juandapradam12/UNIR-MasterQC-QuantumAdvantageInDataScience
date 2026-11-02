@@ -433,22 +433,22 @@ VQE & 1 & 1 & 1 \\
 \fig{0.60\textheight}{qaoa_tsp_route.png}\pie{TSP: ruta óptima, coste 16}
 \end{column}
 \begin{column}{0.48\textwidth}\centering
-\fig{0.60\textheight}{qaoa_maxcut_cut.png}\pie{MaxCut: corte óptimo 8}
+\fig{0.60\textheight}{qaoa_maxcut_cut.png}\pie{MaxCut: corte 8; 18 de 64 asignaciones son óptimas}
 \end{column}
 \end{columns}
-\mensaje{Mismo óptimo que la enumeración, con 1--2 s de simulación frente a milisegundos}
+\mensaje{Mismo óptimo que la enumeración: 0.6--2 s de simulación frente a $<1$ ms}
 \end{frame}
 
-\begin{frame}{MDS: las penalizaciones cuestan}
+\begin{frame}{MDS: óptimo único, el ansatz puede no encontrarlo}
 \begin{columns}[T]
 \begin{column}{0.48\textwidth}\centering
 \fig{0.60\textheight}{greedy_mds_dominating_set.png}\pie{Greedy: tamaño 3, no óptimo}
 \end{column}
 \begin{column}{0.48\textwidth}\centering
-\fig{0.60\textheight}{qaoa_mds_dominating_set.png}\pie{QAOA: tamaño 2, éxito 0.875 sobre semillas}
+\fig{0.60\textheight}{qaoa_mds_dominating_set.png}\pie{QAOA: óptimo en 7 de 8 semillas; 12.6 s}
 \end{column}
 \end{columns}
-\mensaje{SA resuelve el mismo QUBO: la dificultad está en optimizar el ansatz, no en la formulación}
+\mensaje{La semilla fallida devuelve un conjunto infactible; SA resuelve el mismo QUBO en 7 ms}
 \end{frame}
 
 \begin{frame}{Discusión: la representación como eje}
@@ -464,7 +464,7 @@ VQE & 1 & 1 & 1 \\
   \node[cuerpo=unirgris, text width=5.6cm, minimum height=3.2cm, below=0.1cm of b, align=left] {%
     \begin{itemize}\setlength{\itemsep}{4pt}
       \item Iris y BS + mapa ZZ: frontera fragmentada
-      \item MDS: penalizaciones que el ansatz no concentra
+      \item MDS: óptimo único que el ansatz no siempre alcanza
     \end{itemize}};
 \end{tikzpicture}
 \mensaje{Con $n\le6$ qubits se mide cercanía al clásico, no ventaja asintótica \citep{preskill2018, thanasilp2022}}
@@ -486,7 +486,7 @@ VQE & 1 & 1 & 1 \\
   \node[numsq=unirazul] (c4) at (6.7,-1.9) {4};
   \node[txt, right=0.2cm of c4] {\textbf{Régimen acotado.} 4--6 qubits simulados: cercanía, no ventaja};
 \end{tikzpicture}
-\mensaje{Cualquier ventaja exige una representación alineada con la estructura del problema}
+\mensaje{La paridad solo aparece con una representación alineada con la estructura del problema}
 \end{frame}
 
 % =====================================================================
@@ -496,7 +496,7 @@ VQE & 1 & 1 & 1 \\
 \centering
 \begin{tikzpicture}[font=\small]
   \node[tile=unirazul] at (0,0)      {\textbf{Escala}\\ \scriptsize cadenas de Ising de 6--12 espines};
-  \node[tile=unirnavy] at (4.1,0)    {\textbf{QUBO mayores}\\ \scriptsize QAOA con $p>1$ frente a SA};
+  \node[tile=unirnavy] at (4.1,0)    {\textbf{QUBO mayores}\\ \scriptsize óptimo único; QAOA con $p$ creciente frente a SA};
   \node[tile=unirazul] at (8.2,0)    {\textbf{Hardware real}\\ \scriptsize shots y mitigación de errores};
   \node[tile=unirnavy] at (0,-1.9)   {\textbf{Representación}\\ \scriptsize basis encoding y embeddings entrenables};
   \node[tile=unirazul] at (4.1,-1.9) {\textbf{Entrenabilidad}\\ \scriptsize barren plateaus e hiperparámetros};
