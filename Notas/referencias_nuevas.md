@@ -31,9 +31,9 @@ Conservar todas las de `Documento/Capitulos/referencias.tex`. Esta lista es mate
 | PennyLane [Grover demo](https://pennylane.ai/demos/tutorial_grovers_algorithm) | Grover pedagógico | Contexto histórico (ya hay Grover en bib) |
 | [PRX 9, 041029](https://journals.aps.org/prx/abstract/10.1103/PhysRevX.9.041029) Sentís et al. | Clustering no supervisado de *datos cuánticos* (estados) | Extensiones clustering; no es Acc/F1 Iris |
 | [arXiv:2502.15129](https://arxiv.org/abs/2502.15129) de Paula Neto | Complejidad del dato → recomendar arquitectura de circuito | Representación / elección de ansatz |
-| [PRResearch rph8-g15q](https://journals.aps.org/prresearch/abstract/10.1103/rph8-g15q) | (encoding / QML — ver abstract al citar) | Representación si el abstract cuadra |
-| [arXiv html 2609.16171](https://arxiv.org/html/2609.16171v1) | Paper reciente encoding/QML | Revisar sección al citar en representación |
-| [arXiv html 2607.01197](https://arxiv.org/html/2607.01197v2) | Paper reciente (revisar §5) | Solo si aporta a límites/evaluación |
+| [PRResearch rph8-g15q](https://journals.aps.org/prresearch/abstract/10.1103/rph8-g15q) Parzygnat et al. | *Toward structure-preserving quantum encodings* | Eje representación (encoding que preserve estructura) |
+| [arXiv:2609.16171](https://arxiv.org/html/2609.16171v1) Rovara et al. | Compilación / programas cuánticos estructurados (no QML de datos) | Poco uso en este TFM; opcional hardware/software futuro |
+| [arXiv:2607.01197](https://arxiv.org/html/2607.01197v2) Yu et al. + [repo QML](https://github.com/Z-537-437/QML) | Comparación empírica Q vs C (clasificación + RL): clásico gana en Acc/tiempo | Refuerza la lectura del TFM; citar con cautela (preprint reciente) |
 | CERN/Atos Fast-Start PDF | Material docente / intro | Contexto pedagogía; no evidencia empírica |
 | Gurobi FAQ ILP | Definición ILP | Métodos solvers clásicos (una frase) |
 | [ACM 10.1145/1273496.1273497](https://dl.acm.org/doi/pdf/10.1145/1273496.1273497) | (ML clásico histórico — verificar título al citar) | Solo si se usa en baselines |
@@ -60,3 +60,42 @@ Conservar todas las de `Documento/Capitulos/referencias.tex`. Esta lista es mate
 ## Ya en bibliografía (no duplicar)
 
 Preskill, Farhi, Biamonte, Havlíček, Huang, Schuld, Cerezo, Thanasilp, Lucas, Grover, Peruzzo, McClean, etc. en `referencias.tex`.
+
+## Claves `\cite{...}` añadidas en `referencias.tex`
+
+| Clave | Fuente |
+|---|---|
+| `aimeur2007` | Quantum clustering (ICML) |
+| `bowles2024` | Better than classical? |
+| `cernAtos2021` | CERN–Atos Fast Start PDF |
+| `dePaulaNeto2025` | Data complexity → circuit recommendation |
+| `gurobiIlp` | FAQ ILP |
+| `kulkarniQlr` | Quantum linear regression (GitHub) |
+| `lubinski2024` | ACM opt. benchmarks / MaxCut |
+| `parateEncodingGuide` | Medium encoding guide |
+| `parzygnat2025` | Structure-preserving encodings |
+| `pennylaneBarsAndStripes` | Dataset BS |
+| `pennylaneConventionalDatasets` | Conventional datasets for QML |
+| `pennylaneEmbedBlog` | How to embed data… |
+| `pennylaneGlossaryEmbedding` | Glossary embedding |
+| `pennylaneGrover` | Demo Grover |
+| `pennylaneHamlibMaxcut` | Dataset HamLib MaxCut |
+| `pennylaneHamlibTsp` | Dataset HamLib TSP |
+| `pennylaneIsing` | Dataset Ising |
+| `pennylaneQaoaIntro` | Demo QAOA intro |
+| `pennylaneQaoaMaxcut` | Demo QAOA MaxCut |
+| `pennylaneQftGroups` | Demo QFT |
+| `pennylaneTransferLearning` | Demo transfer learning |
+| `pennylaneVariationalClassifier` | Demo VQC |
+| `pennylaneWhatIsQuantumDataset` | What is a quantum dataset? |
+| `qzHybridQml` / `qzBeginners` / `qzFbi` | Quantum Zeitgeist |
+| `rovara2026` | Structured quantum programs |
+| `sawaya2024hamlib` | HamLib paper |
+| `sklearnIris` | Iris example sklearn |
+| `sentis2019` | Unsupervised classification of quantum data |
+| `somma2008` | Quantum simulated annealing |
+| `vocalQuantumOutperform` | Vocal Media |
+| `wangClassicalVsQuantumMl` | Medium C vs Q ML |
+| `qmlBenchmarks` | Xanadu qml-benchmarks repo |
+| `yu2026` | Unified empirical Q vs C |
+| `githubZ537Qml` | Repo Yu et al. |
