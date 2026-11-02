@@ -173,15 +173,36 @@ Los seis clasificadores se evalúan sobre las mismas particiones y el mismo $\ma
 
 \subsection{Métricas de clasificación y latencia}
 
-Tras el entrenamiento se registran en test (y train, para gap):
+El protocolo registra calidad y latencia en las dos familias, con la misma unidad de tiempo (wall-clock en simulación). La Tabla~\ref{tab:metricas} fija las definiciones; F1 (macro) ordena los clasificadores y el gap al óptimo ordena los solvers \citep{lubinski2024, bowles2024}.
 
-\begin{itemize}
-    \item Calidad: accuracy, precision, recall, F1 (macro), AUC cuando aplica.
-    \item Latencia: tiempo de entrenamiento (wall-clock de \texttt{fit}) y de inferencia sobre el conjunto de test.
-    \item Gap de generalización: diferencia Acc train $-$ Acc test.
-\end{itemize}
-
-Las métricas por modelo se agregan en tablas CSV y se visualizan en series de comparación (rankings F1, clásico vs cuántico, calidad vs coste temporal).
+\begin{table}[!htbp]
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.15cm} >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Métrica} & \textbf{Definición} \\
+\midrule
+\multicolumn{2}{@{}l}{\textit{Clasificación} (sobre el conjunto de test, salvo el gap)} \\
+\addlinespace[2pt]
+Accuracy & Fracción de etiquetas correctas, $\mathrm{Acc}=\frac{1}{N}\sum_i\mathbf{1}[\hat{y}_i=y_i]$. \\
+Precision, recall & Medias macro sobre las clases. \\
+F1 & Media armónica macro de precision y recall. \\
+AUC & Área bajo la curva ROC cuando el modelo produce scores. \\
+Gap de generalización & $\mathrm{Acc}_{\mathrm{train}}-\mathrm{Acc}_{\mathrm{test}}$. \\
+Latencia & Wall-clock de entrenamiento (\texttt{fit}) y de inferencia sobre el test. \\
+\midrule
+\multicolumn{2}{@{}l}{\textit{Optimización} ($C$ coste o corte; $C^\star$ óptimo conocido)} \\
+\addlinespace[2pt]
+Coste / corte & Valor medio y mejor de la función objetivo (longitud, tamaño del dominante o corte). \\
+Gap absoluto & $|C-C^\star|$. \\
+Gap relativo & $|C-C^\star|/|C^\star|$. \\
+Success rate & Fracción de ejecuciones con $C=C^\star$. \\
+Latencia & Tiempo medio wall-clock y, si el solver evalúa un Hamiltoniano, número medio de evaluaciones de energía. \\
+\bottomrule
+\end{tabularx}
+\caption{Métricas de calidad y latencia. El gap de generalización y el gap al óptimo no son la misma cantidad: el primero mide sobreajuste; el segundo, distancia a $C^\star$.}
+\label{tab:metricas}
+\end{table}
 
 \section{Optimización}
 
@@ -240,15 +261,7 @@ QAOA/VQE se ejecutan en simulación de estado (\texttt{default.qubit}); se repor
 
 \subsection{Métricas de optimización y latencia}
 
-\begin{itemize}
-    \item \textbf{Coste / corte} medio y mejor.
-    \item \textbf{Gap} absoluto y relativo al óptimo conocido.
-    \item \textbf{Success rate:} fracción de ejecuciones que alcanzan el óptimo (criterio fijado por problema).
-    \item \textbf{Tiempo medio} wall-clock y, cuando aplica, evaluaciones de energía.
-\end{itemize}
-
-Las métricas se agregan por problema (TSP, MDS, MaxCut) y se visualizan en curvas gap--runtime, success--runtime y heatmaps \citep{lubinski2024}.
-
+Coste, gap absoluto y relativo, success rate y latencia están definidos en la Tabla~\ref{tab:metricas}. Se agregan por problema (TSP, MDS, MaxCut) y se leen en curvas gap--runtime, success--runtime y heatmaps \citep{lubinski2024}.
 \section{Comparación clásico vs cuántico}
 
 La comparación no es ``el mejor cuántico contra un clásico débil'', sino:
