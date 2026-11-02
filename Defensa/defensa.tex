@@ -17,7 +17,7 @@
 \usetikzlibrary{positioning,fit,arrows.meta,babel,calc}
 \usepackage[authoryear,round]{natbib}
 
-\graphicspath{{../Imagenes/}{../../POCs/data/output/figures/}{../}}
+\graphicspath{{../Documento/Imagenes/}{../Imagenes/}{../Notebooks/Classification/ResultsClassification/figures/}{../Notebooks/Optimization/ResultsOptimization/figures/}{../Notebooks/Classification/IrisClassification/figures/}{../Notebooks/Classification/BSClassification/figures/}{../Notebooks/Classification/IsingClassification/figures/}{../Notebooks/Optimization/TSPOptimization/figures/}{../Notebooks/Optimization/MinimumDominatingSetOptimization/figures/}{../Notebooks/Optimization/MaxCutOptimization/figures/}{../}}{../../Notebooks/}{../}}
 
 % ── Diseño alineado con la plantilla de defensa de UNIR (PowerPoint) ──
 % Paleta de la plantilla: azul UNIR, azul oscuro, grises (sin verdes ni rojos).
@@ -375,7 +375,7 @@ Sin datos SKG (asignación real: trabajo futuro) &
 % =====================================================================
 \begin{frame}{Mapa de errores: cuántico frente a clásico}
 \centering
-\includegraphics[width=\linewidth,height=0.68\textheight,keepaspectratio]{13_mapa_errores_q_vs_c.png}
+\includegraphics[width=\linewidth,height=0.68\textheight,keepaspectratio]{cls_classical_vs_quantum.png}
 
 \vspace{0.2em}
 {\footnotesize El cuántico (azul) solo es el mejor con datos nativos; en optimización, QAOA iguala al exacto, no lo supera.}
@@ -592,7 +592,7 @@ mapa--generador.}
 \begin{columns}[T]
 \begin{column}{0.62\textwidth}
 \centering
-\includegraphics[width=\linewidth,height=0.68\textheight,keepaspectratio]{08_barrido_sintetico_alpha.png}
+\includegraphics[width=\linewidth,height=0.68\textheight,keepaspectratio]{cls_accuracy_slope.png}
 \end{column}
 \begin{column}{0.36\textwidth}
 \begin{block}{Qué es (NB08 real)}
@@ -669,7 +669,7 @@ Huang ($\lambda{=}10^{-3}$): $g\approx 76$--$85$ en casi todos los casos
 \begin{columns}[T]
 \begin{column}{0.66\textwidth}
 \centering
-\includegraphics[width=\linewidth,height=0.70\textheight,keepaspectratio]{08_estructura_comparativa_casos_uso.png}
+\includegraphics[width=\linewidth,height=0.70\textheight,keepaspectratio]{cls_iris_to_ising_delta_and_family_gap.png}
 \end{column}
 \begin{column}{0.32\textwidth}
 \begin{block}{Cómo leerlo}

@@ -35,7 +35,7 @@ donde $\langle \cdot, \cdot \rangle_F$ denota el producto interno de Frobenius. 
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.62\textwidth]{Imagenes/huang2021_fig2_geometria_kernel.png}
+\includegraphics[width=0.62\textwidth]{huang2021_fig2_geometria_kernel.png}
 \caption{Geometría del kernel clásico y cuántico. Las letras A, B, \dots{} son puntos de datos $\{x_i\}$ en espacios distintos; las flechas representan la similitud (función kernel) entre datos. La diferencia geométrica $g$ compara las similitudes entre modelos (flechas naranja/roja: $g$ pequeño; naranja/azul: $g$ mayor) y $d$ es una dimensión efectiva del conjunto de datos en el espacio de Hilbert cuántico. Reproducida de \citet{huang2021}, Fig.~2, bajo licencia CC~BY~4.0.}
 \label{fig:huang_geometria}
 \end{figure}
@@ -147,7 +147,7 @@ En el Notebook~08 las etiquetas del dataset nativo se definen por el signo de un
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.95\textwidth]{../POCs/data/output/figures/08_test_cuanticidad_datasets.png}
+\includegraphics[width=0.95\textwidth]{cls_iris_vs_bs_vs_ising_vs_mean_accuracy.png}
 \caption{Perfil vectorial $\mathcal{Q}(\mathcal{D})=(\Delta A,d_F,\Delta H)$ sobre los tres datasets (Notebook~08). Fila superior: componentes del vector. Fila inferior: alineaciones, entropías de apoyo y el escalar ponderado $w^\top\mathcal{Q}$ (experimento; \textbf{no} regla de adopción). Telco y nativo dominados por $\Delta H$ ($-1.131$ y $-1.120$). La decisión operativa usa $\Delta_{\mathrm{op}}$ (Tabla~\ref{tab:indicadores_resultados}), no el escalar.}
 \label{fig:indicadores_cuanticidad}
 \end{figure}
@@ -184,14 +184,14 @@ Un buen TFM se discute desde lo medido, no desde lo deseable. Aquí se exponen l
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.92\textwidth]{../POCs/data/output/figures/08_barrido_sintetico_alpha.png}
+\includegraphics[width=0.92\textwidth]{cls_accuracy_slope.png}
 \caption{Barrido sintético NB08 (datos reales): $\alpha$ = fracción de etiquetas cuánticas con $X$ fijo. $\Delta A$ crece con $\alpha$ ($\rho_S=+0.833$, $p=0.005$). $d_F$ y $H(K_Q)$ son constantes por diseño (los kernels no dependen de las etiquetas). La ventaja supervisada es ruidosa ($\rho_S(\alpha,\mathrm{ventaja})\approx 0.34$). El número $0.833$ es $\rho(\alpha,\Delta A)$, \textbf{no} $\rho(\mathcal{Q},\mathrm{ventaja})$.}
 \label{fig:barrido_sintetico_alpha}
 \end{figure}
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.88\textwidth]{../POCs/data/output/figures/08_correlacion_indicadores_ventaja.png}
+\includegraphics[width=0.88\textwidth]{cls_classical_vs_quantum_by_dataset.png}
 \caption{Indicadores NB08 vs.\ ventaja NB08 (QSVM$-$SVM-RBF, puntos rellenos). Marcadores huecos: $\Delta_{\mathrm{op}}$ de Caso~1/NB06 (referencia; \textbf{no} entran en $\rho$). Línea gris: barrido $\alpha$ solo en el panel $\Delta A$ (único factor que varía con $X$ fijo). $n=3$: potencia baja; no se reclama $\rho(\mathcal{Q},\mathrm{ventaja})=0.833$.}
 \label{fig:correlacion_indicadores_body}
 \end{figure}
@@ -250,7 +250,7 @@ En el Notebook~08 se calculó también $q=w_1\Delta A+w_2\hat{d}_F+w_3\Delta H$ 
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.95\textwidth]{../POCs/data/output/figures/08_estructura_comparativa_casos_uso.png}
+\includegraphics[width=0.95\textwidth]{cls_iris_to_ising_delta_and_family_gap.png}
 \caption{Comparativa de estructura cuántica en un solo gráfico: \textbf{un panel por indicador} ---alineación $\Delta A$, entropía espectral $\Delta H$, distancia de Frobenius $d_F$, diferencia geométrica $g$ y compuesto $\mathcal{Q}$, los indicadores de la Tabla de indicadores implementados---; en cada panel el eje X son los \textbf{casos de uso} (clasificación, regresión, anomalías y optimización) y las tres barras de cada grupo son los datasets (Nativo / SKG / Referencia; en optimización, asignación / MaxCut / TSP). Protocolo unificado (ZZ 2~qubits, $n{=}60$, 3 repeats, RBF Frobenius-best). En optimización, $\Delta H$, $d_F$ y $g$ dependen solo del número de bits (asignación y TSP comparten $X$ y $K_Q$); lo que distingue un problema de otro es $\Delta A$. $X$ son todos los bitstrings del espacio de búsqueda e $y$ la energía del QUBO (paisaje), \emph{no} el rendimiento de QAOA. La banda azul del panel de $\Delta A$ es el control nulo ($y$ permutada, $\pm2\sigma$). Solo los nativos superan el ruido de $\Delta A$; $\Delta H$, $d_F$ y $g$ quedan casi planos, con la excepción de anomalías-SKG, atribuible a que los outliers a $8\sigma$ comprimen el escalado MinMax de los inliers (artefacto de codificación). $\mathcal{Q}=0.4\,\Delta A+0.2\,\hat d_F+0.2\,\Delta H+0.2\,\hat g$ (con $\hat d_F=d_F/\max d_F$ y $\hat g=g/\max g$) lo dominan indicadores planos: se muestra por completitud, no como regla de decisión. CSV: \texttt{estructura\_por\_caso\_uso.csv}; notebook~11.}
 \label{fig:estructura_tres_casos}
 \label{fig:q_vector_vs_nativo}
@@ -258,28 +258,28 @@ En el Notebook~08 se calculó también $q=w_1\Delta A+w_2\hat{d}_F+w_3\Delta H$ 
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.85\textwidth]{../POCs/data/output/figures/08_perfil_clasificacion.png}
+\includegraphics[width=0.85\textwidth]{iris_classical_vs_quantum.png}
 \caption{Detalle \textbf{clasificación} (todos los datasets de la familia). Auxiliar a la Fig.~\ref{fig:estructura_tres_casos}.}
 \label{fig:perfil_clasificacion}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.85\textwidth]{../POCs/data/output/figures/08_perfil_regresion.png}
+\includegraphics[width=0.85\textwidth]{bs_classical_vs_quantum.png}
 \caption{Detalle \textbf{regresión}. Auxiliar a la Fig.~\ref{fig:estructura_tres_casos}.}
 \label{fig:perfil_regresion}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.85\textwidth]{../POCs/data/output/figures/08_perfil_anomalias.png}
+\includegraphics[width=0.85\textwidth]{ising_classical_vs_quantum.png}
 \caption{Detalle \textbf{anomalías}. Auxiliar a la Fig.~\ref{fig:estructura_tres_casos}.}
 \label{fig:perfil_anomalias}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.85\textwidth]{../POCs/data/output/figures/08_perfil_optimizacion.png}
+\includegraphics[width=0.85\textwidth]{opt_classical_vs_quantum_mean.png}
 \caption{Detalle \textbf{optimización} (paisaje QUBO de asignación $n{=}3$, MaxCut $n{=}10$ y TSP $n{=}4$). Las mismas tres métricas y escalas que en los demás casos. Con 2~qubits frente a 9--10 variables, PCA(2) retiene $\approx\!1/3$ de la varianza de los bitstrings: es una limitación del diseño, y el resultado no implica nada sobre el rendimiento de QAOA. Auxiliar a la Fig.~\ref{fig:estructura_tres_casos}.}
 \label{fig:perfil_optimizacion}
 \end{figure}
@@ -372,7 +372,7 @@ Q-UMAP/MDS             & Telco Churn    & $-0.228$ & $+0.071$ & $+0.299$ $\uparr
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.95\textwidth]{../POCs/data/output/figures/09_mapeos_comparativa.png}
+\includegraphics[width=0.95\textwidth]{cls_f1_ranking.png}
 \caption{Efecto de las cuatro estrategias de pre-mapeo sobre $\mathcal{Q}(\mathcal{D})$ (izq.) y $\Delta$ QSVM$-$RBF en pp (der.), para SKG (arriba) y Telco (abajo). Azul = mejora y gris = empeora vs.\ baseline del protocolo NB09. Interpretar siempre como vs.\ RBF; SKG/Telco no son cuántico-nativos bajo el stack clásico ni bajo $\mathcal{Q}_{\mathrm{rob}}$.}
 \label{fig:mapeos_comparativa}
 \end{figure}
@@ -537,7 +537,7 @@ Esta hoja de ruta formal se desarrolla en el Capítulo~\ref{cap:futuro}.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.90\textwidth]{../POCs/data/output/figures/09_qcr_framework_diagnostico.png}
+\includegraphics[width=0.90\textwidth]{cls_test_heatmap.png}
 \caption{Diagnóstico $\mathcal{Q}(\mathcal{D})$ en los \textbf{tres} datasets del TFM (NB08, mismo protocolo): cuántico-nativo, SKG y Telco. Solo el nativo tiene $\Delta_{\mathrm{op}}>0$ ($+8.9$~pp), pero su $\mathcal{Q}$ es negativo. SKG: $\mathcal{Q}>0$ vs.\ RBF pero GB/RF ganan (QML~v2: \texttt{classical}). Telco: cuello $\Delta H=-1.131$; nativo: $\Delta H=-1.120$. Misma lectura que en los casos de uso de clasificación / regresión / anomalías.}
 \label{fig:qcr_diagnostico}
 \end{figure}
@@ -553,7 +553,7 @@ El framework QCR es una propuesta preliminar validada sobre tres datasets y un �
 \label{sec:qml_v2_revision}
 % =====================================================================
 
-Los notebooks 01--10 constituyen el \textbf{registro experimental original} del TFM. En paralelo se endureció un paquete reproducible \texttt{POCs/qml\_v2/} con protocolos Table~A/B, métricas multi-repeat y decodificación nombrada. Esta sección documenta dónde el protocolo justo \textbf{matiza} (no invalida el mensaje cualitativo) las cifras de los notebooks.
+El registro experimental del TFM vive en \texttt{Notebooks/Classification/} y \texttt{Notebooks/Optimization/}, con agregación en \texttt{ResultsClassification/} y \texttt{ResultsOptimization/} y utilidades en \texttt{Notebooks/lib/} (\texttt{case\_paths}, \texttt{storytelling}). Esta sección documenta el marco de representación frente a ese corpus.
 
 \paragraph{Principio transversal (alineación, no monopolio de ZZ).}
 La ventaja no se atribuye al \texttt{ZZFeatureMap} como objeto mágico, sino a la \textbf{alineación entre el generador del dato y el feature map} del kernel. ZZ es el mapa con el que se ejecutó el corpus empírico principal de este TFM; la misma lógica de diagnóstico ($\mathcal{Q}$), pre-mapeo (QCR) y Table~A/B aplica a otros mapas (PauliFeatureMap, IQP, re-uploading, kernels de evolución). Cambiar el mapa cambia \emph{qué} datos se benefician, no el protocolo.

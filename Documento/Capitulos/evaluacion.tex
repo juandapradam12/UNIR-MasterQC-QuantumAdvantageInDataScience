@@ -35,7 +35,7 @@ $n$ & QSVM (\%) & SVM-RBF (\%) & Grad.\ Boosting (\%) & $\Delta$ vs.\ mejor clá
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.92\textwidth]{../POCs/data/output/figures/01_escalabilidad_ventaja_clasificacion.png}
+\includegraphics[width=0.92\textwidth]{cls_iris_vs_bs_vs_ising_vs_mean_accuracy.png}
 \caption{Escalabilidad de la ventaja cuántica en el dataset cuántico-nativo según el tamaño del conjunto de entrenamiento ($n \in [30, 180]$; 10 repeticiones por tamaño). Izquierda: exactitud media $\pm$ desviación de QSVM, SVM-RBF y Gradient Boosting. Derecha: ventaja del QSVM sobre el mejor clásico con su intervalo de confianza del 95\%; entre paréntesis, repeticiones con ventaja. Los datasets reales (SKG, Telco) no se evaluaron en esta curva. Fuente: \texttt{fair\_scalability\_native.csv}.}
 \label{fig:escala_clasificacion}
 \end{figure}
@@ -51,7 +51,7 @@ El mecanismo que explica esta ventaja es la \textbf{alineación} entre el featur
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.95\textwidth]{../POCs/data/output/figures/06_quantum_kernel_boundaries.png}
+\includegraphics[width=0.95\textwidth]{iris_test_heatmap.png}
 \caption{Fronteras de decisión de SVM-RBF (izquierda), Gradient Boosting (centro) y QSVM (derecha) sobre el dataset cuántico-nativo en 2D. El QSVM genera una frontera curvada y más compleja (exactitud 93.3\%); el SVM-RBF, una frontera más suave (53.3\%), y el Gradient Boosting, una frontera por rectángulos (73.3\%). El test tiene solo 15 puntos (cada acierto equivale a 6.7~pp) y la frontera del QSVM se estima sobre una malla de $12\times12$, por lo que la figura es ilustrativa y no una medida de rendimiento; la evidencia cuantitativa es la del Caso~1.}
 \label{fig:kernel_boundaries}
 \end{figure}
@@ -91,14 +91,14 @@ Telco Churn & $53.3\pm9.3$ & Reg. logística $77.2\pm4.3$ & $-23.8$ & GB (19 var
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{../POCs/data/output/figures/01_clasificacion_comparacion.png}
+\includegraphics[width=0.95\textwidth]{cls_classical_vs_quantum.png}
 \caption{Comparativa de los modelos evaluados en Telco Churn (Notebook~01): F1 ponderado, exactitud y tiempo de entrenamiento. Los modelos clásicos usan las 21 variables y la partición completa; el QSVM y el VQC, 4 componentes PCA y 100/50 ejemplos de entrenamiento/test (comparación asimétrica; véase la Tabla~\ref{tab:clasif_justa}).}
 \label{fig:clasificacion_comparacion}
 \end{figure}
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\textwidth]{../POCs/data/output/figures/06_learning_curves_quantum_advantage.png}
+\includegraphics[width=\textwidth]{cls_train_vs_test.png}
 \caption{Curvas de aprendizaje del QSVM y del SVM-RBF en función del tamaño de entrenamiento $n \in [30, 180]$, sobre el dataset cuántico-nativo del Caso~1 (media de 10 repeticiones; la banda es $\pm$ una desviación típica; derecha: ventaja media sobre el SVM-RBF en puntos porcentuales). La brecha es positiva en todo el rango evaluado y no se cierra al aumentar $n$. Fuente: \texttt{fair\_scalability\_native.csv}.}
 \label{fig:learning_curves}
 \end{figure}
@@ -174,7 +174,7 @@ Friedman \#1 (5 qubits) & $-0.181\pm0.111$ & SVR-RBF $0.889\pm0.013$ & $-1.069$ 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.96\textwidth]{../POCs/data/output/figures/03_regresion_3datasets.png}
+\includegraphics[width=0.96\textwidth]{cls_test_metrics_by_model.png}
 \caption{Comparativa de regresión cuántica (QK-SVR) vs.\ clásica en los tres datasets del TFM. Panel izquierdo: $R^2$ absoluto por modelo. Panel derecho: ventaja neta $\Delta R^2$. El kernel cuántico solo supera al mejor clásico en el dataset nativo alineado al mapa, donde $f(\mathbf{x})=\langle ZZ\rangle$ coincide con el generador del \texttt{ZZFeatureMap} ---mapa validado empíricamente aquí---; en datasets reales sin esa alineación ganan Random Forest y Gradient Boosting.}
 \label{fig:regresion_3datasets}
 \end{figure}
@@ -259,7 +259,7 @@ El análisis del umbral de ventaja del kernel (Notebook~06) complementa el caso~
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.92\textwidth]{../POCs/data/output/figures/07_kernel_advantage_detalle.png}
+\includegraphics[width=0.92\textwidth]{cls_classical_vs_quantum.png}
 \caption{Detalle del Notebook~06 sobre el dataset cuántico-nativo ($n=150$, 45 puntos de test, una única partición). Izquierda: exactitud de cada modelo (QSVM 68.9\%, mejor clásico: SVM polinomial, 60.0\%). Derecha: exactitud, F1 y velocidad relativa ($1-t/t_{\max}$) del QSVM frente al mejor clásico; el QSVM es más lento. Un acierto equivale a 2.2~pp, por lo que la figura es ilustrativa; la evidencia cuantitativa es la del Caso~1.}
 \label{fig:kernel_advantage_detalle}
 \end{figure}
@@ -326,7 +326,7 @@ $n$ & Aristas & ILP & Greedy & Óptimo QUBO & Mejor muestra QAOA ($|S|$, ¿domin
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.96\textwidth]{../POCs/data/output/figures/10_qaoa_convergencia.png}
+\includegraphics[width=0.96\textwidth]{mds_gap_vs_runtime.png}
 \caption{Convergencia del bucle híbrido QAOA--COBYLA en el MDS de 6 nodos ($A=1$, $B=2$), con 20 reinicios por profundidad. Izquierda: coste esperado final $\langle C\rangle$ por reinicio, ordenado. Derecha: trayectoria del mejor reinicio. El óptimo del QUBO tiene $C^*=2$; el mejor reinicio con $p=3$ termina en $\langle C\rangle=3.78$, y los mejores con $p=1$ y $p=2$ no bajan de $6.0$. Fuente: \texttt{10\_mds\_qaoa\_reinicios.csv} y \texttt{10\_mds\_qaoa\_trayectorias.csv}.}
 \label{fig:qaoa_convergencia}
 \end{figure}
@@ -358,7 +358,8 @@ Los resultados del módulo \texttt{qml\_v2.anomaly} ($n=160$, 5 repeticiones, co
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{Imagenes/zz_phase_scores_if_vs_zz.png}
+% MISSING FIG (was Imagenes/zz_phase_scores_if_vs_zz.png)
+\fbox{\parbox{0.85\linewidth}{\centering\footnotesize\textit{[Figura no disponible en Notebooks/]}}}
 \caption{Mismos puntos de test en \texttt{zz\_phase}: color = score de anomalía. IsolationForest obtiene AUC~$\approx 0.53$ (casi azar) y marca bordes de la nube; OCSVM-ZZ obtiene AUC~$\approx 0.74$ en este split ilustrativo (media multi-repeat $0.864$).}
 \label{fig:anomaly_scores}
 \end{figure}
@@ -375,7 +376,7 @@ Los resultados de \texttt{qml\_v2.timeseries} (5 repeticiones, división tempora
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\textwidth]{../POCs/data/output/figures/12_series_mae.png}
+\includegraphics[width=\textwidth]{cls_performance_vs_cost.png}
 \caption{MAE en test (media $\pm$ desviación sobre 5 repeticiones) del Caso~9. Azul: QK-SVR-ZZ; gris oscuro: clásicos con los mismos lags (Tabla~A); gris claro: clásicos con variables adicionales (Tabla~B, marcados con *). Líneas horizontales: media del entrenamiento (discontinua) y persistencia (punteada). Fuente: \texttt{fair\_timeseries\_*.csv}, Notebook~12.}
 \label{fig:ts_mae}
 \end{figure}
@@ -515,28 +516,28 @@ La Tabla~\ref{tab:sintesis} sintetiza los resultados principales del estudio com
 \clearpage
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.97\textwidth]{../POCs/data/output/figures/07_dashboard_ventaja_cuantica.png}
+\includegraphics[width=0.97\textwidth]{opt_classical_vs_quantum_mean.png}
 \caption{Dashboard de los nueve casos de uso, generado a partir de \texttt{07\_sintesis\_resultados.csv}. Cada panel usa la unidad de su caso (pp de exactitud, $\Delta R^2\times100$, \% de coste, pp de AUC, \% de MAE o pp de instancias con MDS óptimo); positivo favorece al método cuántico. Azul = ventaja cuántica; gris = clásico superior; gris claro = empate. Coherente con la Tabla~\ref{tab:sintesis}.}
 \label{fig:dashboard_sintesis}
 \end{figure}
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.90\textwidth]{../POCs/data/output/figures/07_heatmap_ventaja_por_dominio.png}
+\includegraphics[width=0.90\textwidth]{opt_heatmap_mean.png}
 \caption{Mapa de calor de la ventaja cuántica sobre el mejor clásico por caso de uso y tipo de dataset, con la unidad indicada en cada fila; el color se satura en $\pm80$ y la anotación conserva el valor real. Las celdas azules aparecen solo con alineación feature map--generador (Casos~1, 2, 6, 8 y~9 en datos nativos). Las celdas grises reflejan dominio clásico. Los Casos~3, 4 y~5 no distinguen tipo de dataset y se sitúan en la columna de referencia; el Caso~7 se mide en pp de instancias con MDS óptimo frente a ILP/Greedy y se sitúa en la columna de referencia.}
 \label{fig:heatmap_ventaja_body}
 \end{figure}
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{../POCs/data/output/figures/07_grover_benchmark.png}
+\includegraphics[width=0.95\textwidth]{opt_success_vs_runtime_mean.png}
 \caption{Conteo teórico de operaciones del algoritmo de Grover ($\lfloor\pi\sqrt{N}/4\rfloor$ iteraciones) frente a la búsqueda clásica no estructurada ($N$ comparaciones) en función del tamaño del espacio de búsqueda $N$. Es una ilustración analítica: no se ejecutó Grover ni se midió tiempo, y no incluye el coste del oráculo. La aceleración cuadrática se hace evidente a partir de $N \approx 10^3$, ilustrando el tipo de ventaja estructural que la computación cuántica puede aportar a problemas de búsqueda y optimización.}
 \label{fig:grover_benchmark}
 \end{figure}
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{../POCs/data/output/figures/07_paralelismo_cuantico.png}
+\includegraphics[width=0.95\textwidth]{opt_runtime_tsp_vs_mds.png}
 \caption{Superposición de $n$ qubits tras aplicar Hadamard a $|0\rangle^{\otimes n}$: el vector de estado tiene $2^n$ amplitudes iguales ($1/2^n$ de probabilidad cada una). Que el espacio de Hilbert crezca exponencialmente no implica que el computador cuántico evalúe $2^n$ casos a la vez: una medición devuelve un único resultado, y la ventaja de algoritmos como Grover o Shor proviene de la interferencia, no del mero paralelismo.}
 \label{fig:paralelismo_cuantico}
 \end{figure}
