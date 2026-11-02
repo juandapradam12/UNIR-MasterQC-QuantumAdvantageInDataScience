@@ -323,30 +323,70 @@ Evaluar de forma empírica si los algoritmos cuánticos NISQ ofrecen ventaja med
 % =====================================================================
 \section{Resultados y análisis}
 % =====================================================================
-\begin{frame}{Protocolo común}
+\begin{frame}{Protocolo común en clasificación}
 \centering
-\begin{tikzpicture}[font=\footnotesize, thick,
-  box/.style={draw=unirnavy, fill=unirazul!10, rounded corners=3pt, align=center, inner sep=5pt, minimum height=0.95cm},
-  cl/.style={draw=unirgris, fill=unirclaro!30, rounded corners=3pt, align=center, inner sep=5pt, minimum height=0.95cm, text width=3.3cm},
-  qu/.style={draw=unirazul, fill=unirazul!20, rounded corners=3pt, align=center, inner sep=5pt, minimum height=0.95cm, text width=3.3cm},
-  arr/.style={->, unirnavy, line width=1.1pt}]
-  \node[box] (d) at (0,0) {Iris · BS · Ising};
-  \node[box, right=0.8cm of d] (p) {split 60/40,\\ PCA a 4 si $d>4$,\\ MinMax $[0,\pi]$};
-  \node[cl, right=0.8cm of p, yshift=0.65cm] (c) {SVM · RF · XGBoost};
-  \node[qu, right=0.8cm of p, yshift=-0.65cm] (q) {QSVM · QNN · VQC};
-  \node[box, right=0.8cm of p, xshift=4.3cm] (m) {F1, AUC, gap,\\ $t_{\mathrm{train}}$, $t_{\mathrm{pred}}$};
-  \draw[arr] (d) -- (p); \draw[arr] (p.east) -- (c.west); \draw[arr] (p.east) -- (q.west);
-  \draw[arr] (c.east) -- (m.west); \draw[arr] (q.east) -- (m.west);
+\begin{tikzpicture}[scale=0.84, transform shape, font=\footnotesize, thick, >=Stealth,
+  box/.style={draw=unirnavy, fill=unirazul!10, rounded corners=3pt,
+              align=center, inner sep=3.5pt, minimum height=0.9cm},
+  qbox/.style={draw=unirnavy, fill=unirclaro!40, rounded corners=3pt,
+               align=center, inner sep=3.5pt, minimum height=0.9cm},
+  cbox/.style={draw=unirgris, fill=unirgris!15, rounded corners=3pt,
+               align=center, inner sep=3.5pt, minimum height=0.9cm}]
+  \node[box, minimum width=1.7cm] (d) at (0.0, 0) {Dato\\crudo};
+  \node[box, minimum width=2.0cm] (s) at (2.3, 0) {Split\\$40\%$ test};
+  \node[box, minimum width=2.0cm] (p) at (4.7, 0) {PCA$\to$4\\si $d>4$};
+  \node[box, minimum width=2.0cm] (m) at (7.1, 0) {MinMax\\$[0,\pi]$};
+  \node[box, minimum width=1.9cm] (x) at (9.4, 0) {$X$ listo};
+  \draw[->, unirnavy] (d) -- (s);
+  \draw[->, unirnavy] (s) -- (p);
+  \draw[->, unirnavy] (p) -- (m);
+  \draw[->, unirnavy] (m) -- (x);
+  \draw[decorate, decoration={brace, amplitude=4pt, mirror}, unirnavy]
+    ([yshift=-1pt]d.south west) -- ([yshift=-1pt]m.south east)
+    node[midway, below=6pt, font=\footnotesize\bfseries, text=unirnavy]
+      {Mismo preproceso para C y Q};
 
-  \node[box] (d2) at (0,-2.6) {TSP · MDS · MaxCut};
-  \node[box, right=0.8cm of d2] (p2) {QUBO / Ising\\ común};
-  \node[cl, right=0.8cm of p2, yshift=0.65cm, xshift=0.35cm] (c2) {Fuerza bruta · greedy · ILP · SA};
-  \node[qu, right=0.8cm of p2, yshift=-0.65cm, xshift=0.35cm] (q2) {QAOA · VQE};
-  \node[box, right=0.8cm of p2, xshift=4.65cm] (m2) {éxito, gap a $C^\star$,\\ tiempo};
-  \draw[arr] (d2) -- (p2); \draw[arr] (p2.east) -- (c2.west); \draw[arr] (p2.east) -- (q2.west);
-  \draw[arr] (c2.east) -- (m2.west); \draw[arr] (q2.east) -- (m2.west);
+  \coordinate (fork) at (9.4, -1.6);
+  \draw[->, unirnavy] (x.south) -- (fork);
+
+  \node[cbox, minimum width=3.6cm] (c) at (3.9, -2.75)
+    {\textbf{Rama clásica}\\[-1pt]{\scriptsize SVM · Random Forest · XGBoost}};
+  \draw[->, unirgris!85!black] (fork) -| node[pos=0.25, below, font=\scriptsize, text=unirgris] {fit directo} (c.north);
+
+  \node[qbox, minimum width=2.8cm] (emb) at (9.4, -2.75)
+    {\textbf{Embedding}\\[-1pt]{\scriptsize ZZ / angle / $R_Y$}};
+  \node[qbox, minimum width=2.8cm] (hil) at (12.5, -2.75)
+    {Hilbert\\[-1pt]{\scriptsize $\lvert\phi(x)\rangle$}};
+  \node[qbox, minimum width=3.6cm] (q) at (10.95, -4.15)
+    {\textbf{Rama cuántica}\\[-1pt]{\scriptsize QSVM · QNN · VQC}};
+  \draw[->, unirnavy] (fork) -- (emb.north);
+  \draw[->, unirnavy] (emb) -- (hil);
+  \draw[->, unirnavy] (hil.south) -- ++(0,-0.25) -| (q.north);
+
+  \node[box, minimum width=6.4cm] (met) at (7.3, -5.55)
+    {\textbf{Comparación}\\[-1pt]{\scriptsize Acc, F1, AUC \quad|\quad $t_{\mathrm{train}}$, $t_{\mathrm{pred}}$}};
+  \draw[->, unirgris!85!black] (c.south) -- ++(0,-0.4) -| ([xshift=-1.6cm]met.north);
+  \draw[->, unirnavy] (q.south) -- ++(0,-0.2) -| ([xshift=1.6cm]met.north);
 \end{tikzpicture}
-\mensaje{Simulación de estado sobre CPU: 4 qubits en clasificación, hasta 6 en optimización}
+\mensaje{El mismo $X$ alimenta a los seis modelos; la rama cuántica añade el embedding en 4 qubits}
+\end{frame}
+
+\begin{frame}{Protocolo común en optimización}
+\centering
+\vspace*{1.2cm}
+\begin{tikzpicture}[font=\small, thick, >=Stealth,
+  box/.style={draw=unirnavy, fill=unirazul!10, rounded corners=3pt, align=center, inner sep=6pt, minimum height=1.1cm}]
+  \node[box] (p) {Problema\\combinatorio};
+  \node[box, right=1.2cm of p] (q) {QUBO / Ising\\$H_C$};
+  \node[box, right=1.2cm of q] (c) {Solvers C\\BF, greedy, ILP, SA};
+  \node[box, below=1.1cm of q] (h) {Circuito\\QAOA / VQE};
+  \node[box, right=1.2cm of c] (m) {Gap, éxito,\\tiempo};
+  \draw[->,unirnavy] (p)--(q);
+  \draw[->,unirnavy] (q)--(c)--(m);
+  \draw[->,unirnavy] (q)--(h);
+  \draw[->,unirnavy] (h.east) -| (m.south);
+\end{tikzpicture}
+\mensaje{SA, QAOA y VQE minimizan el mismo $H_C$; simulación de estado con hasta 6 qubits}
 \end{frame}
 
 \begin{frame}{Clasificación: el cuántico solo empata en Ising}
