@@ -1,566 +1,630 @@
 % !TEX root = ../main.tex
 \chapter{Resultados y análisis}\label{cap:evaluacion}
 
-Este capítulo presenta el análisis cuantitativo y cualitativo de los resultados obtenidos en cada caso de uso, discute las diferencias de rendimiento entre algoritmos cuánticos y clásicos a la luz del estado del arte, y evalúa las implicaciones prácticas para su aplicación en el contexto operativo de SKG Tecnología. Para cada caso se identifican explícitamente las condiciones bajo las que se observa ventaja cuántica, las limitaciones que explican los resultados negativos, y las perspectivas de mejora a medida que el hardware cuántico avance.
+Este capítulo lee el corpus con la estructura del ciclo de modelado: dos familias, un apartado por dataset o instancia, y un apartado por implementación. Las métricas son las de las Tablas~\ref{tab:metricas_clasif} y~\ref{tab:metricas_opt}. Cada implementación se mira por tres lados: la tabla (calidad y latencia), la figura que enseña la decisión o la solución, y la técnica que produce esa decisión \citep{bowles2024, lubinski2024}. El VQC de este protocolo no exporta scores, así que su AUC queda en blanco.
 
-% =====================================================================
-\section{Caso de uso 1: Clasificación supervisada}
-% =====================================================================
+\section{Clasificación}
 
-\subsection{Dataset cuántico-nativo: ventaja por construcción}
+La media sobre modelos y sobre Iris, Bars and Stripes e Ising deja a la familia clásica por encima en accuracy, F1 y AUC (Figura~\ref{fig:cls_cq}). Esa media aplana tres geometrías distintas. El coste de entrenamiento (Figura~\ref{fig:cls_coste}) separa el SVM, que concentra F1 alto y tiempo bajo, del VQC, cuyo F1 medio no compensa decenas de segundos de circuito simulado \citep{cerezo2021}.
 
-Los resultados sobre el dataset con estructura cuántica explícita constituyen la evidencia empírica más clara del estudio, aunque obtenida sobre datos alineados con el kernel por construcción. El QSVM alcanzó una exactitud del \textbf{91.7\%}, frente al 53.3\% del mejor clasificador clásico (SVM polinomial de grado 3; SVM-RBF: 46.7\%, Gradient Boosting: 51.7\%, SVM lineal: 45.0\%), lo que supone una \textbf{ventaja de +38.3 puntos porcentuales (pp)}. Este resultado es el esperado por construcción, y coherente con la idea de \cite{liu2021} y \cite{huang2021} de que la ventaja exige un kernel alineado con las etiquetas: cuando estas se definen mediante una función cuántica, el kernel cuántico las aprende con alta precisión mientras que los clasificadores clásicos probados (RBF, polinomial, lineal y Gradient Boosting) quedan cerca del azar.
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.88\textwidth]{cls_classical_vs_quantum.png}
+\caption{Media de la familia clásica y de la cuántica sobre Iris, Bars and Stripes e Ising. El AUC cuántico no incluye el VQC, que no produce scores.}
+\label{fig:cls_cq}
+\end{figure}
 
-El análisis de escalabilidad (Tabla~\ref{tab:escala_clasificacion}) repite el experimento 10 veces por tamaño (\texttt{python -m qml\_v2.scalability}): en cada repetición se regenera el dataset con una semilla distinta, se reserva el 30\% como test y se entrena con los primeros $n$ ejemplos. La ventaja del QSVM sobre el mejor clásico (SVM-RBF o Gradient Boosting) es positiva en las 10 repeticiones de los seis tamaños $n \in [30, 180]$, con una media de \textbf{+33.2 pp} (de $+27.1$~pp para $n=30$ a $+37.6$~pp para $n=180$) y un intervalo de confianza del 95\% que no incluye el cero en ningún tamaño (límite inferior mínimo: $+22.1$~pp). La exactitud del QSVM crece con $n$ ($79.6\%$ a $92.6\%$), mientras que los clásicos permanecen cerca del azar. La partición única del Notebook~01 (media $+40.9$~pp, máximo $+48.9$~pp para $n=50$) cae por encima de este rango y debe leerse como una realización optimista.
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{cls_performance_vs_cost.png}
+\caption{F1 medio de test frente al tiempo de entrenamiento (escala logarítmica). El SVM ocupa la esquina de alta calidad y bajo coste; QNN y VQC pagan el bucle variacional.}
+\label{fig:cls_coste}
+\end{figure}
 
-\begin{table}[ht]
+\subsection{Iris}
+
+Iris entra con $d=4$, sin PCA en el modelo. La proyección a dos componentes solo sirve para ver la frontera. Setosa queda aislada; las otras dos clases se solapan. La Tabla~\ref{tab:res_iris} y la Figura~\ref{fig:iris_f1} ordenan los seis clasificadores.
+
+\begin{table}[!htbp]
 \centering
 \small
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{rccccc}
-\hline
-$n$ & QSVM (\%) & SVM-RBF (\%) & Grad.\ Boosting (\%) & $\Delta$ vs.\ mejor clásico (pp) [IC 95\%] & Rep.\ con ventaja \\
-\hline
-30 & $79.6\pm5.9$ & $51.0\pm4.9$ & $49.0\pm5.2$ & $+27.1$ [$+22.1$, $+32.2$] & 10/10 \\
-50 & $87.1\pm5.1$ & $49.9\pm4.2$ & $53.1\pm5.6$ & $+32.9$ [$+27.7$, $+38.1$] & 10/10 \\
-80 & $88.4\pm2.5$ & $48.6\pm5.8$ & $55.0\pm6.2$ & $+32.9$ [$+27.9$, $+37.9$] & 10/10 \\
-100 & $89.6\pm4.2$ & $48.7\pm4.8$ & $55.8\pm7.5$ & $+33.8$ [$+27.3$, $+40.2$] & 10/10 \\
-140 & $90.0\pm3.1$ & $50.9\pm3.9$ & $54.7\pm4.3$ & $+35.1$ [$+32.2$, $+38.0$] & 10/10 \\
-180 & $92.6\pm2.6$ & $49.0\pm3.6$ & $55.0\pm6.2$ & $+37.6$ [$+33.4$, $+41.7$] & 10/10 \\
-\hline
-\end{tabular}}
-\caption{Escalabilidad de la ventaja cuántica en clasificación (dataset cuántico-nativo, ZZFeatureMap de 2 qubits): media $\pm$ desviación sobre 10 repeticiones y 90 ejemplos de test por repetición. El $\Delta$ se calcula en cada repetición frente al mejor de los dos clásicos; el IC es de 95\% (t de Student). Fuente: \texttt{fair\_scalability\_native.csv}.}
-\label{tab:escala_clasificacion}
-\end{table}
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=0.92\textwidth]{cls_iris_vs_bs_vs_ising_vs_mean_accuracy.png}
-\caption{Escalabilidad de la ventaja cuántica en el dataset cuántico-nativo según el tamaño del conjunto de entrenamiento ($n \in [30, 180]$; 10 repeticiones por tamaño). Izquierda: exactitud media $\pm$ desviación de QSVM, SVM-RBF y Gradient Boosting. Derecha: ventaja del QSVM sobre el mejor clásico con su intervalo de confianza del 95\%; entre paréntesis, repeticiones con ventaja. Los datasets reales (SKG, Telco) no se evaluaron en esta curva. Fuente: \texttt{fair\_scalability\_native.csv}.}
-\label{fig:escala_clasificacion}
-\end{figure}
-
-El mecanismo que explica esta ventaja es la \textbf{alineación} entre el feature map y el generador de etiquetas: en este experimento ambas son el mismo \texttt{ZZFeatureMap} (mapa empíricamente validado en el TFM), de modo que el kernel minimiza el riesgo empírico en el \textbf{espacio de representación} correcto ---el espacio de Hilbert $\mathcal{H}$ inducido por $\phi\colon\mathbb{R}^2\rightarrow\mathcal{H}$---. La lección no es ``ZZ gana'', sino ``el mapa alineado gana''. Los clasificadores clásicos operan en $\mathbb{R}^2$ y no acceden a ese espacio de Hilbert sin coste exponencial.
-
-\paragraph{Limitaciones que condicionan la interpretación.}
-\begin{itemize}
-  \item El dataset es artificial: está diseñado a medida para el kernel cuántico. La ventaja observada es una cota superior del rendimiento cuántico en condiciones ideales.
-  \item La simulación exacta sin ruido es optimista respecto al hardware NISQ real; la decoherencia reduciría la fidelidad del kernel y, por tanto, la ventaja.
-  \item El kernel exige $O(n^2)$ evaluaciones de fidelidad; con 2 qubits la simulación exacta es inmediata, pero en hardware, con la fidelidad estimada por muestreo y más qubits, ese coste limita la escala.
-\end{itemize}
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=0.95\textwidth]{iris_test_heatmap.png}
-\caption{Fronteras de decisión de SVM-RBF (izquierda), Gradient Boosting (centro) y QSVM (derecha) sobre el dataset cuántico-nativo en 2D. El QSVM genera una frontera curvada y más compleja (exactitud 93.3\%); el SVM-RBF, una frontera más suave (53.3\%), y el Gradient Boosting, una frontera por rectángulos (73.3\%). El test tiene solo 15 puntos (cada acierto equivale a 6.7~pp) y la frontera del QSVM se estima sobre una malla de $12\times12$, por lo que la figura es ilustrativa y no una medida de rendimiento; la evidencia cuantitativa es la del Caso~1.}
-\label{fig:kernel_boundaries}
-\end{figure}
-
-\subsection{Dataset SKG Tecnología: resultado esperado en era NISQ}
-
-Sobre el dataset real de incidentes de movilidad de Bogotá, el QSVM obtuvo exactitud del \textbf{55.0\%}, inferior al \textbf{59.5\%} del mejor clasificador clásico (SVM-RBF): \textbf{desventaja de $-$4.5 pp}. Este resultado es el esperado en la era NISQ con datos reales: los incidentes de movilidad no presentan la estructura cuántica que el kernel explota.
-
-Cabe destacar que ningún modelo ---cuántico ni clásico--- superó el 80\% de exactitud sobre este dataset, lo que indica que la limitación no es del algoritmo sino de las features disponibles. La reducción a 2 dimensiones mediante PCA (varianza explicada: 84.6\%) implica una pérdida del 15.4\% de la información discriminativa. Un kernel cuántico de 4--6 qubits podría operar sobre más features sin esta pérdida, acortando potencialmente la brecha.
-
-\paragraph{Implicaciones para SKG.}
-La pequeña brecha de rendimiento ($-$4.5 pp) sugiere que el QSVM no es inferior en un orden de magnitud a los clásicos en este dominio, lo que lo convierte en un candidato técnicamente viable para evaluación en hardware cuántico real de generaciones futuras con mayor número de qubits lógicos.
-
-\subsection{Dataset Telco Churn: caso control validado}
-
-Sobre el dataset de referencia, el QSVM obtuvo un \textbf{76.0\%} de exactitud frente al \textbf{79.8\%} del Gradient Boosting: \textbf{desventaja de $-$3.8 pp}. Esta comparación del Notebook~01 es \textbf{asimétrica}, y conviene leerla como una cota optimista para el QSVM: los clasificadores clásicos usan las 21 variables, 5\,634 ejemplos de entrenamiento y los 1\,409 de test, mientras que el QSVM usa 4 componentes PCA (48.5\% de la varianza), 100 ejemplos de entrenamiento y solo 50 de test, de modo que cada acierto equivale a 2 pp. Por eso la cifra de $-3.8$~pp no es una medida homogénea de la brecha.
-
-El protocolo justo de \texttt{qml\_v2} (Tabla~\ref{tab:clasif_justa}) corrige esa asimetría: mismas particiones, mismo número de ejemplos y, en la tabla~A, las mismas variables para todos los modelos, con 10 repeticiones. En Telco el QSVM queda en $53.3\pm9.3\%$ frente al $77.2\pm4.3\%$ de la regresión logística ($-23.8$~pp), y a $26.2$~pp del Gradient Boosting con todas las variables. Esto confirma, con mayor margen, que en ausencia de estructura cuántica los clasificadores clásicos son superiores: el QSVM no gana por defecto, sino solo cuando existe la alineación entre mapa y datos que la teoría sugiere.
-
-\begin{table}[ht]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lccccc}
+\begin{tabular}{lrrrrrr}
 \toprule
-\textbf{Dataset} & \textbf{QSVM-ZZ} & \textbf{Mejor clásico (A)} & \textbf{$\Delta$ (A)} & \textbf{Mejor clásico (B)} & \textbf{$\Delta$ (B)} \\
+\textbf{Modelo} & \textbf{Acc} & \textbf{F1} & \textbf{AUC} & \textbf{Gap} & $t_{\mathrm{train}}$ (s) & $t_{\mathrm{inf}}$ (s) \\
 \midrule
-Cuántico-nativo & $88.8\pm5.8$ & GB $52.3\pm6.0$ & $+36.5$ & --- & --- \\
-SKG Incidentes & $49.5\pm7.0$ & GB $52.7\pm5.7$ & $-3.2$ & SVM lineal (7 var.) $56.2\pm5.3$ & $-6.7$ \\
-Telco Churn & $53.3\pm9.3$ & Reg. logística $77.2\pm4.3$ & $-23.8$ & GB (19 var.) $79.5\pm2.9$ & $-26.2$ \\
+SVM (RBF) & 0.967 & 0.967 & 0.998 & 0.011 & 0.002 & 0.0003 \\
+Random Forest & 0.950 & 0.950 & 0.991 & 0.050 & 0.046 & 0.004 \\
+XGBoost & 0.950 & 0.950 & 0.983 & 0.050 & 0.150 & 0.001 \\
+QSVM & 0.733 & 0.730 & 0.883 & 0.233 & 0.072 & 0.101 \\
+QNN & 0.933 & 0.933 & 0.975 & 0.022 & 1.070 & 0.006 \\
+VQC & 0.950 & 0.950 & --- & $-0.006$ & 49.209 & 0.154 \\
 \bottomrule
 \end{tabular}}
-\caption{Protocolo justo de clasificación (\texttt{qml\_v2.classification}); GB = Gradient Boosting. Exactitud en test (\%, media $\pm$ desviación sobre 10 repeticiones; 140 ejemplos de entrenamiento y 60 de test). A: todos los modelos con las mismas 2 variables que el QSVM. B: clásicos con todas las variables originales. $\Delta$ en puntos porcentuales respecto al QSVM. Fuente: \texttt{fair\_classification\_all.csv}.}
-\label{tab:clasif_justa}
+\caption{Iris, conjunto de test. Gap $= \mathrm{Acc}_{\mathrm{train}}-\mathrm{Acc}_{\mathrm{test}}$.}
+\label{tab:res_iris}
 \end{table}
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{cls_classical_vs_quantum.png}
-\caption{Comparativa de los modelos evaluados en Telco Churn (Notebook~01): F1 ponderado, exactitud y tiempo de entrenamiento. Los modelos clásicos usan las 21 variables y la partición completa; el QSVM y el VQC, 4 componentes PCA y 100/50 ejemplos de entrenamiento/test (comparación asimétrica; véase la Tabla~\ref{tab:clasif_justa}).}
-\label{fig:clasificacion_comparacion}
+\includegraphics[width=0.72\textwidth]{iris_f1_ranking.png}
+\caption{Ranking de F1 en Iris. El SVM encabeza la lista; el QSVM es el único que cae de forma clara.}
+\label{fig:iris_f1}
 \end{figure}
+
+\subsubsection{SVM}
+
+El kernel RBF corta el plano en tres bandas suaves (Figura~\ref{fig:iris_svm}). Setosa queda a un lado; el solape de las otras dos clases deja dos errores de test. F1 $0.967$, AUC $0.998$ y un gap de $0.011$ dicen que el margen generaliza. El ajuste cabe en $2\,\mathrm{ms}$. En este dataset el kernel clásico ya está alineado con la geometría: más capacidad no compra accuracy.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\textwidth]{cls_train_vs_test.png}
-\caption{Curvas de aprendizaje del QSVM y del SVM-RBF en función del tamaño de entrenamiento $n \in [30, 180]$, sobre el dataset cuántico-nativo del Caso~1 (media de 10 repeticiones; la banda es $\pm$ una desviación típica; derecha: ventaja media sobre el SVM-RBF en puntos porcentuales). La brecha es positiva en todo el rango evaluado y no se cierra al aumentar $n$. Fuente: \texttt{fair\_scalability\_native.csv}.}
-\label{fig:learning_curves}
+\includegraphics[width=0.72\textwidth]{svm_iris_pca_boundary.png}
+\caption{Frontera del SVM en las dos primeras componentes de Iris. Los círculos marcan errores de test, concentrados en el solape de las dos clases no separables.}
+\label{fig:iris_svm}
 \end{figure}
 
-% =====================================================================
-\section{Caso de uso 2: Regresión con kernel cuántico}
-% =====================================================================
+\subsubsection{Random Forest}
 
-Los resultados de regresión son mayoritariamente negativos para el kernel cuántico: solo el dataset construido con el propio mapa de características muestra una diferencia a su favor, que es por construcción. La Tabla~\ref{tab:regresion_3ds} resume los resultados del Notebook~03 (una partición) y la Tabla~\ref{tab:regresion_justa}, los del protocolo justo de \texttt{qml\_v2} (10 repeticiones, mismas particiones y variables).
+El bosque iguala el F1 de XGBoost ($0.950$) con AUC $0.991$. El gap sube a $0.050$: algunos árboles memorizan el solape. La frontera (Figura~\ref{fig:iris_rf}) es una partición por ejes, más quebrada que la del RBF, suficiente para setosa y menos estable en la frontera de las otras dos clases. El coste sigue siendo de centésimas de segundo. Como técnica, el bagging reduce varianza, pero con $150$ muestras y tres clases el promedio de árboles no supera un kernel liso.
 
-\begin{table}[ht]
+\begin{figure}[!htbp]
 \centering
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lcccc}
-\hline
-\textbf{Dataset} & \textbf{QK-SVR ($R^2$)} & \textbf{Mejor clásico ($R^2$)} & \textbf{$\Delta R^2$} & \textbf{Resultado} \\
-\hline
-Cuántico-nativo  & $+0.985$  & $+0.020$ (SVR-Poly)  & $\mathbf{+0.965}$ & \textbf{Ventaja (por construcción)} \\
-SKG Corredores   & $+0.098$  & $+0.660$ (GradBoost) & $-0.562$ & Desventaja \\
-Friedman \#1     & $-0.151$  & $+0.777$ (XGBoost)   & $-0.928$ & Desventaja \\
-\hline
-\end{tabular}}
-\caption{Comparativa de regresión cuántica vs clásica en los tres datasets. El mejor clásico incluye XGBoost, Random Forest, SVR-RBF y Ridge.}
-\label{tab:regresion_3ds}
-\end{table}
+\includegraphics[width=0.72\textwidth]{rf_iris_pca_boundary.png}
+\caption{Frontera del Random Forest en Iris. La partición es local; el gap de $0.050$ aparece donde las dos clases solapadas cambian de hoja.}
+\label{fig:iris_rf}
+\end{figure}
 
-\subsection{Dataset cuántico-nativo: ventaja por construcción}
+\subsubsection{XGBoost}
 
-El dataset cuántico-nativo de regresión se genera con $y(\mathbf{x})=\langle ZZ\rangle$ evaluado sobre el estado preparado por el propio \texttt{ZZFeatureMap} (2 qubits, 200 muestras, $\mathbf{x}\in[-\pi,\pi]^2$). El QK-SVR obtuvo $R^2=0.985$ frente a $R^2=0.020$ del mejor clásico (SVR-Poly), una diferencia de $\Delta R^2=+0.965$: el kernel cuántico reproduce casi exactamente la función objetivo porque esta es lineal en su espacio de características, mientras que ninguno de los modelos clásicos supera el nivel de una predicción constante ($R^2\approx0$). El protocolo justo confirma el resultado con 10 repeticiones ($R^2=0.986\pm0.002$ frente a $-0.016\pm0.139$ de Random Forest; $\Delta R^2=+1.002$). Como en clasificación, esta ventaja es \textbf{por construcción}: el objetivo se genera con el mismo mapa que usa el kernel, y no demuestra ventaja sobre datos reales.
+Mismas cifras de calidad que el bosque (F1 $0.950$, gap $0.050$) y AUC algo menor ($0.983$). El entrenamiento, $0.150\,\mathrm{s}$, es el más lento de los clásicos porque el boosting encadena árboles. La Figura~\ref{fig:iris_xgb} muestra una frontera por umbrales, del mismo tipo que el bosque. En Iris el gradiente boosting no explota interacciones que el RBF no cubra ya: el dato es pequeño y casi linealmente separable en la primera clase.
 
-\paragraph{Limitaciones.}
-\begin{itemize}
-  \item Los hiperparámetros no se ajustan de forma homogénea entre datasets en el Notebook~03. En el dataset nativo, el QK-SVR usa $C=10$, $\varepsilon=0.1$ y los SVR clásicos sus valores por defecto ($C=1$). En Friedman~\#1, $C$ y $\varepsilon$ del QK-SVR se eligen en una malla de 9 combinaciones ($C\in\{10,50,100\}$, $\varepsilon\in\{0.5,1,2\}$) maximizando el $R^2$ \emph{sobre el propio conjunto de test}, lo que favorece al modelo cuántico (y aun así pierde); los clásicos usan sus valores por defecto. En SKG, el QK-SVR usa $C=10$, $\varepsilon=0.05$ con el objetivo reescalado a $[0,1]$ y el SVR-RBF clásico $C=10$, $\varepsilon=0.5$. En el protocolo justo todos los SVR usan $C=10$, $\varepsilon=0.1$, por lo que una búsqueda más amplia sobre $C$ y $\varepsilon$ podría modificar el $R^2$ de los clásicos.
-  \item El Notebook~03 usa una única partición (140 entrenamientos, 60 de test) y no ofrece intervalo de confianza; la repetición del protocolo justo sí lo hace (desviación $0.002$ del QK-SVR).
-\end{itemize}
-
-\subsection{Dataset SKG Tecnología: limitaciones estructurales}
-
-El QK-SVR obtuvo $R^2 = 0.098$ (RMSE = 11.04 km/h) frente al $R^2 = 0.660$ del Gradient Boosting (RMSE = 7.25 km/h): \textbf{desventaja de $\Delta R^2 = -0.562$}. La magnitud de esta brecha se explica por tres factores concurrentes:
-
-\begin{enumerate}
-  \item \textbf{Pérdida de información por PCA}: La varianza explicada por 2 componentes es del 68.6\%, lo que significa que el 31.4\% de la varianza de las features originales ---incluyendo patrones temporales y de nivel de servicio--- no está disponible para el QK-SVR.
-  \item \textbf{Desperdicio de datos}: El QK-SVR se entrena con 150 observaciones frente a las 64\,896 (80\% de 81\,121) de los clásicos, es decir, el 0.23\% de sus datos de entrenamiento. Esta asimetría hace la comparación inherentemente desigual.
-  \item \textbf{Estructura del problema}: La correlación entre \texttt{levelofservice} y \texttt{speed} es cuasi-determinista en los datos de SKG (verde $\approx$ rápido, rojo $\approx$ lento), una relación que los árboles de decisión capturan con una sola partición, sin necesidad de un kernel cuántico.
-\end{enumerate}
-
-\subsection{Dataset Friedman \#1: ventaja clásica}
-
-Sobre el benchmark sintético Friedman~\#1 \citep{friedman1991}, con $y=10\sin(\pi x_1x_2)+20(x_3-0.5)^2+10x_4+5x_5+\varepsilon$, el QK-SVR obtuvo $R^2=-0.151$ frente a $R^2=0.777$ de XGBoost (también superan al kernel cuántico la regresión lineal, $0.641$, y Random Forest, $0.704$): $\Delta R^2=-0.928$. Aunque el término $\sin(\pi x_1x_2)$ recuerda a la interacción $x_ix_j$ codificada por las puertas $ZZ$, el kernel cuántico, con 5 qubits (uno por variable) en el Notebook~03 y con 2 componentes PCA en el protocolo justo, no lo aprovecha. Friedman~\#1 no es un problema de ventaja cuántica: es una referencia clásica en la que los métodos de árboles dominan.
-
-\subsection{Protocolo justo de regresión}
-
-Como en el Caso~1, las comparaciones del Notebook~03 no son homogéneas, aunque la asimetría es distinta en cada dataset. En \textbf{Friedman~\#1} (300 muestras: 210 de entrenamiento y 90 de test) el QK-SVR usa las 5 variables (5 qubits) pero solo 150 de las 210 muestras de entrenamiento y las primeras 60 de test; los clásicos se entrenan con las 210, aunque en la tabla se evalúan sobre esas mismas 60 muestras de test. La ventaja clásica no se explica por falta de variables, solo en parte por los 60 ejemplos de entrenamiento adicionales. En \textbf{SKG} la asimetría es mucho mayor: el QK-SVR usa 2 componentes PCA de 4 variables (68.6\% de la varianza), 150 muestras de entrenamiento y 80 de test, mientras que los clásicos usan las 4 variables, 64\,896 muestras de entrenamiento y 16\,225 de test, de modo que sus $R^2$ no están medidos sobre los mismos puntos. El protocolo \texttt{qml\_v2.regression} las homogeneiza (Tabla~\ref{tab:regresion_justa}): mismas particiones (140/60), 10 repeticiones y, en la tabla~A, las mismas variables para todos los modelos. El patrón se mantiene y se acentúa: el QK-SVR gana solo en el dataset nativo ($\Delta R^2=+1.002$) y pierde en SKG ($-0.150$ frente a Ridge con las mismas 2 variables; $-0.227$ frente a SVR-RBF con las 3 originales) y en Friedman~\#1 ($-0.657$ con 2 componentes; $-1.069$ con las 5 variables y 5 qubits). En SKG ningún modelo supera $R^2=0.11$ con estos 140 ejemplos, por lo que la brecha es pequeña en términos absolutos; los valores del Notebook~03 en SKG ($0.098$ frente a $0.660$) reflejan sobre todo la diferencia de datos de entrenamiento, no una limitación del kernel por sí sola.
-
-\begin{table}[ht]
+\begin{figure}[!htbp]
 \centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
+\includegraphics[width=0.72\textwidth]{xgb_iris_pca_boundary.png}
+\caption{Frontera de XGBoost en Iris. La calidad empata con el bosque; el tiempo de ajuste es el mayor de la rama clásica.}
+\label{fig:iris_xgb}
+\end{figure}
+
+\subsubsection{QSVM}
+
+El mapa ZZ con kernel de fidelidad es el peor modelo del dataset: F1 $0.730$, AUC $0.883$, gap $0.233$. La Figura~\ref{fig:iris_qsvm} muestra por qué. La frontera en el plano principal está fragmentada: islas de clase dentro de regiones que el RBF deja homogéneas, y errores repartidos también en la clase que el SVM separa de un corte. El producto $Z_iZ_j$ induce un kernel sensible a correlaciones de ángulo, y el generador de etiquetas de Iris no tiene esa forma \citep{havlicek2019, huang2021}. El AUC, todavía alto respecto del accuracy, indica que el orden de los scores es más útil que el umbral duro. La inferencia ($0.101\,\mathrm{s}$) cuesta más que el ajuste: cada punto de test exige fidelidades contra el conjunto de soporte, en simulación de estado.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{qsvm_iris_pca_boundary.png}
+\caption{Frontera del QSVM (mapa ZZ) en Iris. El kernel fragmenta el plano; los errores no se concentran solo en el solape.}
+\label{fig:iris_qsvm}
+\end{figure}
+
+\subsubsection{QNN}
+
+Angle embedding, capas entrelazadas y una cabeza lineal recuperan F1 $0.933$ y AUC $0.975$, a $0.033$ del SVM, con gap $0.022$. La cabeza clásica lee $\langle Z_i\rangle$ y puede suavizar una codificación angular que, por sí sola, es un producto de rotaciones. El precio está en el entrenamiento ($1.07\,\mathrm{s}$): cada época evalúa el circuito. La inferencia baja a $0.006\,\mathrm{s}$ porque la cabeza ya está ajustada. La Figura~\ref{fig:iris_qnn} muestra una frontera más continua que la del QSVM. La técnica híbrida acerca el modelo cuántico al clásico cuando el mapa no está alineado; no lo adelanta.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{qnn_iris_pca_boundary.png}
+\caption{Frontera de la QNN en Iris. La cabeza lineal sobre $\langle Z_i\rangle$ produce regiones más compactas que el kernel ZZ.}
+\label{fig:iris_qnn}
+\end{figure}
+
+\subsubsection{VQC}
+
+Preparación $R_Y(x_i)$ y ansatz \texttt{Rot}+CNOT, optimizado con Nesterov, alcanzan el mismo F1 que el bosque y que XGBoost ($0.950$). El gap es ligeramente negativo ($-0.006$): el test no queda por debajo del train. La Figura~\ref{fig:iris_vqc} es una frontera variacional sobre el mismo plano. Lo que separa al VQC del SVM es el coste: $49.2\,\mathrm{s}$ de entrenamiento y $0.154\,\mathrm{s}$ de inferencia, porque cada predicción vuelve a ejecutar el circuito. Con $n=4$ y un dato que un RBF resuelve en milisegundos, el circuito variacional reproduce la calidad clásica intermedia y multiplica el tiempo \citep{cerezo2021, bowles2024}.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{vqc_iris_pca_boundary.png}
+\caption{Frontera del VQC en Iris. La calidad empata con los árboles; el tiempo de entrenamiento es dos órdenes por encima del SVM.}
+\label{fig:iris_vqc}
+\end{figure}
+
+\subsection{Bars and Stripes}
+
+El patrón $4\times 4$ se aplana ($d=16$) y se reduce a cuatro componentes. En el plano de las dos primeras las dos clases se mezclan, así que ninguna frontera suave es suficiente. La Tabla~\ref{tab:res_bs} es el dataset donde la rama cuántica queda más lejos del mejor clásico, salvo la QNN en AUC.
+
+\begin{table}[!htbp]
+\centering
+\small
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{lccccc}
+\begin{tabular}{lrrrrrr}
 \toprule
-\textbf{Dataset} & \textbf{QK-SVR} & \textbf{Mejor clásico (A)} & \textbf{$\Delta R^2$ (A)} & \textbf{Mejor clásico (B)} & \textbf{$\Delta R^2$ (B)} \\
+\textbf{Modelo} & \textbf{Acc} & \textbf{F1} & \textbf{AUC} & \textbf{Gap} & $t_{\mathrm{train}}$ (s) & $t_{\mathrm{inf}}$ (s) \\
 \midrule
-Cuántico-nativo & $0.986\pm0.002$ & RF $-0.016\pm0.139$ & $+1.002$ & --- & --- \\
-SKG Corredores & $-0.118\pm0.081$ & Ridge $0.032\pm0.079$ & $-0.150$ & SVR-RBF $0.109\pm0.120$ & $-0.227$ \\
-Friedman \#1 (2 comp.) & $-0.098\pm0.096$ & Ridge $0.559\pm0.122$ & $-0.657$ & SVR-RBF $0.903\pm0.009$ & $-1.001$ \\
-Friedman \#1 (5 qubits) & $-0.181\pm0.111$ & SVR-RBF $0.889\pm0.013$ & $-1.069$ & SVR-RBF $0.890\pm0.012$ & $-1.071$ \\
+SVM (RBF) & 0.871 & 0.870 & 0.936 & 0.021 & 0.003 & 0.007 \\
+Random Forest & 0.854 & 0.854 & 0.943 & 0.146 & 0.078 & 0.006 \\
+XGBoost & 0.850 & 0.849 & 0.953 & 0.067 & 0.074 & 0.001 \\
+QSVM & 0.758 & 0.758 & 0.822 & 0.110 & 1.458 & 1.538 \\
+QNN & 0.817 & 0.815 & 0.936 & $-0.006$ & 5.614 & 0.006 \\
+VQC & 0.696 & 0.688 & --- & 0.014 & 12.432 & 1.872 \\
 \bottomrule
 \end{tabular}}
-\caption{Protocolo justo de regresión (\texttt{qml\_v2.regression}); $R^2$ en test (media $\pm$ desviación sobre 10 repeticiones; 140 ejemplos de entrenamiento y 60 de test; $C=10$, $\varepsilon=0.1$ en todos los SVR). A: todos los modelos con las mismas variables que el QK-SVR. B: clásicos con todas las variables originales (3 en SKG, 5 en Friedman). RF = Random Forest. Fuente: \texttt{qml\_v2\_regression\_all.csv}.}
-\label{tab:regresion_justa}
+\caption{Bars and Stripes, conjunto de test.}
+\label{tab:res_bs}
 \end{table}
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.96\textwidth]{cls_test_metrics_by_model.png}
-\caption{Comparativa de regresión cuántica (QK-SVR) vs.\ clásica en los tres datasets del TFM. Panel izquierdo: $R^2$ absoluto por modelo. Panel derecho: ventaja neta $\Delta R^2$. El kernel cuántico solo supera al mejor clásico en el dataset nativo alineado al mapa, donde $f(\mathbf{x})=\langle ZZ\rangle$ coincide con el generador del \texttt{ZZFeatureMap} ---mapa validado empíricamente aquí---; en datasets reales sin esa alineación ganan Random Forest y Gradient Boosting.}
-\label{fig:regresion_3datasets}
+\includegraphics[width=0.72\textwidth]{bs_f1_ranking.png}
+\caption{Ranking de F1 en Bars and Stripes. El SVM lidera; el VQC cierra la lista.}
+\label{fig:bs_f1}
 \end{figure}
 
-% =====================================================================
-\section{Caso de uso 3: Optimización combinatoria (QAOA)}
-% =====================================================================
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{bs_generalization_gap.png}
+\caption{Gap de generalización en Bars and Stripes. El Random Forest es el que más se separa entre train y test.}
+\label{fig:bs_gap}
+\end{figure}
 
-El protocolo \texttt{qml\_v2.optimization} resuelve el mismo problema de asignación $3\times3$ (9 variables binarias, una tarea por agente y un agente por tarea) con cuatro métodos sobre cinco matrices de coste aleatorias con semillas fijas: Hungarian y PuLP/CBC (exactos), Greedy (cada tarea toma el agente libre más barato) y QAOA con $p=1$ y COBYLA (3 reinicios, 80 iteraciones máximas).
+\subsubsection{SVM}
 
-\begin{table}[ht]
+F1 $0.870$ y gap $0.021$: el RBF sigue siendo el mejor compromiso. El AUC $0.936$ muestra que, aunque el plano está mezclado, el kernel ordena razonablemente las dos clases. La Figura~\ref{fig:bs_svm} coloca la frontera sobre esa nube. Con $d$ reducido a 4, el RBF opera en el mismo presupuesto de coordenadas que los circuitos y aun así generaliza mejor que ellos. El tiempo total permanece por debajo de la centésima de segundo.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{svm_bs_pca_boundary.png}
+\caption{Frontera del SVM en Bars and Stripes. El plano mezcla las clases; el margen RBF es el que menos errores acumula.}
+\label{fig:bs_svm}
+\end{figure}
+
+\subsubsection{Random Forest}
+
+F1 $0.854$, AUC $0.943$, gap $0.146$. El bosque acierta en train y pierde en test: las reglas que aíslan barras y franjas en las hojas no sobreviven al $40\%$ de test. La Figura~\ref{fig:bs_rf} es una partición fina de una nube sin margen. En un dato de patrones binarios comprimidos por PCA, el bagging memoriza combinaciones de componentes que no son estables. Es el caso claro en que accuracy de train no es la métrica de la comparación.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{rf_bs_pca_boundary.png}
+\caption{Frontera del Random Forest en Bars and Stripes. La partición ajusta el train; el gap de $0.146$ mide lo que no se sostiene en test.}
+\label{fig:bs_rf}
+\end{figure}
+
+\subsubsection{XGBoost}
+
+F1 $0.849$, el AUC más alto del dataset ($0.953$) y un gap de $0.067$, menos de la mitad que el bosque. El boosting regulariza la secuencia de árboles y ordena mejor las probabilidades, aunque la etiqueta dura quede un punto por debajo del SVM. La Figura~\ref{fig:bs_xgb} muestra esa frontera. La técnica aporta calibración (el AUC) más que accuracy: para un ranking de patrones, XGBoost es el clásico a mirar; para la etiqueta, el RBF sigue delante.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{xgb_bs_pca_boundary.png}
+\caption{Frontera de XGBoost en Bars and Stripes. El F1 queda justo bajo el SVM; el AUC es el más alto de la tabla.}
+\label{fig:bs_xgb}
+\end{figure}
+
+\subsubsection{QSVM}
+
+F1 $0.758$, AUC $0.822$, gap $0.110$. El mapa ZZ no encuentra en las cuatro componentes una correlación que separe barras de franjas mejor que un RBF. El coste cambia de escala: $1.46\,\mathrm{s}$ de ajuste y $1.54\,\mathrm{s}$ de inferencia, porque la matriz de fidelidad crece con el producto de tamaños de train y test y cada entrada es un solape de estados. La Figura~\ref{fig:bs_qsvm} es la frontera inducida por ese kernel. En un dataset convencional, sin generador cuántico de las etiquetas, el feature map ZZ es una hipótesis inductiva cara y peor alineada \citep{huang2021, schuld2021}.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{qsvm_bs_pca_boundary.png}
+\caption{Frontera del QSVM en Bars and Stripes. El kernel de fidelidad no ordena la nube mejor que el RBF y multiplica el tiempo de inferencia.}
+\label{fig:bs_qsvm}
+\end{figure}
+
+\subsubsection{QNN}
+
+Es el mejor modelo cuántico del dataset: F1 $0.815$, AUC $0.936$ (el mismo que el SVM) y gap ligeramente negativo. La etiqueta dura queda $0.055$ por debajo del SVM; el orden de los scores no. Angle embedding más entrelazamiento entrenable y una cabeza lineal leen una geometría que el kernel ZZ no linealiza igual. El entrenamiento dura $5.61\,\mathrm{s}$; la inferencia, $0.006\,\mathrm{s}$. La Figura~\ref{fig:bs_qnn} muestra la frontera. La discusión de técnica es la de un modelo híbrido: el circuito propone features $\langle Z_i\rangle$ y la cabeza clásica clasifica. En Bars and Stripes esa división acerca el AUC al mejor clásico y deja la accuracy todavía por debajo.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{qnn_bs_pca_boundary.png}
+\caption{Frontera de la QNN en Bars and Stripes. El AUC empata con el SVM; la etiqueta dura no.}
+\label{fig:bs_qnn}
+\end{figure}
+
+\subsubsection{VQC}
+
+F1 $0.688$, el mínimo del corpus de clasificación, con $12.4\,\mathrm{s}$ de entrenamiento y $1.87\,\mathrm{s}$ de inferencia. La Figura~\ref{fig:bs_vqc} muestra un corte simple sobre la nube mezclada: el ansatz $R_Y$ más \texttt{Rot}+CNOT, leído por $\langle Z\rangle$, no tiene grados de libertad para una frontera que siga el solape. El mismo circuito en Iris, donde una clase está separada, empataba con los árboles. Aquí la hipótesis del ansatz es demasiado rígida para el dato. Subir capas aumentaría el coste de simulación sin garantía de alinear el mapa con las barras \citep{cerezo2021}.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{vqc_bs_pca_boundary.png}
+\caption{Frontera del VQC en Bars and Stripes. El corte deja la región de solape llena de errores de test.}
+\label{fig:bs_vqc}
+\end{figure}
+
+\subsection{Ising}
+
+Las features son amplitudes del estado fundamental de una cadena de cuatro espines. La etiqueta es la fase, $y=\mathbf{1}[h>|J|]$, y $h$ no entra como variable. Tras la PCA el plano se organiza en dos ramas. Es el único dataset en el que un modelo cuántico empata con el mejor clásico (Tabla~\ref{tab:res_ising}).
+
+\begin{table}[!htbp]
 \centering
 \small
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{lcccc}
-\hline
-\textbf{Método} & \textbf{Coste medio} & \textbf{Brecha media} & \textbf{Instancias óptimas} & \textbf{Tiempo por instancia} \\
-\hline
-Hungarian / PuLP-CBC & 9.335 & 0\%   & 5/5 & $<0.02$~s \\
-QAOA ($p=1$)         & 9.335 & 0\%   & 5/5 & 270--700~s (simulación) \\
-Greedy               & 10.146 & 7.0\% & 4/5 & $<0.001$~s \\
-\hline
+\begin{tabular}{lrrrrrr}
+\toprule
+\textbf{Modelo} & \textbf{Acc} & \textbf{F1} & \textbf{AUC} & \textbf{Gap} & $t_{\mathrm{train}}$ (s) & $t_{\mathrm{inf}}$ (s) \\
+\midrule
+SVM (RBF) & 0.988 & 0.985 & 1.000 & 0.013 & 0.001 & 0.0002 \\
+Random Forest & 0.975 & 0.969 & 1.000 & 0.025 & 0.062 & 0.004 \\
+XGBoost & 0.950 & 0.937 & 0.996 & 0.050 & 0.012 & 0.0005 \\
+QSVM & 0.988 & 0.985 & 1.000 & 0.013 & 0.153 & 0.206 \\
+QNN & 0.950 & 0.937 & 0.996 & 0.017 & 2.843 & 0.006 \\
+VQC & 0.975 & 0.969 & --- & 0.000 & 18.231 & 0.332 \\
+\bottomrule
 \end{tabular}}
-\caption{Caso~3: asignación $3\times3$, cinco instancias (semillas 42--46). La brecha se mide frente al óptimo exacto. Greedy falla en una instancia ($+35.2\%$). Los tiempos de QAOA dependen de la carga de la máquina; el orden de magnitud es el de un simulador de 9 qubits.}
-\label{tab:asignacion}
+\caption{Ising, conjunto de test. Recall macro del SVM y del QSVM: $0.979$.}
+\label{tab:res_ising}
 \end{table}
 
-QAOA recupera el óptimo en las cinco instancias, igual que los métodos exactos, y mejora a Greedy en la única instancia en la que este falla. No supera, en ningún caso, al mejor clásico: el problema de asignación es polinómico (algoritmo húngaro) y los exactos lo resuelven en microsegundos. El resultado confirma que el pipeline QUBO--QAOA funciona sobre una instancia de nueve qubits, y no aporta evidencia de ventaja.
-
-\paragraph{Descartes metodológicos.}
-La versión inicial de este caso (Notebook~02) comparaba QAOA, que seleccionaba 5 de 10 focos para una única base, con Greedy, que cubría los 10 focos, y obtenía una reducción de coste de $70.5\%$. Esa comparación no es válida, porque los dos métodos no resuelven el mismo problema (el coste de cubrir 5 focos es menor que el de cubrir 10). Tampoco se mantiene la cifra del $30.3\%$ que figuraba en versiones anteriores de este documento: procedía de valores de respaldo escritos en el Notebook~07 y no de ninguna ejecución. Ambas se sustituyen por el protocolo de la Tabla~\ref{tab:asignacion}. El Notebook~02 se reejecutó con los datos de SKG disponibles (238 choques de los miércoles a las 8~h, 10 focos, 19 bases por localidad) y con la comparación en el mismo subproblema: el QAOA devuelve siempre una solución factible, pero solo recupera el óptimo en 6 de 10 ejecuciones (3 de 5 con $p=1$ y con $p=2$), con un coste medio un $11.2\%$ superior al de Greedy, que aquí coincide con el óptimo porque el objetivo es separable.
-
-\paragraph{Limitaciones.}
-Con $n=3$ solo hay seis asignaciones factibles; cinco instancias no permiten estimar la variabilidad. Escalar a $n$ mayor exige $n^2$ qubits en la formulación utilizada y excede el simulador de vector de estados disponible.
-
-
-% =====================================================================
-\section{Caso de uso 4: Optimización de portafolio (VQE/QAOA)}
-% =====================================================================
-
-El Notebook~04 selecciona 3 de 6 activos (EC, CIB, AAPL, MSFT, GOOGL y AMZN; cierres ajustados de Yahoo Finance, 2022--2023, 501 sesiones) minimizando $q\,x^\top\Sigma x-\mu^\top x$ con aversión al riesgo $q=0.5$ y presupuesto fijo de tres activos. Hay $\binom{6}{3}=20$ carteras factibles, de modo que la fuerza bruta es trivial y fija el óptimo exacto: \{EC, CIB, MSFT\} con coste $0.0437$. La selección voraz hacia delante (Greedy) encuentra esa misma cartera. Como VQE y QAOA dependen de la inicialización, el protocolo \texttt{qml\_v2.portfolio} los repite con 10 semillas independientes; cada ejecución se decodifica con la cadena más probable de 4\,096 disparos y solo cuenta como solución si es factible, evaluada en el problema original y no en la energía penalizada.
-
-\begin{table}[ht]
+\begin{figure}[!htbp]
 \centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
+\includegraphics[width=0.72\textwidth]{ising_f1_ranking.png}
+\caption{Ranking de F1 en Ising. SVM y QSVM comparten el primer puesto.}
+\label{fig:ising_f1}
+\end{figure}
+
+\subsubsection{SVM}
+
+F1 $0.985$, AUC $1.000$, gap $0.013$, en alrededor de un milisegundo. El recall macro ($0.979$) queda un punto bajo el accuracy: la clase minoritaria de fase concentra el error residual. La Figura~\ref{fig:ising_svm} sigue las dos ramas del plano. El RBF no necesita saber que el vector viene de un estado cuántico; la geometría tras la PCA ya es separable. Por eso el empate posterior del QSVM no es, por sí solo, una ventaja operativa: el mismo F1 llega antes por el kernel clásico.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{svm_ising_pca_boundary.png}
+\caption{Frontera del SVM en Ising. Las dos ramas de fase quedan separadas; el error residual es de una clase.}
+\label{fig:ising_svm}
+\end{figure}
+
+\subsubsection{Random Forest}
+
+F1 $0.969$ y AUC $1.000$, con gap $0.025$. El bosque ordena las fases tan bien como el SVM en AUC y pierde algo de F1 en la etiqueta dura. La Figura~\ref{fig:ising_rf} corta las ramas con umbrales. Con componentes principales tan estructuradas, un árbol encuentra el corte; el bagging no añade mucho sobre un solo margen. El tiempo ($0.062\,\mathrm{s}$) sigue siendo inferior al de cualquier circuito.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{rf_ising_pca_boundary.png}
+\caption{Frontera del Random Forest en Ising. AUC perfecto y F1 un punto por debajo del SVM.}
+\label{fig:ising_rf}
+\end{figure}
+
+\subsubsection{XGBoost}
+
+F1 $0.937$, recall macro $0.917$, AUC $0.996$, gap $0.050$. Es el clásico que más se deja la fase minoritaria. El boosting, con este tamaño de muestra, ajusta de más el corte entre ramas (Figura~\ref{fig:ising_xgb}). El dato premia un margen global; una secuencia de árboles cortos no es esa hipótesis. Aun así el ajuste dura $0.012\,\mathrm{s}$.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{xgb_ising_pca_boundary.png}
+\caption{Frontera de XGBoost en Ising. El recall macro cae a $0.917$: la fase menos representada concentra los errores.}
+\label{fig:ising_xgb}
+\end{figure}
+
+\subsubsection{QSVM}
+
+Empata con el SVM en Acc $0.988$, F1 $0.985$, AUC $1.000$ y gap $0.013$. La Figura~\ref{fig:ising_qsvm} sigue las dos ramas y deja un error visible en la zona de transición. Aquí el mapa ZZ sí está cerca del generador: las features son amplitudes de un estado de Ising y la etiqueta es la fase de ese mismo Hamiltoniano \citep{huang2021, havlicek2019}. El empate de calidad no arrastra al tiempo. El ajuste dura $0.153\,\mathrm{s}$ y la inferencia $0.206\,\mathrm{s}$, frente a $0.001\,\mathrm{s}$ del SVM. La discusión queda en la alineación dato--mapa: cuando el kernel cuántico está en el espacio correcto, recupera al clásico; la simulación del solape sigue costando más que evaluar un RBF.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{qsvm_ising_pca_boundary.png}
+\caption{Frontera del QSVM en Ising. El mapa ZZ separa las ramas de fase; queda un error junto a la transición.}
+\label{fig:ising_qsvm}
+\end{figure}
+
+\subsubsection{QNN}
+
+F1 $0.937$ y AUC $0.996$, las mismas cifras que XGBoost, con gap menor ($0.017$). La cabeza lineal sobre angle embedding no aprovecha la estructura de fase mejor que un boosting corto, y el entrenamiento sube a $2.84\,\mathrm{s}$. La Figura~\ref{fig:ising_qnn} muestra la frontera. En un dato donde el kernel ZZ ya empata con el RBF, cambiar a un embedding angular separable y entrenar capas es una hipótesis más débil: se pierde la interacción $Z_iZ_j$ que justificaba el mapa.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{qnn_ising_pca_boundary.png}
+\caption{Frontera de la QNN en Ising. La calidad queda en el nivel de XGBoost, por debajo del par SVM--QSVM.}
+\label{fig:ising_qnn}
+\end{figure}
+
+\subsubsection{VQC}
+
+F1 $0.969$, el mismo que el Random Forest, gap $0.000$ y $18.2\,\mathrm{s}$ de entrenamiento. La preparación $R_Y$ más el ansatz variacional cabe en la geometría de dos ramas (Figura~\ref{fig:ising_vqc}) sin el sobreajuste de XGBoost. No alcanza el empate SVM--QSVM. Cada predicción reejecuta el circuito ($0.332\,\mathrm{s}$). Frente al QSVM, el VQC no usa el kernel alineado con el Hamiltoniano; frente al SVM, repite una calidad intermedia a un coste de simulación que en este tamaño no se justifica \citep{bowles2024}.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{vqc_ising_pca_boundary.png}
+\caption{Frontera del VQC en Ising. Gap nulo y F1 de bosque, con el mayor tiempo de inferencia de la tabla tras el QSVM.}
+\label{fig:ising_vqc}
+\end{figure}
+
+\subsection{Lectura de la familia}
+
+Tres técnicas, tres resultados. El kernel RBF es el mejor o está empatado en los tres datasets y es el más barato. Los árboles se acercan cuando la geometría es simple (Iris, Ising) y generalizan peor cuando la nube está mezclada (Bars and Stripes, gap del bosque $0.146$). El mapa ZZ solo empata con el RBF en Ising, donde las features ya son un estado de un Hamiltoniano y la etiqueta es su fase; en Iris fragmenta la frontera y en Bars and Stripes paga segundos de fidelidad por un F1 inferior \citep{huang2021}. La QNN híbrida es el cuántico más estable fuera de Ising: su AUC en Bars and Stripes iguala al SVM, porque la cabeza clásica clasifica $\langle Z_i\rangle$. El VQC reproduce la calidad de los árboles en Iris e Ising y cae en Bars and Stripes, siempre con el mayor tiempo de entrenamiento. En simulación de $n=4$, la comparación cuantitativa no muestra una región en la que el circuito mejore al RBF en F1 y en tiempo a la vez \citep{bowles2024}.
+
+\section{Optimización}
+
+Las instancias tienen óptimo conocido y caben en enumeración: TSP con coste $C^\star=16$, MDS con $C^\star=2$, MaxCut con $C^\star=8$. La Figura~\ref{fig:opt_success} sitúa el success rate medio frente al tiempo. El detalle, y las dos excepciones (greedy en MDS, QAOA en MDS, SA en TSP), está en las tablas de cada problema. En este tamaño, alcanzar $C^\star$ es lo esperado de un método exacto; lo que distingue a los solvers es el camino y el wall-clock \citep{lubinski2024, lucas2014}.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{opt_success_vs_runtime_mean.png}
+\caption{Success rate medio frente al tiempo medio. La fuerza bruta es exacta y barata en estas instancias; QAOA y VQE se sitúan en segundos de simulación.}
+\label{fig:opt_success}
+\end{figure}
+
+\subsection{TSP}
+
+Grafo completo de 5 nodos. El óptimo por enumeración es $16$. La Tabla~\ref{tab:res_tsp} y la Figura~\ref{fig:tsp_success} resumen los seis solvers.
+
+\begin{table}[!htbp]
+\centering
+\small
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{llcccccc}
-\hline
-\textbf{Método} & \textbf{Penalización} & \textbf{Factibles} & \textbf{Óptimo} & \textbf{Brecha med.} & \textbf{Brecha mediana} & \textbf{Brecha máx.} & \textbf{Coste medio} \\
-\hline
-Fuerza bruta / Greedy & --- & --- & --- & $0\%$ & $0\%$ & $0\%$ & 0.0437 \\
-VQE (TwoLocal, 5 reinicios) & 10   & 10/10 & 3/10 & $+83.5\%$  & $+63.7\%$ & $+253.0\%$ & 0.0802 \\
-QAOA ($p=3$, 5 reinicios)   & 10   & 10/10 & 6/10 & $+111.5\%$ & $0\%$     & $+724.4\%$ & 0.0925 \\
-VQE (1 inicio)              & 0.01 & 0/10  & 0/10 & --- & --- & --- & --- \\
-QAOA ($p=3$, 1 inicio)      & 0.01 & 0/10  & 0/10 & --- & --- & --- & --- \\
-\hline
+\begin{tabular}{lrrrrrr}
+\toprule
+\textbf{Solver} & \textbf{Éxito} & $C$ medio & $C$ mejor & \textbf{Gap} & \textbf{Gap rel.} & $t$ (s) \\
+\midrule
+Fuerza bruta & 1.00 & 16.0 & 16 & 0.00 & 0.000 & 0.0009 \\
+Greedy & 1.00 & 16.0 & 16 & 0.00 & 0.000 & 0.0005 \\
+ILP & 1.00 & 16.0 & 16 & 0.00 & 0.000 & 1.277 \\
+QUBO + SA & 0.90 & 16.3 & 16 & 0.30 & 0.019 & 0.017 \\
+QAOA & 1.00 & 16.0 & 16 & 0.00 & 0.000 & 1.059 \\
+VQE & 1.00 & 16.0 & 16 & 0.00 & 0.000 & 1.909 \\
+\bottomrule
 \end{tabular}}
-\caption{Caso~4: 10 semillas por método y configuración (\texttt{qml\_v2.portfolio}). Brecha $=100\,(\text{coste}-\text{óptimo})/|\text{óptimo}|$, promediada solo sobre las semillas factibles; el óptimo es pequeño ($0.0437$), de modo que brechas porcentuales grandes corresponden a diferencias absolutas modestas (la peor, $0.3604$ frente a $0.0437$). Con penalización $0.01$ ninguna semilla devuelve una cartera factible.}
-\label{tab:portafolio}
+\caption{TSP. $C^\star=16$. El SA promedia semillas; el resto alcanza el óptimo en las ejecuciones reportadas.}
+\label{tab:res_tsp}
 \end{table}
-
-La penalización determina si el problema variacional es siquiera válido. Con $0.01$ el Hamiltoniano casi ignora la restricción de presupuesto y ninguna de las 20 ejecuciones (10 de VQE y 10 de QAOA) devuelve tres activos. Con $10$, el estado fundamental del Hamiltoniano de Ising es exactamente la cartera óptima (comprobado por diagonalización exacta), por lo que cualquier brecha proviene del optimizador variacional y no de la formulación. Aun así, VQE alcanza el óptimo en 3 de 10 semillas y QAOA en 6 de 10, frente al 5\% esperado por azar (1 de 20 carteras); QAOA es más variable (mediana de brecha $0\%$ pero una semilla con $+724.4\%$) y mucho más lento en simulación (en el Notebook~04, 300 evaluaciones de energía tardan 43.4~s con QAOA frente a 1.2~s con VQE). No hay ventaja cuántica en este caso: la fuerza bruta y el Greedy encuentran siempre el óptimo en milisegundos, y la frecuencia de acierto del mejor método cuántico (60\%) es $40$ pp inferior.
-
-Para $n$ grande, los solvers clásicos de programación cuadrática entera siguen siendo la referencia. Cualquier ventaja futura dependería de hardware con muchos más qubits lógicos y no se puede inferir de esta instancia de seis activos.
-
-% =====================================================================
-\section{Caso de uso 5: TSP cerrado (protocolo justo)}
-\label{sec:eval_tsp}
-% =====================================================================
-
-El módulo \texttt{qml\_v2.tsp\_optimization} evalúa todos los solvers sobre la misma $L(\pi)$. En Colombia $n=4$ (Tabla~\ref{tab:tsp_colombia} del Capítulo~\ref{cap:metodologia}), BruteForce, NN+2-opt, QAOA-$p$1 y SA-QUBO empatan en \textbf{1867.6~km}; el NN plano queda en 2124.6~km ($+13.8\%$). En Euclidean ($n=4$, 3 instancias), QAOA y NN+2-opt tienen gap medio~$0$; SA-QUBO $\approx 0.12$.
-
-\paragraph{Interpretación.}
-A esta escala no hay ventaja de tiempo: NN+2-opt es óptimo en milisegundos. El aporte es metodológico ---misma métrica, tours factibles, QAOA que iguala al exacto cuando la decodificación es correcta--- y de modelado QUBO. El Caso~5 \textbf{no} afirma superioridad cuántica frente a 2-opt; delimita cuándo QAOA es un solver válido del mismo modelo. VRP queda fuera.
-
-% =====================================================================
-\section{Caso de uso 6: Análisis del umbral de ventaja del kernel}
-% =====================================================================
-
-El análisis del umbral de ventaja del kernel (Notebook~06) complementa el caso~1 con una partición adicional por tamaño (Figura~\ref{fig:kernel_escalabilidad}, Anexo). En el dataset \textbf{cuántico-nativo} ($n=150$, 45 puntos de test) el QSVC obtuvo 68.9\% frente al 60.0\% del mejor clásico (SVM polinomial): \textbf{+8.9 pp}, equivalente a cuatro aciertos más sobre una única partición. La dirección es la esperada cuando generador y feature map coinciden, pero el tamaño de la muestra impide darle valor estadístico por sí sola; la evidencia sólida de este régimen es la del Caso~1. Sobre \textbf{SKG} (Incidentes Bogotá) el clásico fue superior: QSVC 56.7\% frente a 60.7\% ($-4.0$~pp). Sobre \textbf{Telco} el veredicto operativo es el mismo: QSVM 76.0\% frente a Gradient Boosting 79.8\% (\textbf{$-3.8$~pp}); bajo $\mathcal{Q}_{\mathrm{rob}}$ Telco permanece \texttt{classical}. SKG y Telco \textbf{no} son cuántico-nativos. Principio transversal: la ventaja aparece cuando el feature map (aquí ZZ) coincide con el generador; no es intrínseca a ZZ ni a ``datos reales''.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.92\textwidth]{cls_classical_vs_quantum.png}
-\caption{Detalle del Notebook~06 sobre el dataset cuántico-nativo ($n=150$, 45 puntos de test, una única partición). Izquierda: exactitud de cada modelo (QSVM 68.9\%, mejor clásico: SVM polinomial, 60.0\%). Derecha: exactitud, F1 y velocidad relativa ($1-t/t_{\max}$) del QSVM frente al mejor clásico; el QSVM es más lento. Un acierto equivale a 2.2~pp, por lo que la figura es ilustrativa; la evidencia cuantitativa es la del Caso~1.}
-\label{fig:kernel_advantage_detalle}
+\includegraphics[width=0.72\textwidth]{tsp_success_vs_runtime.png}
+\caption{TSP: success rate frente al tiempo. El SA es el único que no satura el éxito; ILP, QAOA y VQE comparten la escala del segundo.}
+\label{fig:tsp_success}
 \end{figure}
 
-% =====================================================================
-\section{Caso de uso 7: Conjunto dominante mínimo (paradigma híbrido)}
-% =====================================================================
+\subsubsection{Fuerza bruta}
 
-\subsection{Naturaleza del problema y perspectiva de evaluación}
+Enumera las rutas y devuelve $C^\star$ en menos de un milisegundo ($6$ evaluaciones de la función de coste). La Figura~\ref{fig:tsp_bf} es una ruta óptima. Con 5 nodos el espacio de tours es el método de referencia, no un baseline débil: cualquier otro solver se juzga contra una enumeración que ya es barata.
 
-El Caso de uso~7 tiene una naturaleza fundamentalmente diferente a los anteriores: el objetivo no es superar métricamente a un clasificador o regresor clásico equivalente, sino demostrar la viabilidad del \textbf{paradigma híbrido cuántico-clásico} aplicado a un problema NP-difícil con formulación QUBO natural. El \textit{Minimum Dominating Set} (MDS) pertenece a la clase NP-completo \citep{garey1979}: no existe algoritmo clásico polinómico conocido que garantice la solución óptima en el caso general. La evaluación combina por ello dos lecturas: una \textbf{cuantitativa}, comparable con el resto de casos (porcentaje de instancias en las que el método obtiene un conjunto dominante del tamaño del MDS exacto, frente a ILP y Greedy), y una de \textbf{modelamiento}, que estudia si el patrón arquitectónico híbrido es coherente y generalizable a cualquier problema QUBO.
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{bruteforce_tsp_route.png}
+\caption{Ruta óptima del TSP por enumeración. Coste $16$.}
+\label{fig:tsp_bf}
+\end{figure}
 
-\subsection{Perspectiva de análisis: viabilidad de modelamiento en problemas NP-difíciles}
+\subsubsection{Greedy}
 
-La principal aportación del Caso~7 es de \textbf{modelamiento}: cualquier problema formulable como QUBO —cobertura de conjuntos, asignación, rutas, scheduling— puede ser resuelto directamente con el mismo loop híbrido QAOA-COBYLA, sin cambiar la arquitectura del algoritmo. Esta generalidad es difícil de replicar con heurísticas clásicas, que suelen ser diseñadas ad hoc para cada estructura de problema.
+La heurística de vecino más cercano también cierra en $16$ (Figura~\ref{fig:tsp_greedy}), en $0.5\,\mathrm{ms}$. En este grafo el óptimo local coincide con el global. No es una propiedad del algoritmo: en MDS, con la misma heurística, el conjunto se pasa de tamaño. Aquí el grafo es pequeño y las distancias no castigan el primer paso miope.
 
-Desde este punto de vista, la pregunta relevante es ``\textquestiondown{}puede el patrón híbrido resolver correctamente un problema para el cual no existe solución eficiente clásica garantizada, y lo hace mejor que los clásicos?''. La respuesta experimental es afirmativa en lo primero para la red de seis nodos, pero sin ventaja frente a los métodos clásicos (\texttt{qml\_v2.mds\_qaoa}, notebook~10): con $p=3$ y 20 reinicios de COBYLA, el estado de menor coste QUBO entre los medidos es el óptimo exacto $\{$Ana, Enrique$\}$ de la instancia de seis nodos. Sin embargo, el circuito \emph{no} concentra de forma fiable la probabilidad en el óptimo: la probabilidad exacta de medirlo es del $5.7\%$ en media sobre los reinicios y solo el mejor alcanza el $68.8\%$; con $p=1$ la media es del $2.6\%$. La recuperación del óptimo descansa en el muestreo y la selección del menor coste, no en una concentración sistemática de la masa de probabilidad. Como referencia nula, una distribución uniforme asigna al óptimo la probabilidad $1/64=1.6\%$: el QAOA la multiplica por $1.7$ ($p=1$) y $3.6$ ($p=3$) en media, y por $44$ en el mejor reinicio; con el mismo presupuesto de 20 reinicios de 6\,000 shots, el muestreo uniforme encontraría el óptimo con probabilidad prácticamente igual a $1$, de modo que haberlo encontrado no es por sí solo evidencia a favor del QAOA. Frente a ILP y Greedy, que resuelven la instancia de forma exacta, el resultado es un empate en calidad ($0$~pp de instancias con MDS óptimo).
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{greedy_tsp_route.png}
+\caption{Ruta del greedy en el TSP. El coste coincide con el óptimo.}
+\label{fig:tsp_greedy}
+\end{figure}
 
-\subsection{Complejidad computacional y análisis de escalabilidad}
+\subsubsection{ILP}
 
-Aunque la evaluación es cualitativa, el análisis de tiempos aporta una perspectiva crítica sobre el horizonte de aplicabilidad. La Tabla~\ref{tab:complejidad_mds} compara las clases de complejidad de los métodos evaluados.
+La formulación lineal con CBC devuelve el óptimo y tarda $1.28\,\mathrm{s}$. Ese tiempo es de arranque del solver, no de una búsqueda larga: la fuerza bruta, sobre el mismo espacio, termina en menos de un milisegundo. La Figura~\ref{fig:tsp_ilp} certifica la ruta. El ILP importa como método exacto general; en esta instancia no es el exacto más rápido.
 
-\begin{table}[ht]
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{ilp_tsp_route.png}
+\caption{Ruta del ILP en el TSP. Óptimo de coste $16$, con el mayor tiempo clásico de la tabla.}
+\label{fig:tsp_ilp}
+\end{figure}
+
+\subsubsection{QUBO + simulated annealing}
+
+El annealing sobre el QUBO acierta el óptimo en el $90\%$ de las semillas. La media de coste sube a $16.3$ (gap relativo $0.019$) con unas $5000$ evaluaciones y $0.017\,\mathrm{s}$. La Figura~\ref{fig:tsp_sa} muestra una semilla óptima, la ruta $[0,4,2,3,1,0]$. La técnica es clásica y opera en la misma energía que QAOA y VQE: cuando la penalización del QUBO está bien puesta, el recocido encuentra el tour; una semilla de cada diez cae en un coste vecino. Es el único solver del TSP que no tiene éxito $1$, y sigue siendo dos órdenes más rápido que el circuito simulado.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{sa_tsp_route.png}
+\caption{Una ruta óptima del simulated annealing, $[0,4,2,3,1,0]$. El success rate sobre semillas es $0.90$.}
+\label{fig:tsp_sa}
+\end{figure}
+
+\subsubsection{QAOA}
+
+Capas $U_C U_B$ sobre el mismo QUBO, en simulación de estado, alcanzan coste $16$ en las ejecuciones reportadas (éxito $1$, unas $356$ evaluaciones, $1.06\,\mathrm{s}$). La Figura~\ref{fig:tsp_qaoa} es el tour devuelto. QAOA reproduce el óptimo que la enumeración ya tiene, en un tiempo del orden del ILP y muy por encima del annealing. Con 5 nodos el circuito no explora un espacio que el clásico no enumere; mide si el ansatz variacional concentra probabilidad en la ruta óptima \citep{farhi2014}. Aquí sí. El coste es el de simular esas capas.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{qaoa_tsp_route.png}
+\caption{Ruta devuelta por QAOA en el TSP. Coste óptimo, en torno a un segundo de simulación.}
+\label{fig:tsp_qaoa}
+\end{figure}
+
+\subsubsection{VQE}
+
+El ansatz variacional minimiza la energía del Ising equivalente y también devuelve coste $16$ (Figura~\ref{fig:tsp_vqe}), con unas $720$ evaluaciones y $1.91\,\mathrm{s}$, el mayor tiempo del problema. La diferencia con QAOA no está en la calidad, que satura, sino en el número de evaluaciones del Hamiltoniano y en que el ansatz no está estructurado como la alternancia coste--mezclador. En una instancia enumerable, VQE es una comprobación de que el óptimo es un mínimo del QUBO, no un algoritmo más corto que la fuerza bruta \citep{peruzzo2014}.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{vqe_tsp_route.png}
+\caption{Ruta devuelta por VQE en el TSP. Mismo coste óptimo, más evaluaciones de energía que QAOA.}
+\label{fig:tsp_vqe}
+\end{figure}
+
+\subsection{Minimum dominating set}
+
+Grafo de 6 vértices y 6 aristas. El óptimo es un conjunto de tamaño $2$. Es la instancia que separa heurística, annealing y circuito (Tabla~\ref{tab:res_mds}).
+
+\begin{table}[!htbp]
 \centering
 \small
-\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{3.0cm}>{\raggedright\arraybackslash}p{3.0cm}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}X}
-\hline
-\textbf{Método} & \textbf{Complejidad tiempo} & \textbf{Garantía solución} & \textbf{Limitante principal} \\
-\hline
-Fuerza bruta       & $O(2^n)$         & Óptima global    & Inviable para $n > 30$ \\
-ILP exacto (CBC/HiGHS) & $O(2^n)$ peor caso & Óptima global & Dependiente de la instancia ($<25$~ms en las instancias de este TFM) \\
-Greedy cobertura   & $O(n^2)$         & Aproximada ($H(\Delta{+}1)$, $\Delta$ grado máximo) & No garantiza óptimo \\
-QAOA (simulación)  & $O(2^n)$ en sim. & Probabilística   & Simulación clásica inviable $n > 30$ \\
-QAOA (hardware)    & Circuito de profundidad $O(p\,|E|)$ & Probabilística, sin garantía de calidad general & Ruido NISQ, \emph{barren plateaus}, optimización clásica del bucle \\
-\hline
-\end{tabularx}
-\caption{Complejidad de los métodos evaluados para el MDS. En hardware, el \emph{coste del circuito} QAOA es polinómico en el número de qubits, pero esto no implica ventaja: no se conoce garantía de calidad ni número de iteraciones/shots que escale polinómicamente.}
-\label{tab:complejidad_mds}
-\end{table}
-
-La diferencia conceptual es que el \emph{coste por evaluación del circuito} QAOA en hardware es polinómico en el número de qubits y la profundidad, mientras que la fuerza bruta es exponencial. Esto \textbf{no} equivale a una ventaja: la calidad de la solución no está garantizada, el bucle clásico (COBYLA) puede quedar atrapado (en nuestros 60 reinicios solo uno alcanzó un coste esperado cercano al óptimo), el número de shots necesario para observar el óptimo no se conoce a priori, y el ruido de los dispositivos NISQ degrada el resultado \citep{preskill2018, cerezo2021}. En simulación clásica exacta, como la empleada en este TFM, la evaluación del vector de estados es $O(2^n)$.
-
-La Tabla~\ref{tab:escala_mds} recoge el experimento real sobre grafos de Erdős--Rényi (densidad 0.45, semilla 42, $p=3$, 20 reinicios de COBYLA, 6\,000 shots; \texttt{python -m qml\_v2.mds\_qaoa}). Greedy e ILP encuentran el MDS en los cinco tamaños en menos de 10~ms; el tiempo de simulación de QAOA crece de 4.8~s ($n=6$) a 31.0~s ($n=15$) en nuestro simulador de vector de estados. La mejor muestra de QAOA coincide con el óptimo del \emph{QUBO}, pero solo para $n=6$ y $n=8$ ese óptimo es un conjunto dominante del tamaño del MDS; para $n\ge 10$ el óptimo del QUBO con $A=1$, $B=2$ ni siquiera es un conjunto dominante (la penalización no compensa dejar vértices sin cubrir), por lo que el límite es de \emph{formulación} y afectaría igual a cualquier solver exacto de ese QUBO. Medido como porcentaje de instancias con MDS óptimo, QAOA resuelve 2 de 5 (40\%) frente a 5 de 5 de ILP y de Greedy: una diferencia de $-60$~pp para el método cuántico. La probabilidad de medir el óptimo del QUBO cae de $14\%$ ($n=6$) a $0.1\%$ ($n=15$) en el mejor reinicio, entre $6$ y $51$ veces la de una distribución uniforme (columna $P_{\mathrm{unif}}$), y el muestreo uniforme con el mismo presupuesto lo encontraría con probabilidad $\approx 1$ en todos los tamaños. La evidencia delimita lo que se ha medido: en este rango la simulación de QAOA no aporta ventaja de tiempo ni de calidad frente a Greedy/ILP; no se ha evaluado hardware real ni instancias con $n\gtrsim 50$, por lo que no puede afirmarse ni descartarse ventaja en ese régimen.
-
-\begin{table}[ht]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{rrrrrcrrr}
-\hline
-$n$ & Aristas & ILP & Greedy & Óptimo QUBO & Mejor muestra QAOA ($|S|$, ¿dominante?) & $P_{\max}(\text{opt})$ & $P_{\text{unif}}$ & $t_{\text{QAOA}}$ (s) \\
-\hline
-6  & 6  & 2 & 2 & 2 & 2 (sí) & 0.1439 & 0.0156 & 4.8 \\
-8  & 11 & 2 & 2 & 4 & 2 (sí) & 0.0356 & 0.0039 & 5.4 \\
-10 & 21 & 2 & 2 & 5 & 1 (no) & 0.0494 & 0.0010 & 6.4 \\
-12 & 33 & 2 & 2 & 6 & 2 (no) & 0.0045 & 0.0007 & 9.0 \\
-15 & 50 & 3 & 3 & 8 & 2 (no) & 0.0010 & 0.0001 & 31.0 \\
-\hline
+\begin{tabular}{lrrrrrr}
+\toprule
+\textbf{Solver} & \textbf{Éxito} & $C$ medio & $C$ mejor & \textbf{Gap} & \textbf{Gap rel.} & $t$ (s) \\
+\midrule
+Fuerza bruta & 1.00 & 2.00 & 2 & 0.00 & 0.000 & 0.0002 \\
+Greedy & 0.00 & 3.00 & 3 & 1.00 & 0.500 & $<0.001$ \\
+ILP & 1.00 & 2.00 & 2 & 0.00 & 0.000 & 0.666 \\
+QUBO + SA & 1.00 & 2.00 & 2 & 0.00 & 0.000 & 0.008 \\
+QAOA & 0.875 & 2.25 & 2 & 0.25 & 0.125 & 12.232 \\
+VQE & 1.00 & 2.00 & 2 & 0.00 & 0.000 & 1.561 \\
+\bottomrule
 \end{tabular}}
-\caption{Escalabilidad real del Caso~7 (ER, densidad 0.45). ILP y Greedy: tamaño del conjunto dominante hallado. Mejor muestra QAOA: tamaño del conjunto con menor coste QUBO entre las muestras de los 20 reinicios y si es dominante. $P_{\max}(\text{opt})$: mayor probabilidad exacta de medir el óptimo del QUBO entre 20 reinicios con $p=3$; $P_{\text{unif}}$: probabilidad del óptimo bajo una distribución uniforme (referencia nula); $t_{\text{QAOA}}$: tiempo de los 20 reinicios (simulación NumPy). Fuente: \texttt{10\_mds\_qaoa\_escalabilidad.csv}.}
-\label{tab:escala_mds}
+\caption{MDS. $C^\star=2$. QAOA promedia semillas; el mejor coste de esas semillas sigue siendo $2$.}
+\label{tab:res_mds}
 \end{table}
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.96\textwidth]{mds_gap_vs_runtime.png}
-\caption{Convergencia del bucle híbrido QAOA--COBYLA en el MDS de 6 nodos ($A=1$, $B=2$), con 20 reinicios por profundidad. Izquierda: coste esperado final $\langle C\rangle$ por reinicio, ordenado. Derecha: trayectoria del mejor reinicio. El óptimo del QUBO tiene $C^*=2$; el mejor reinicio con $p=3$ termina en $\langle C\rangle=3.78$, y los mejores con $p=1$ y $p=2$ no bajan de $6.0$. Fuente: \texttt{10\_mds\_qaoa\_reinicios.csv} y \texttt{10\_mds\_qaoa\_trayectorias.csv}.}
-\label{fig:qaoa_convergencia}
+\includegraphics[width=0.72\textwidth]{mds_success_vs_runtime.png}
+\caption{MDS: success rate frente al tiempo. Greedy no acierta; QAOA acierta en una fracción de las semillas y es el más lento.}
+\label{fig:mds_success}
 \end{figure}
 
-% =====================================================================
-\section{Caso de uso 8: Detección de anomalías one-class}
-\label{sec:eval_anomaly}
-% =====================================================================
+\subsubsection{Fuerza bruta}
 
-Los resultados del módulo \texttt{qml\_v2.anomaly} ($n=160$, 5 repeticiones, contaminación $10\%$) confirman las hipótesis H8a/H8b del Capítulo~\ref{cap:metodologia} y \textbf{rechazan} la lectura de que el detector cuántico sea superior ``en general''.
+Enumera subconjuntos y fija $C^\star=2$ en $0.2\,\mathrm{ms}$. La Figura~\ref{fig:mds_bf} es un conjunto dominante mínimo. Con 6 vértices, $2^6=64$ máscaras: el óptimo de referencia sale antes de que un solver iterativo arranque.
 
-\begin{table}[ht]
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{bruteforce_mds_dominating_set.png}
+\caption{Conjunto dominante mínimo por enumeración. Tamaño $2$.}
+\label{fig:mds_bf}
+\end{figure}
+
+\subsubsection{Greedy}
+
+Elige Mario, Sarah y Ana (Figura~\ref{fig:mds_greedy}): tamaño $3$, gap $1$, gap relativo $0.5$, éxito $0$. La heurística cubre por grado local y no deshace la primera elección. Enrique y Ana solos dominan el grafo; el greedy no llega a ese par porque ya ha gastado un vértice. Es el único fallo sistemático de la familia clásica y no se arregla con más tiempo: la regla es determinista. En grafos de cobertura, un voraz sin backtracking no es un baseline de calidad, es una cota rápida que aquí queda corta.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{greedy_mds_dominating_set.png}
+\caption{Conjunto del greedy: Mario, Sarah y Ana. Tamaño $3$, uno por encima del óptimo.}
+\label{fig:mds_greedy}
+\end{figure}
+
+\subsubsection{ILP}
+
+La cobertura lineal con CBC devuelve un conjunto de tamaño $2$ en $0.67\,\mathrm{s}$ (Figura~\ref{fig:mds_ilp}). El modelo es exacto: cada vértice queda dominado y la objetivo minimiza la suma de binarias. El tiempo, como en el TSP, incluye el arranque de CBC. Frente al greedy, el ILP paga décimas de segundo y cierra el gap. Frente a la enumeración, es más lento y igual de correcto.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{ilp_mds_dominating_set.png}
+\caption{Conjunto dominante del ILP. Tamaño óptimo $2$.}
+\label{fig:mds_ilp}
+\end{figure}
+
+\subsubsection{QUBO + simulated annealing}
+
+El annealing sobre el QUBO de cobertura acierta tamaño $2$ en todas las semillas reportadas, con unas $4000$ evaluaciones y $0.008\,\mathrm{s}$ (Figura~\ref{fig:mds_sa}). La misma energía que luego ven QAOA y VQE ya es minimizable por recocido clásico. En esta instancia la formulación QUBO no deforma el óptimo: si la penalización de no-dominancia está bien escalada, el SA cae en $C^\star$ \citep{lucas2014}. El contraste con el TSP, donde una semilla fallaba, es de paisaje, no de método.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{sa_mds_dominating_set.png}
+\caption{Conjunto devuelto por simulated annealing. Tamaño $2$ en las semillas reportadas.}
+\label{fig:mds_sa}
+\end{figure}
+
+\subsubsection{QAOA}
+
+Es el resultado cuántico-inspirado que no satura. Éxito $0.875$, coste medio $2.25$, gap $0.25$, unas $4000$ evaluaciones y $12.2\,\mathrm{s}$, el máximo de todo el corpus de optimización. La Figura~\ref{fig:mds_qaoa} es una semilla óptima: Ana y Enrique, tamaño $2$. Otras semillas salen con un vértice de más, y por eso la media no es $2$. El ansatz $U_C U_B$ ve el mismo QUBO que el SA, que sí acierta siempre y en milisegundos. La discusión es de optimización variacional, no de formulación: con pocas capas y en simulación, la distribución de medida no concentra toda la masa en el bitstring óptimo \citep{farhi2014, lubinski2024}. Subir capas alargaría aún más la simulación.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{qaoa_mds_dominating_set.png}
+\caption{Una ejecución óptima de QAOA: Ana y Enrique. El success rate sobre semillas es $0.875$.}
+\label{fig:mds_qaoa}
+\end{figure}
+
+\subsubsection{VQE}
+
+Alcanza tamaño $2$ en las semillas reportadas (Figura~\ref{fig:mds_vqe}), con unas $600$ evaluaciones y $1.56\,\mathrm{s}$. El mismo problema en el que QAOA oscila, el VQE lo cierra. El ansatz y el número de evaluaciones no son los de QAOA: aquí bastan menos llamadas al Hamiltoniano para clavar el mínimo que el SA ya encontraba. Sigue siendo dos órdenes más lento que el annealing y tres que la enumeración. La técnica confirma el mínimo del Ising; no acorta la búsqueda en un grafo de 6 vértices \citep{peruzzo2014}.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{vqe_mds_dominating_set.png}
+\caption{Conjunto devuelto por VQE. Tamaño óptimo, por debajo del tiempo de QAOA y por encima del SA.}
+\label{fig:mds_vqe}
+\end{figure}
+
+\subsection{MaxCut}
+
+Instancia HamLib de 6 vértices y 12 aristas, corte óptimo $8$. Los seis solvers lo alcanzan (Tabla~\ref{tab:res_maxcut}). La figura de cada implementación es la partición que realiza ese corte.
+
+\begin{table}[!htbp]
 \centering
 \small
-\begin{tabular}{llcc}
-\hline
-\textbf{Dataset} & \textbf{Mejor Table~A} & \textbf{AUC Table~A} & \textbf{Lectura} \\
-\hline
-\texttt{zz\_phase} & \textbf{OCSVM-ZZ} & \textbf{0.864} vs IF 0.553 & Misma nube; mapa alineado \\
-\texttt{moons} & IsolationForest & 0.890 vs ZZ 0.599 & Distancia/densidad \\
-\texttt{blobs} & LOF / IF & $\approx 1.0$ vs ZZ 0.490 & Outliers lejanos \\
-\texttt{telco\_injected} & IsolationForest & 0.884 (B$\approx 1.0$) & Spikes sintéticos \\
-\texttt{skg\_injected} & LOF & 0.993 (B$\approx 1.0$) & Práctica, no fraude \\
-\hline
-\end{tabular}
-\caption{Resumen Caso~8. Una sola celda (\texttt{zz\_phase}) favorece OCSVM-ZZ; el resto favorece detectores clásicos. Telco/SKG usan outliers inyectados y descartan etiquetas de negocio.}
-\label{tab:anomaly_results}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+\textbf{Solver} & \textbf{Éxito} & $C$ medio & $C$ mejor & \textbf{Gap} & \textbf{Gap rel.} & $t$ (s) \\
+\midrule
+Fuerza bruta & 1.00 & 8 & 8 & 0 & 0 & $7\cdot 10^{-5}$ \\
+Greedy & 1.00 & 8 & 8 & 0 & 0 & $4\cdot 10^{-5}$ \\
+ILP & 1.00 & 8 & 8 & 0 & 0 & 0.011 \\
+QUBO + SA & 1.00 & 8 & 8 & 0 & 0 & 0.004 \\
+QAOA & 1.00 & 8 & 8 & 0 & 0 & 1.247 \\
+VQE & 1.00 & 8 & 8 & 0 & 0 & 1.799 \\
+\bottomrule
+\end{tabular}}
+\caption{MaxCut HamLib. $C^\star=8$. Todos los solvers reportados alcanzan el corte óptimo.}
+\label{tab:res_maxcut}
 \end{table}
 
 \begin{figure}[!htbp]
 \centering
-% MISSING FIG (was Imagenes/zz_phase_scores_if_vs_zz.png)
-\fbox{\parbox{0.85\linewidth}{\centering\footnotesize\textit{[Figura no disponible en Notebooks/]}}}
-\caption{Mismos puntos de test en \texttt{zz\_phase}: color = score de anomalía. IsolationForest obtiene AUC~$\approx 0.53$ (casi azar) y marca bordes de la nube; OCSVM-ZZ obtiene AUC~$\approx 0.74$ en este split ilustrativo (media multi-repeat $0.864$).}
-\label{fig:anomaly_scores}
+\includegraphics[width=0.72\textwidth]{maxcut_success_vs_runtime.png}
+\caption{MaxCut: éxito $1$ para todos los solvers. El eje de tiempo separa enumeración, greedy y SA del ILP y, más allá, de QAOA y VQE.}
+\label{fig:maxcut_success}
 \end{figure}
 
-\paragraph{Interpretación.}
-La ventaja en anomalías aparece cuando lo ``raro'' \emph{no} es estar lejos, sino pertenecer a otra estructura accesible por el \textbf{feature map alineado} con el generador (aquí, fase del mapa ZZ validado empíricamente). Un mapa distinto (Pauli, IQP, \ldots) definiría otra familia de novedades beneficiadas. En tablas de práctica con spikes lejanos, IsolationForest es suficiente y más barato. El Caso~8 refuerza el mensaje transversal: el módulo cuántico es una \textbf{herramienta selectiva}, activada tras diagnóstico de alineación ($\mathcal{Q}_{\mathrm{rob}}$ / tipo de anomalía), no un sustituto por defecto de IsolationForest ni un atajo hacia ``detección de fraude cuántica''.
+\subsubsection{Fuerza bruta}
 
-% =====================================================================
-\section{Caso de uso 9: Forecasting one-step por lags}
-\label{sec:eval_timeseries}
-% =====================================================================
-
-Los resultados de \texttt{qml\_v2.timeseries} (5 repeticiones, división temporal 70/30; Figura~\ref{fig:ts_mae}) confirman el patrón de alineación en el dominio secuencial (Tabla~\ref{tab:timeseries_dev}).
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=\textwidth]{cls_performance_vs_cost.png}
-\caption{MAE en test (media $\pm$ desviación sobre 5 repeticiones) del Caso~9. Azul: QK-SVR-ZZ; gris oscuro: clásicos con los mismos lags (Tabla~A); gris claro: clásicos con variables adicionales (Tabla~B, marcados con *). Líneas horizontales: media del entrenamiento (discontinua) y persistencia (punteada). Fuente: \texttt{fair\_timeseries\_*.csv}, Notebook~12.}
-\label{fig:ts_mae}
-\end{figure}
-
-\begin{itemize}
-  \item \texttt{zz\_lag}: QK-SVR-ZZ MAE $0.056\pm0.007$ ($R^2=0.98$) frente a Ridge $0.414$, SVR-RBF $0.435$ y Gradient Boosting $0.465$; la media del entrenamiento da $0.404$, de modo que los clásicos no mejoran el predictor trivial. Ventaja por construcción: el target es $\langle ZZ\rangle$ de la ventana.
-  \item \texttt{sine}: SVR-RBF $0.260$ y Ridge $0.266$ frente a QK-SVR $0.662$, que coincide con la media del entrenamiento ($0.658$). Con las variables de la Tabla~B los clásicos mejoran ligeramente ($0.244$).
-  \item \texttt{skg\_speed}: Ridge $2.80\pm0.63$ frente a QK-SVR $13.59\pm5.68$ (media del entrenamiento: $13.61$). Ridge queda al nivel de la persistencia ($2.75$); con las variables de la Tabla~B el mejor clásico es Gradient Boosting ($3.24$), peor que Ridge con solo 2 lags.
-\end{itemize}
-
-\paragraph{Interpretación.}
-La ventaja no es ``usar un kernel cuántico en series temporales'', sino alinear el generador del target con el feature map. Fuera del régimen nativo, el kernel ZZ con 2 qubits y $\varepsilon=0.1$ obtiene el mismo MAE que un predictor de la media del entrenamiento, es decir, no extrae señal de los lags. En la serie SKG, con solo 138 ventanas por corredor, ni siquiera los clásicos superan de forma clara a la persistencia, por lo que el valor operativo reside en el modelo lineal sobre lags y no en kernels más expresivos. ZZ es el mapa del corpus; un mapa distinto beneficiaría otra familia de series.
-
-% =====================================================================
-\section{Síntesis comparativa y discusión general}
-% =====================================================================
-
-La Tabla~\ref{tab:sintesis} sintetiza los resultados principales del estudio comparativo.
-
-\begin{table}[ht]
-\centering
-\small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{>{\centering\arraybackslash}p{0.7cm}>{\raggedright\arraybackslash}p{2.4cm}>{\centering\arraybackslash}p{2.5cm}>{\centering\arraybackslash}p{2.5cm}>{\centering\arraybackslash}p{2.5cm}}
-\hline
-\textbf{CU} & \textbf{Algoritmo cuántico} & \textbf{Cuántico-nativo} & \textbf{SKG} & \textbf{Referencia} \\
-\hline
-1 & QSVM & \textbf{+38.3 pp} & $-$4.5 pp & $-$3.8 pp \\
-2 & QK-SVR & \textbf{$+0.965\,\Delta R^2$} & $-0.562\,\Delta R^2$ & $-0.928\,\Delta R^2$ \\
-3 & QAOA ($p=1$) & \multicolumn{3}{>{\centering\arraybackslash}p{8.0cm}}{Iguala al óptimo exacto en 5/5 instancias; sin ventaja (coste idéntico)} \\
-4 & VQE/QAOA & \multicolumn{3}{>{\centering\arraybackslash}p{8.0cm}}{Óptimo en 6/10 semillas (QAOA) y 3/10 (VQE) con penalización 10; Greedy y fuerza bruta, siempre ($-40$ pp)} \\
-5 & QAOA TSP & \multicolumn{2}{c}{empate óptimo vs NN+2-opt ($n=4$)} & Euclidean gap~$0$ \\
-6 & QSVM (umbral) & $+8.9$ pp ($n=150$, una partición) & $-4.0$ pp (clásico) & $-3.8$ pp vs GB (clásico) \\
-7 & QAOA MDS ($p=3$) & \multicolumn{3}{>{\centering\arraybackslash}p{8.0cm}}{Red de 6 nodos: empate con ILP ($0$ pp); ER $n=6$--$15$: $-60$ pp de instancias con MDS óptimo (2/5 frente a 5/5)} \\
-8 & OCSVM-ZZ & \textbf{+31.2 pp AUC} (\texttt{zz\_phase}) & $-29.9$ pp (inyectado) & $-29.1$ pp (moons), $-50.8$ pp (blobs) \\
-9 & QK-SVR lags & \textbf{+86.6\% MAE} (\texttt{zz\_lag}) & $-385.6\%$ (\texttt{skg\_speed}) & $-154.9\%$ (\texttt{sine}) \\
-\hline
-\end{tabular}
-\caption{Síntesis cuántico vs clásico, generada por \texttt{scripts/sintesis\_resultados.py} a partir de las salidas ejecutadas. Positivo = favorece al método cuántico; unidades: pp de exactitud (CU1, CU6), $\Delta R^2$ (CU2), pp de AUC (CU8) y mejora relativa del MAE (CU9). Negrita = ventaja sobre el mejor clásico. En kernels, la ventaja aparece \textbf{solo} en el régimen cuántico-nativo (datos generados por el propio mapa); en SKG y Telco gana GB/RF (Telco $-3.8$~pp frente a Gradient Boosting). Los Casos~1, 2 y~6 usan una sola partición con 45--60 puntos de test (granularidad de $\pm2.2$~pp).}
-\label{tab:sintesis}
-\end{table}
+Evalúa las $2^6$ biparticiones y devuelve corte $8$ en decenas de microsegundos (Figura~\ref{fig:maxcut_bf}). En MaxCut el espacio es el de asignar un bit por vértice, exactamente el espacio de un circuito de 6 qubits, y la enumeración lo recorre entero. El óptimo de referencia queda fijado antes de hablar de ansatz.
 
 \begin{figure}[!htbp]
 \centering
-\begin{tikzpicture}[font=\small, thick,
-    bg/.style={rectangle, rounded corners=3pt, minimum width=1.3cm, minimum height=0.7cm, align=center},
-    verde/.style={bg, fill=green!22, draw=green!55!black},
-    amarillo/.style={bg, fill=yellow!30, draw=yellow!65!black},
-    rojo/.style={bg, fill=red!18, draw=red!50!black},
-    header/.style={font=\bfseries\footnotesize, align=center}]
-
-  % Columnas: x = 0(CU), 2.2(Algoritmo), 5.5(Resultado), 8.2(Escala NISQ), 10.9(Valor SKG)
-  \node[header] at (0,    0) {CU};
-  \node[header] at (2.4,  0) {Algoritmo cuántico};
-  \node[header] at (5.6,  0) {Resultado\\ Q vs C};
-  \node[header] at (8.3,  0) {Escalabilidad\\ NISQ};
-  \node[header] at (11.0, 0) {Valor\\ para SKG};
-
-  \draw[gray!40, thick] (-0.5, -0.42) -- (12.3, -0.42);
-
-  % Fila 1 – CU1
-  \node[font=\footnotesize] at (0,    -1.0) {1};
-  \node[font=\footnotesize, align=left] at (2.4, -1.0) {QSVM};
-  \node[verde]    at (5.6,  -1.0) {\scriptsize Ventaja};
-  \node[amarillo] at (8.3,  -1.0) {\scriptsize Moderada};
-  \node[amarillo] at (11.0, -1.0) {\scriptsize Moderado};
-
-  % Fila 2 – CU2
-  \node[font=\footnotesize] at (0,    -1.9) {2};
-  \node[font=\footnotesize, align=left] at (2.4, -1.9) {QK-SVR};
-  \node[rojo]     at (5.6,  -1.9) {\scriptsize Desventaja};
-  \node[amarillo] at (8.3,  -1.9) {\scriptsize Moderada};
-  \node[rojo]     at (11.0, -1.9) {\scriptsize Bajo};
-
-  % Fila 3 – CU3
-  \node[font=\footnotesize] at (0,    -2.8) {3};
-  \node[font=\footnotesize, align=left] at (2.4, -2.8) {QAOA ($p{=}1$)};
-  \node[amarillo] at (5.6,  -2.8) {\scriptsize Empate};
-  \node[amarillo] at (8.3,  -2.8) {\scriptsize Moderada};
-  \node[amarillo] at (11.0, -2.8) {\scriptsize Moderado};
-
-  % Fila 4 – CU4
-  \node[font=\footnotesize] at (0,    -3.7) {4};
-  \node[font=\footnotesize, align=left] at (2.4, -3.7) {VQE / QAOA};
-  \node[rojo]     at (5.6,  -3.7) {\scriptsize Desventaja};
-  \node[amarillo] at (8.3,  -3.7) {\scriptsize Moderada};
-  \node[amarillo] at (11.0, -3.7) {\scriptsize Moderado};
-
-  % Fila 5 – CU5
-  \node[font=\footnotesize] at (0,    -4.6) {5};
-  \node[font=\footnotesize, align=left] at (2.4, -4.6) {QAOA TSP};
-  \node[amarillo] at (5.6,  -4.6) {\scriptsize Empate ópt.};
-  \node[rojo]     at (8.3,  -4.6) {\scriptsize Limitada};
-  \node[amarillo] at (11.0, -4.6) {\scriptsize Selectivo};
-
-  % Fila 6 – CU6
-  \node[font=\footnotesize] at (0,    -5.5) {6};
-  \node[font=\footnotesize, align=left] at (2.4, -5.5) {QSVM (umbral)};
-  \node[amarillo] at (5.6,  -5.5) {\scriptsize Condicional};
-  \node[amarillo] at (8.3,  -5.5) {\scriptsize Moderada};
-  \node[amarillo] at (11.0, -5.5) {\scriptsize Moderado};
-
-  % Fila 7 – CU7
-  \node[font=\footnotesize] at (0,    -6.4) {7};
-  \node[font=\footnotesize, align=left] at (2.4, -6.4) {QAOA MDS};
-  \node[rojo]     at (5.6,  -6.4) {\scriptsize Desventaja};
-  \node[amarillo] at (8.3,  -6.4) {\scriptsize Moderada};
-  \node[amarillo] at (11.0, -6.4) {\scriptsize Moderado};
-
-  % Fila 8 – CU8
-  \node[font=\footnotesize] at (0,    -7.3) {8};
-  \node[font=\footnotesize, align=left] at (2.4, -7.3) {OCSVM-ZZ};
-  \node[amarillo] at (5.6,  -7.3) {\scriptsize Condicional};
-  \node[amarillo] at (8.3,  -7.3) {\scriptsize Moderada};
-  \node[amarillo] at (11.0, -7.3) {\scriptsize Selectivo};
-
-  % Fila 9 – CU9
-  \node[font=\footnotesize] at (0,    -8.2) {9};
-  \node[font=\footnotesize, align=left] at (2.4, -8.2) {QK-SVR lags};
-  \node[amarillo] at (5.6,  -8.2) {\scriptsize Condicional};
-  \node[amarillo] at (8.3,  -8.2) {\scriptsize Moderada};
-  \node[amarillo] at (11.0, -8.2) {\scriptsize Selectivo};
-
-  % Leyenda
-  \node[verde,    minimum width=0.9cm] (lg) at (2.0, -9.3) {};
-  \node[right=4pt, font=\scriptsize] at (lg.east) {Favorable / Ventaja cuántica};
-  \node[amarillo, minimum width=0.9cm] (ly) at (6.5, -9.3) {};
-  \node[right=4pt, font=\scriptsize] at (ly.east) {Moderado / Empate};
-  \node[rojo,     minimum width=0.9cm] (lr) at (10.2, -9.3) {};
-  \node[right=4pt, font=\scriptsize] at (lr.east) {Desfavorable};
-
-\end{tikzpicture}
-\caption{Semáforo de resultados por caso de uso. Azul = favorable; gris claro = moderado, empate o condicional; gris = desfavorable. La columna ``Resultado'' se deriva de la Tabla~\ref{tab:sintesis}; ``Escalabilidad NISQ'' y ``Valor para SKG'' son valoraciones cualitativas del autor, no mediciones. Los Casos~8 y~9 son condicionales: hay ventaja cuando novedad o target están alineados con el feature map (aquí ZZ). Caso~7: empate en la red de 6 nodos y $-60$~pp de instancias con MDS óptimo en los grafos ER.}
-\label{fig:semaforo_resultados}
+\includegraphics[width=0.62\textwidth]{bruteforce_maxcut_cut.png}
+\caption{Corte óptimo de MaxCut por enumeración. Valor $8$.}
+\label{fig:maxcut_bf}
 \end{figure}
 
-\clearpage
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.97\textwidth]{opt_classical_vs_quantum_mean.png}
-\caption{Dashboard de los nueve casos de uso, generado a partir de \texttt{07\_sintesis\_resultados.csv}. Cada panel usa la unidad de su caso (pp de exactitud, $\Delta R^2\times100$, \% de coste, pp de AUC, \% de MAE o pp de instancias con MDS óptimo); positivo favorece al método cuántico. Azul = ventaja cuántica; gris = clásico superior; gris claro = empate. Coherente con la Tabla~\ref{tab:sintesis}.}
-\label{fig:dashboard_sintesis}
-\end{figure}
+\subsubsection{Greedy}
+
+También corta $8$ (Figura~\ref{fig:maxcut_greedy}), aún más rápido. A diferencia del MDS, en esta instancia el crecimiento local de la partición no se queda corto. El grafo es denso (12 aristas sobre 6 vértices) y varios cortes alcanzan el óptimo, así que una heurística miope tiene donde acertar. No se generaliza al MDS, donde el mismo tipo de regla falló.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.90\textwidth]{opt_heatmap_mean.png}
-\caption{Mapa de calor de la ventaja cuántica sobre el mejor clásico por caso de uso y tipo de dataset, con la unidad indicada en cada fila; el color se satura en $\pm80$ y la anotación conserva el valor real. Las celdas azules aparecen solo con alineación feature map--generador (Casos~1, 2, 6, 8 y~9 en datos nativos). Las celdas grises reflejan dominio clásico. Los Casos~3, 4 y~5 no distinguen tipo de dataset y se sitúan en la columna de referencia; el Caso~7 se mide en pp de instancias con MDS óptimo frente a ILP/Greedy y se sitúa en la columna de referencia.}
-\label{fig:heatmap_ventaja_body}
+\includegraphics[width=0.62\textwidth]{greedy_maxcut_cut.png}
+\caption{Corte del greedy en MaxCut. Valor óptimo $8$.}
+\label{fig:maxcut_greedy}
 \end{figure}
+
+\subsubsection{ILP}
+
+CBC devuelve corte $8$ en $0.011\,\mathrm{s}$ (Figura~\ref{fig:maxcut_ilp}). El modelo lineal de MaxCut es compacto en 6 vértices y el arranque del solver pesa menos que en el TSP. Sigue siendo exacto y más lento que enumerar 64 asignaciones. Su papel en el protocolo es el método exacto de formulación nativa, al lado del QUBO que usan SA, QAOA y VQE.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{opt_success_vs_runtime_mean.png}
-\caption{Conteo teórico de operaciones del algoritmo de Grover ($\lfloor\pi\sqrt{N}/4\rfloor$ iteraciones) frente a la búsqueda clásica no estructurada ($N$ comparaciones) en función del tamaño del espacio de búsqueda $N$. Es una ilustración analítica: no se ejecutó Grover ni se midió tiempo, y no incluye el coste del oráculo. La aceleración cuadrática se hace evidente a partir de $N \approx 10^3$, ilustrando el tipo de ventaja estructural que la computación cuántica puede aportar a problemas de búsqueda y optimización.}
-\label{fig:grover_benchmark}
+\includegraphics[width=0.62\textwidth]{ilp_maxcut_cut.png}
+\caption{Corte del ILP en MaxCut. Valor $8$.}
+\label{fig:maxcut_ilp}
 \end{figure}
+
+\subsubsection{QUBO + simulated annealing}
+
+Corte $8$ en todas las semillas, unas $4000$ evaluaciones, $0.004\,\mathrm{s}$ (Figura~\ref{fig:maxcut_sa}). El QUBO de MaxCut no lleva restricciones de igualdad duras: la objetivo es el corte, y el paisaje que ve el SA es el mismo que el Hamiltoniano de coste de QAOA. Aquí el recocido clásico encuentra el mínimo que el circuito también encuentra, tres órdenes de magnitud antes.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{opt_runtime_tsp_vs_mds.png}
-\caption{Superposición de $n$ qubits tras aplicar Hadamard a $|0\rangle^{\otimes n}$: el vector de estado tiene $2^n$ amplitudes iguales ($1/2^n$ de probabilidad cada una). Que el espacio de Hilbert crezca exponencialmente no implica que el computador cuántico evalúe $2^n$ casos a la vez: una medición devuelve un único resultado, y la ventaja de algoritmos como Grover o Shor proviene de la interferencia, no del mero paralelismo.}
-\label{fig:paralelismo_cuantico}
+\includegraphics[width=0.62\textwidth]{sa_maxcut_cut.png}
+\caption{Corte del simulated annealing en MaxCut. Valor óptimo en las semillas reportadas.}
+\label{fig:maxcut_sa}
 \end{figure}
 
-\subsection{Patrones transversales}
+\subsubsection{QAOA}
 
-Los resultados evidencian tres patrones transversales que son coherentes con el estado actual de la teoría y la tecnología cuántica:
+Corte $8$, éxito $1$, unas $40$ evaluaciones, $1.25\,\mathrm{s}$ (Figura~\ref{fig:maxcut_qaoa}). Pocas evaluaciones bastan porque el problema es el ejemplo estándar del ansatz: $U_C$ es el Hamiltoniano del corte y $U_B$ mezcla las biparticiones \citep{farhi2014, pennylaneQaoaMaxcut}. La calidad empata con la enumeración. El tiempo es el de simular el estado de 6 qubits, no el de probar 64 cortes. En la comparación cuantitativa, QAOA demuestra que el circuito codifica el problema; no que lo resuelva antes que recorrerlo.
 
-\begin{enumerate}
-  \item \textbf{La ventaja cuántica requiere alineación dato--feature map}: La ventaja observada en datos nativos es coherente con \cite{huang2021}: el feature map (ZZ u otro) debe estar alineado con el generador; ZZ es el mapa validado empíricamente en este TFM, no un monopolio. En datos reales sin esa alineación, Gradient Boosting y Random Forest mantienen su superioridad.
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{qaoa_maxcut_cut.png}
+\caption{Corte devuelto por QAOA. Valor óptimo $8$, en torno a $1.2\,\mathrm{s}$ de simulación.}
+\label{fig:maxcut_qaoa}
+\end{figure}
 
-  \item \textbf{El cuello de botella es la escala}: En todos los casos, la principal limitación práctica del enfoque cuántico no es la calidad del algoritmo sino el coste cuadrático del kernel ($O(n^2)$) y el número de qubits disponibles \citep{haug2023, cerezo2021}. Esta limitación es una función del hardware actual, no del algoritmo en sí.
+\subsubsection{VQE}
 
-  \item \textbf{Los resultados negativos son informativos}: Los casos donde el QSVM o el QK-SVR son inferiores a los clásicos en datos reales no son fracasos experimentales, sino resultados metodológicamente valiosos que delimitan el dominio de aplicabilidad. El Caso~8 añade el mismo matiz en one-class: OCSVM-ZZ no sustituye IsolationForest salvo cuando la novedad está alineada con el mapa (aquí \texttt{zz\_phase}), no cuando es geométrica clásica.
-\end{enumerate}
+Corte $8$, unas $240$ evaluaciones, $1.80\,\mathrm{s}$ (Figura~\ref{fig:maxcut_vqe}). Más llamadas al Hamiltoniano que QAOA para el mismo corte: el ansatz genérico no trae la alternancia coste--mezclador que ya es el algoritmo de MaxCut. La calidad no distingue a los dos. El número de evaluaciones sí, y ambos quedan lejos de los $7\cdot 10^{-5}\,\mathrm{s}$ de la enumeración \citep{peruzzo2014, lubinski2024}.
 
-\subsection{Implicaciones para la adopción empresarial}
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{vqe_maxcut_cut.png}
+\caption{Corte devuelto por VQE. Mismo óptimo que QAOA, con más evaluaciones de energía.}
+\label{fig:maxcut_vqe}
+\end{figure}
 
-Desde la perspectiva de SKG Tecnología, los resultados sugieren que la integración de algoritmos cuánticos en los sistemas de gestión de movilidad urbana requiere dos condiciones previas: (i) hardware cuántico con mayor número de qubits lógicos y menor tasa de error \citep{preskill2018, cerezo2023}, para operar sobre más features sin reducción dimensional, y (ii) ingeniería de features específica que alinee la representación de los datos con las estructuras geométricas accesibles por los kernels cuánticos \citep{huang2021}. En el corto plazo (horizonte 2--5 años), el valor más realista de la computación cuántica para SKG reside en los algoritmos de optimización combinatoria (QAOA, VQE) para problemas de asignación de recursos, aunque en los casos medidos aquí (3, 4, 5 y 7) ningún solver cuántico ha superado a los exactos \citep{farhi2014}.
+\subsection{Lectura de la familia}
 
-El hilo conductor de los nueve casos de uso es precisamente la demostración de que los algoritmos cuánticos no necesitan reemplazar a los clásicos para ser útiles: basta con que resuelvan de forma más eficaz la parte del problema que es intratable para la computación clásica \citep{biamonte2017}. El Caso~7 lo ilustra de forma paradigmática: aplicar QAOA al conjunto dominante mínimo ---un problema NP-difícil--- y conectarlo con un optimizador clásico COBYLA a través de una interfaz mínima es exactamente el patrón con el que la computación cuántica puede integrarse en entornos productivos reales \citep{farhi2014}. El prototipo de arquitectura híbrida desarrollado en la Sección~\ref{sec:prototipo_hibrido} del Capítulo~\ref{cap:metodologia} formaliza este patrón y define los criterios de activación del módulo cuántico según el tipo de problema.
-
-\subsection{Resultados adicionales y visualización}
-
-El análisis de escalabilidad del caso~1 se sintetiza en la Figura~\ref{fig:escala_clasificacion}: ventaja positiva en $n \in [30, 180]$ (10 repeticiones por tamaño) \textbf{solo} en el régimen cuántico-nativo. La geometría de kernel se reporta vía los indicadores tabulares del Capítulo~\ref{cap:investigacion_original} ($\Delta A$, $d_F$, $\Delta H$); no se usan heatmaps regenerados a posteriori (las matrices $K$ no se exportaron a artefactos). $\mathcal{Q}>0$ vs.\ un baseline débil no basta como veredicto operativo.
-
+En las tres instancias el óptimo es alcanzable por enumeración en menos de un milisegundo. El ILP también es exacto; su wall-clock mide el arranque de CBC, que en el TSP llega al segundo y en MaxCut baja a centésimas. El greedy solo falla en MDS, donde la elección local produce un conjunto de tamaño $3$ y el óptimo es $2$. El SA sobre QUBO empata con el óptimo en MDS y MaxCut y se deja una semilla de cada diez en el TSP, siempre en centésimas de segundo. QAOA y VQE, en simulación, recuperan $C^\star$ salvo QAOA en MDS (éxito $0.875$, $12.2\,\mathrm{s}$). Cuando aciertan, el circuito está bien planteado sobre el QUBO; el tiempo es el de evaluar el ansatz, no una búsqueda más corta que $2^n$ en $n\le 6$ \citep{farhi2014, lubinski2024}. La lectura conjunta de calidad y latencia, en este régimen, es que el óptimo ya está en los métodos exactos clásicos y en el annealing, y que el circuito lo reproduce con un coste de simulación mayor.
