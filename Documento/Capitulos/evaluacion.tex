@@ -1,11 +1,11 @@
 % !TEX root = ../main.tex
 \chapter{Resultados y análisis}\label{cap:evaluacion}
 
-Este capítulo aplica el protocolo del Capítulo~\ref{cap:metodologia} y responde a la pregunta del trabajo: en simulación de pocos qubits, qué calidad obtienen los métodos cuánticos y cuántico-inspirados frente a sus referentes clásicos, y a qué coste. Cada familia se presenta igual. Primero va una tabla con las seis implementaciones; después, una lectura por implementación que explica el resultado desde la hipótesis del método (kernel, árboles, feature map, ansatz o formulación QUBO); al final, una lectura conjunta \citep{huang2021, cerezo2021, lucas2014}. Las cifras proceden de las métricas exportadas por los notebooks. Los tiempos se interpretan por orden de magnitud, por la variabilidad entre ejecuciones descrita en las limitaciones del diseño.
+Este capítulo aplica el protocolo del Capítulo~\ref{cap:metodologia} y responde a la pregunta del trabajo: en simulación de pocos qubits, qué calidad obtienen los métodos cuánticos y cuántico-inspirados frente a sus referentes clásicos, y a qué coste. Cada familia se presenta igual. Primero va una tabla con las seis implementaciones; después, una lectura por implementación que separa lo medido de lo que el experimento no permite atribuir; al final, una lectura conjunta \citep{huang2021, cerezo2021, lucas2014}. Las cifras proceden de las métricas exportadas por los notebooks. Los tiempos se interpretan por orden de magnitud, por la variabilidad entre ejecuciones descrita en las limitaciones del diseño.
 
 \section{Clasificación}
 
-La Figura~\ref{fig:cls_dataset} resume la familia. En Iris y Bars and Stripes la media cuántica de accuracy queda $0.083$ y $0.101$ por debajo de la clásica; en Ising las dos medias coinciden ($0.971$). La diferencia no está en los modelos, que son los mismos en los tres casos, sino en el dato: Ising es el único cuyo generador es un sistema cuántico. El resto de la sección explica de dónde sale ese patrón.
+La Figura~\ref{fig:cls_dataset} resume la familia. En Iris y Bars and Stripes la media cuántica de accuracy queda $0.083$ y $0.101$ por debajo de la clásica; en Ising las dos medias coinciden ($0.971$). Ising es también el dataset en el que los seis modelos superan $0.95$ de accuracy: la paridad aparece en el caso más fácil del corpus.
 
 \begin{figure}[!htbp]
 \centering
@@ -45,21 +45,21 @@ VQC & 0.950 & 0.950 & --- & $-0.006$ & 49.305 & 0.151 \\
 \includegraphics[width=0.32\textwidth]{qsvm_iris_pca_boundary.png}\hfill
 \includegraphics[width=0.32\textwidth]{qnn_iris_pca_boundary.png}\hfill
 \includegraphics[width=0.32\textwidth]{vqc_iris_pca_boundary.png}
-\caption{Fronteras de decisión en Iris sobre las dos primeras componentes principales. Fila superior: SVM, Random Forest y XGBoost; fila inferior: QSVM, QNN y VQC. Los círculos marcan errores de test.}
+\caption{Fronteras de decisión en Iris. Cada panel evalúa el modelo entrenado sobre el plano de las dos primeras componentes principales de su entrada, con las demás direcciones fijas en la media del train. Fila superior: SVM, Random Forest y XGBoost; fila inferior: QSVM, QNN y VQC. Puntos: test; círculos: errores de test.}
 \label{fig:iris_fronteras}
 \end{figure}
 
-\paragraph{SVM.} El kernel RBF traza tres regiones suaves y falla dos muestras de test, ambas en el solape. El gap de $0.011$ indica que el margen generaliza, y el ajuste dura $2\,\mathrm{ms}$. Un kernel isótropo ya está alineado con esta geometría.
+\paragraph{SVM.} El kernel RBF traza tres regiones suaves y falla dos muestras de test, ambas en el solape entre versicolor y virginica. El gap es $0.011$ y el ajuste dura $2\,\mathrm{ms}$.
 
-\paragraph{Random Forest y XGBoost.} Empatan en F1 ($0.950$, un error más que el SVM) con un gap de $0.050$. Sus fronteras son particiones por umbrales sobre los ejes: suficientes para aislar setosa y menos estables en el solape. Con 90 muestras de entrenamiento, ni el bagging ni el boosting encuentran interacciones que el RBF no cubra ya \citep{breiman2001, chen2016}.
+\paragraph{Random Forest y XGBoost.} Empatan en F1 ($0.950$, un error más que el SVM) y ajustan el train por completo, de ahí el gap de $0.050$. En el espacio de entrada sus fronteras son umbrales por variable; en la proyección de la Figura~\ref{fig:iris_fronteras} aparecen como cortes casi rectos. Con 90 muestras de entrenamiento no mejoran al RBF \citep{breiman2001, chen2016}.
 
-\paragraph{QSVM.} Es el peor modelo del dataset: 16 errores de 60 y un gap de $0.233$, el mayor del corpus. La Figura~\ref{fig:iris_fronteras} muestra la causa: el kernel de fidelidad del mapa ZZ fragmenta el plano en islas, y los errores aparecen también en la clase que los demás modelos separan sin fallo. Los términos $(\pi-x_i)(\pi-x_j)$ del mapa inducen una similitud que oscila con productos de ángulos, una estructura que el generador de Iris no tiene \citep{havlicek2019, huang2021}. El kernel memoriza el train (accuracy $0.967$) y no generaliza.
+\paragraph{QSVM.} Es el peor modelo del dataset: 16 errores de 60, accuracy de train $0.967$ y un gap de $0.233$, el mayor del corpus. En la Figura~\ref{fig:iris_fronteras} el kernel de fidelidad fragmenta el plano en islas y falla también muestras de setosa, la clase que los otros cinco modelos clasifican sin error. El resultado es compatible con lo que describen \citet{huang2021}: un kernel cuántico cuya geometría no se ajusta al dato puede generalizar peor que uno clásico. El experimento muestra el sobreajuste, pero no aísla su causa.
 
-\paragraph{QNN y VQC.} Los dos embeddings angulares se acercan al clásico: la QNN queda a un error del bosque y el VQC lo iguala. Una preparación separable $\bigotimes_i R(x_i)$ seguida de capas entrenables produce fronteras continuas, sin las islas del kernel ZZ. La diferencia está en el coste. El VQC necesita $49\,\mathrm{s}$ de entrenamiento, cuatro órdenes de magnitud más que el SVM, para la calidad de los árboles \citep{cerezo2021, bowles2024}.
+\paragraph{QNN y VQC.} Se acercan al clásico: la QNN queda a un error del bosque y el VQC lo iguala. Sus fronteras son suaves, sin la fragmentación del QSVM. La diferencia está en el coste: el VQC necesita $49\,\mathrm{s}$ de entrenamiento, cuatro órdenes de magnitud más que el SVM, para la calidad de los árboles \citep{cerezo2021, bowles2024}.
 
 \subsection{Bars and Stripes}
 
-El patrón $4\times 4$ se aplana ($d=16$) y la PCA a cuatro componentes retiene el 57.5\,\% de la varianza. En el plano principal las dos clases ocupan la misma región (Figura~\ref{fig:bs_prelim}). Es el dataset más difícil para todos los modelos y en el que la familia cuántica queda más lejos (Tabla~\ref{tab:res_bs}).
+El patrón $4\times 4$ se aplana ($d=16$) y la PCA a cuatro componentes retiene el 57.5\,\% de la varianza. En el plano principal las dos clases ocupan la misma región (Figura~\ref{fig:bs_prelim}). Es el dataset con menor accuracy para cinco de los seis modelos (el QSVM rinde aún peor en Iris) y en el que la familia cuántica queda más lejos (Tabla~\ref{tab:res_bs}).
 
 \begin{table}[!htbp]
 \centering
@@ -88,23 +88,23 @@ VQC & 0.696 & 0.688 & --- & 0.014 & 12.432 & 1.872 \\
 \includegraphics[width=0.32\textwidth]{qsvm_bs_pca_boundary.png}\hfill
 \includegraphics[width=0.32\textwidth]{qnn_bs_pca_boundary.png}\hfill
 \includegraphics[width=0.32\textwidth]{vqc_bs_pca_boundary.png}
-\caption{Fronteras de decisión en Bars and Stripes sobre las dos primeras componentes principales. Fila superior: SVM, Random Forest y XGBoost; fila inferior: QSVM, QNN y VQC.}
+\caption{Fronteras de decisión en Bars and Stripes, con la misma construcción que la Figura~\ref{fig:iris_fronteras}. Las dos primeras componentes no separan las clases, así que el plano solo muestra una sección de cada frontera. Fila superior: SVM, Random Forest y XGBoost; fila inferior: QSVM, QNN y VQC.}
 \label{fig:bs_fronteras}
 \end{figure}
 
 \paragraph{SVM.} Vuelve a dar el mejor F1 con un gap de $0.021$. Opera sobre las mismas cuatro componentes que los circuitos, así que su ventaja no procede de ver más información.
 
-\paragraph{Random Forest y XGBoost.} Quedan a 2 puntos del SVM en F1 y lo superan en AUC ($0.943$ y $0.953$): ordenan mejor los scores aunque fallen más etiquetas duras. El bosque tiene el gap más alto del dataset ($0.146$): sus hojas memorizan combinaciones de componentes que no se repiten en test. El boosting, regularizado por profundidad 3, reduce ese gap a menos de la mitad.
+\paragraph{Random Forest y XGBoost.} Quedan 1.6 y 2.1 puntos por debajo del SVM en F1 y lo superan en AUC ($0.943$ y $0.953$ frente a $0.936$): ordenan mejor los scores aunque acierten menos etiquetas con el umbral por defecto. El bosque ajusta el train por completo (accuracy $1.0$) y tiene el gap más alto del dataset ($0.146$). XGBoost, con árboles de profundidad 3, llega a $0.917$ en train y su gap ($0.067$) es menos de la mitad.
 
-\paragraph{QSVM.} F1 $0.758$, 11 puntos bajo el SVM. Las cuatro componentes no tienen la estructura de correlaciones entre ángulos que el mapa ZZ explota. El coste cambia de escala: la matriz de fidelidad crece con el producto de los tamaños de train y test (720 y 480), y ajuste e inferencia pasan de milisegundos a $1.4\,\mathrm{s}$ cada uno \citep{huang2021, schuld2021}.
+\paragraph{QSVM.} F1 $0.758$, 11 puntos bajo el SVM, con un gap de $0.110$. El coste cambia de escala: el ajuste evalúa el kernel sobre los $720\times720$ pares de train y la inferencia sobre los $480\times720$ pares test--train, y ambos pasan de milisegundos a $1.4\,\mathrm{s}$ \citep{schuld2021}.
 
-\paragraph{QNN.} Es el mejor modelo cuántico del dataset. Su AUC ($0.936$) iguala al del SVM aunque su F1 quede 5.5 puntos por debajo: la cabeza lineal sobre $\langle Z_i\rangle$ ordena bien las clases y sitúa peor el umbral. El gap negativo ($-0.006$) descarta sobreajuste. El límite está en la capacidad de la representación angular, no en la regularización.
+\paragraph{QNN.} Es el mejor modelo cuántico del dataset. Su AUC ($0.936$) es prácticamente la del SVM, aunque su F1 quede 5.5 puntos por debajo. Su accuracy de train ($0.811$) es menor que la de test ($0.817$): no hay sobreajuste, y el modelo tampoco ajusta mejor los datos con los que se entrena.
 
-\paragraph{VQC.} F1 $0.688$, el mínimo del corpus. La Figura~\ref{fig:bs_fronteras} muestra un corte casi lineal sobre una nube sin margen: dos capas \texttt{Rot}+CNOT leídas en dos valores esperados $\langle Z_0\rangle,\langle Z_1\rangle$ no tienen grados de libertad para seguir el solape. El mismo circuito igualaba a los árboles en Iris, donde una clase está separada. Más capas aumentarían el coste de simulación sin garantía de alinear el mapa con el dato \citep{cerezo2021}.
+\paragraph{VQC.} F1 $0.688$, el mínimo del corpus, con accuracy de train $0.710$: el modelo no ajusta ni el train. Lee solo dos valores esperados, $\langle Z_0\rangle$ y $\langle Z_1\rangle$, tras dos capas \texttt{Rot}+CNOT. En Iris el mismo circuito igualaba a los árboles \citep{cerezo2021}.
 
 \subsection{Ising}
 
-Las features son las amplitudes del estado fundamental de la cadena de la Figura~\ref{fig:ising_chain}, reducidas a cuatro componentes que retienen el 99.9\,\% de la varianza. La etiqueta es la fase, $y=\mathbf{1}[h>|J|]$. Es el único dataset en el que un modelo cuántico empata con el mejor clásico (Tabla~\ref{tab:res_ising}). Con 80 muestras de test, cada error resta $0.0125$ de accuracy: las diferencias entre modelos son de uno a tres errores.
+Las features son las amplitudes del estado fundamental de la cadena de la Figura~\ref{fig:ising_chain}, en sus versiones abierta y cerrada con 100 valores de $h$ cada una, reducidas a cuatro componentes que retienen el 99.9\,\% de la varianza. La etiqueta es la fase, $y=\mathbf{1}[h>|J|]$. En el plano principal las muestras de cada cadena forman una curva y la fase cambia a lo largo de ella. Es el único dataset en el que un modelo cuántico empata con el mejor clásico (Tabla~\ref{tab:res_ising}). Con 80 muestras de test, cada error resta $0.0125$ de accuracy: las diferencias entre modelos son de uno a tres errores.
 
 \begin{table}[!htbp]
 \centering
@@ -125,15 +125,15 @@ VQC & 0.975 & 0.969 & --- & 0.000 & 11.396 & 0.210 \\
 \label{tab:res_ising}
 \end{table}
 
-\paragraph{SVM, Random Forest y XGBoost.} Los tres alcanzan AUC $\geq 0.996$: las amplitudes del estado fundamental cambian lo bastante con $h$ como para que un margen o unos umbrales separen las fases. El SVM falla una muestra y XGBoost cuatro, todas de la misma fase (recall macro $0.917$). El RBF no necesita saber que el vector procede de un estado cuántico.
+\paragraph{SVM, Random Forest y XGBoost.} Los tres alcanzan AUC $\geq 0.996$: las amplitudes cambian lo bastante con $h$ como para que un margen o unos umbrales separen las fases. El SVM falla una muestra y XGBoost cuatro, todas de la fase ordenada ($h\le|J|$), de ahí su recall macro de $0.917$.
 
-\paragraph{QSVM.} Empata con el SVM en todas las métricas. Aquí el mapa ZZ está cerca del generador: el Hamiltoniano de la cadena contiene términos $Z_iZ_{i+1}$, los mismos que el mapa entrelaza, y la etiqueta es una propiedad de ese Hamiltoniano \citep{huang2021, havlicek2019}. El mismo kernel que fragmentaba Iris recupera aquí al mejor clásico. El empate de calidad no se traslada al tiempo: el QSVM tarda $0.11\,\mathrm{s}$ en ajustar y $0.14\,\mathrm{s}$ en predecir, frente a $2\,\mathrm{ms}$ y $0.4\,\mathrm{ms}$ del SVM.
+\paragraph{QSVM.} Empata con el SVM en todas las métricas. El empate no indica que el mapa ZZ capture la física de la cadena: el mapa actúa sobre cuatro componentes principales de las amplitudes, no sobre los espines, y en el plano principal sigue fragmentando el espacio en islas, como en Iris. La paridad se da en el dataset más fácil del corpus. Tampoco se traslada al tiempo: el QSVM tarda $0.11\,\mathrm{s}$ en ajustar y $0.13\,\mathrm{s}$ en predecir, frente a $2\,\mathrm{ms}$ y $0.4\,\mathrm{ms}$ del SVM.
 
-\paragraph{QNN y VQC.} El VQC iguala al bosque y la QNN a XGBoost. Las dos preparaciones angulares son separables y no codifican las correlaciones $Z_iZ_j$ que aprovecha el QSVM; las capas entrenables las recuperan solo en parte. El VQC vuelve a ser el modelo más caro ($11.4\,\mathrm{s}$).
+\paragraph{QNN y VQC.} El VQC iguala al bosque (dos errores) y la QNN a XGBoost (cuatro). El VQC vuelve a ser el modelo más caro ($11.4\,\mathrm{s}$).
 
 \subsection{Lectura de la familia}
 
-La Figura~\ref{fig:cls_acc_dataset} muestra la accuracy por modelo y dataset. Los clásicos se mueven en una banda estrecha: el SVM varía 12 puntos entre su peor dataset (Bars and Stripes) y el mejor (Ising). El QSVM varía 25 puntos y el VQC 28. La sensibilidad al dato es mayor en los modelos cuánticos, y en el QSVM sigue la alineación entre mapa y generador: es el peor modelo en Iris y empata con el mejor en Ising.
+La Figura~\ref{fig:cls_acc_dataset} muestra la accuracy por modelo y dataset. Entre su peor y su mejor dataset, los clásicos varían de 10 a 12 puntos de accuracy y la QNN 13; el QSVM varía 25 y el VQC 28. QSVM y VQC son los modelos más sensibles al dataset: el QSVM es el peor en Iris y empata con el mejor en Ising.
 
 \begin{figure}[!htbp]
 \centering
@@ -142,7 +142,7 @@ La Figura~\ref{fig:cls_acc_dataset} muestra la accuracy por modelo y dataset. Lo
 \label{fig:cls_acc_dataset}
 \end{figure}
 
-La Figura~\ref{fig:cls_coste} cruza calidad media y coste de entrenamiento. El SVM ocupa la esquina de mayor F1 medio ($0.940$) y menor tiempo ($2\,\mathrm{ms}$). Ningún modelo cuántico está en la frontera de Pareto: la QNN, el mejor cuántico en media (F1 $0.895$), entrena tres órdenes de magnitud más despacio, y el VQC (F1 $0.869$) cuatro. En inferencia, QSVM y VQC son dos órdenes más lentos que los clásicos porque cada predicción vuelve a simular el circuito; la QNN predice en milisegundos porque su coste está en el entrenamiento.
+La Figura~\ref{fig:cls_coste} cruza calidad media y coste de entrenamiento. El SVM ocupa la esquina de mayor F1 medio ($0.940$) y menor tiempo ($2\,\mathrm{ms}$). Ningún modelo cuántico está en la frontera de Pareto: la QNN, el mejor cuántico en media (F1 $0.895$), entrena tres órdenes de magnitud más despacio, y el VQC (F1 $0.869$) cuatro. En inferencia, QSVM y VQC son de dos a tres órdenes más lentos que los clásicos: el QSVM calcula la fidelidad de cada muestra de test con todo el train y el VQC simula el circuito muestra a muestra. La QNN predice en milisegundos.
 
 \begin{figure}[!htbp]
 \centering
@@ -153,7 +153,9 @@ La Figura~\ref{fig:cls_coste} cruza calidad media y coste de entrenamiento. El S
 
 \section{Optimización}
 
-Las tres instancias tienen óptimo conocido y caben en enumeración. La Tabla~\ref{tab:res_opt} reúne los resultados y la Tabla~\ref{tab:paisaje} describe cuán difícil es cada instancia para un método que muestrea soluciones. Esa dificultad explica la mayor parte de lo que sigue.
+Las tres instancias tienen óptimo conocido y caben en enumeración. La Tabla~\ref{tab:res_opt} reúne los resultados y la Tabla~\ref{tab:paisaje} describe cada instancia como el espacio de $2^6$ bitstrings que muestrean QAOA y VQE.
+
+La forma de leer la solución condiciona cómo se interpreta el éxito de los solvers variacionales. En TSP y MDS, QAOA y VQE devuelven el bitstring de menor energía QUBO entre 3000 o 4000 muestras, y VQE en MaxCut el de mayor corte entre 500. Un muestreo uniforme de ese tamaño contendría el óptimo con probabilidad prácticamente 1 en las tres instancias, así que en esos casos un éxito de 1 no prueba que el circuito concentre probabilidad en el óptimo. Esa concentración solo se conoce en QAOA: en MDS el notebook registra la probabilidad de medir el óptimo, y en MaxCut la lectura es el bitstring más frecuente de 200 muestras.
 
 \begin{table}[!htbp]
 \centering
@@ -173,7 +175,7 @@ QAOA & 1.00 & 16.0 & 1.122 & 0.875 & 2.25 & 12.597 & 1.00 & 8.0 & 0.644 \\
 VQE & 1.00 & 16.0 & 2.021 & 1.00 & 2.00 & 1.594 & 1.00 & 8.0 & 0.980 \\
 \bottomrule
 \end{tabular}
-\caption{Resultados de optimización. $\bar C$ es el coste medio sobre ejecuciones (corte medio en MaxCut) y $t$, el tiempo medio por ejecución. Evaluaciones de energía por ejecución: SA 5001, 4001 y 4000; QAOA 356, 4000 y 40; VQE 720, 600 y 240 (TSP, MDS y MaxCut).}
+\caption{Resultados de optimización. $\bar C$ es el coste medio sobre ejecuciones (corte medio en MaxCut) y $t$, el tiempo medio por ejecución. Evaluaciones de energía por ejecución (TSP, MDS y MaxCut): SA 5001, 4001 y 4000; QAOA 356, 4000 y 40 pasos de Adagrad; VQE 720, 600 y 240. En VQE y en QAOA sobre MDS coinciden con el máximo permitido, reinicios $\times$ iteraciones de COBYLA.}
 \label{tab:res_opt}
 \end{table}
 
@@ -186,35 +188,35 @@ VQE & 1.00 & 16.0 & 2.021 & 1.00 & 2.00 & 1.594 & 1.00 & 8.0 & 0.980 \\
 \midrule
 Qubits / variables binarias & 6 & 6 & 6 \\
 Restricciones penalizadas & selección única & cobertura & ninguna \\
-Soluciones factibles & 2 de 6 rutas & 35 de 64 & 64 de 64 \\
-Soluciones óptimas & 1 & 1 & 18 \\
-P(óptimo) con una muestra uniforme & 0.17 (sobre rutas) & 0.016 & 0.28 \\
+Bitstrings factibles (de 64) & 2 & 35 & 64 \\
+Bitstrings óptimos & 1 & 1 & 18 \\
+P(óptimo) con una muestra uniforme & 0.016 & 0.016 & 0.28 \\
 \bottomrule
 \end{tabular}
-\caption{Paisaje de cada instancia. En el TSP, 4 de las 6 rutas candidatas usan una arista ausente. En MaxCut el óptimo está muy degenerado.}
+\caption{Cada instancia como espacio de $2^6$ bitstrings. En el TSP solo son factibles los bitstrings que seleccionan una única ruta y que esa ruta no use aristas ausentes, lo que deja 2 de las 6 rutas candidatas. En MaxCut los 18 bitstrings óptimos forman 9 cortes distintos salvo complemento.}
 \label{tab:paisaje}
 \end{table}
 
 \subsection{TSP}
 
-Solo dos de las seis rutas candidatas son factibles, con costes 16 y 19. Los seis solvers devuelven la misma ruta óptima, $[0,4,2,3,1,0]$ (Figura~\ref{fig:tsp_ruta}), y difieren solo en el camino y en el tiempo.
+Solo dos de las seis rutas candidatas son factibles, con costes 16 y 19. La ruta óptima, $[0,4,2,3,1,0]$ (Figura~\ref{fig:tsp_ruta}), es la que devuelven los seis solvers; el SA, en 18 de sus 20 semillas.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.55\textwidth]{bruteforce_tsp_route.png}
-\caption{Ruta óptima del TSP restringido, de coste 16. Es la ruta que devuelven los seis solvers.}
+\caption{Ruta óptima del TSP restringido, de coste 16.}
 \label{fig:tsp_ruta}
 \end{figure}
 
-\paragraph{Fuerza bruta, greedy e ILP.} La enumeración evalúa seis rutas en $60\,\mu\mathrm{s}$. El greedy elige el prefijo $0\to x\to 2$ más barato y completa la ruta; en esta instancia eso basta. El ILP certifica el óptimo con CBC en $0.07\,\mathrm{s}$, tiempo dominado por la llamada al solver externo. En este tamaño la enumeración es el método de referencia, no un baseline débil.
+\paragraph{Fuerza bruta, greedy e ILP.} La enumeración evalúa seis rutas en $60\,\mu\mathrm{s}$. El greedy elige el prefijo $0\to x\to 2$ más barato y completa la ruta; en esta instancia eso basta. El ILP certifica el óptimo con CBC en $0.07\,\mathrm{s}$, tiempo que incluye construir el modelo y llamar al solver externo. En este tamaño la enumeración es el método de referencia, no un baseline débil.
 
-\paragraph{QUBO + SA.} Acierta en 18 de 20 semillas. Las dos restantes terminan en la otra ruta factible, $[0,4,2,1,3,0]$, de coste 19: el recocido se queda en el mínimo local vecino. Cada ejecución hace 5001 evaluaciones en $17\,\mathrm{ms}$. El SA opera sobre la misma energía que QAOA y VQE, y su éxito certifica que el QUBO codifica el problema \citep{lucas2014}.
+\paragraph{QUBO + SA.} Acierta en 18 de 20 semillas. Las semillas 1 y 6 terminan en la otra ruta factible, $[0,4,2,1,3,0]$, de coste 19. Con una variable por ruta, cualquier volteo de un bit desde una ruta factible rompe la selección única y suma al menos la penalización de 100, así que ambas rutas son mínimos locales para el SA. Cada ejecución hace 5001 evaluaciones en $17\,\mathrm{ms}$. El SA opera sobre la misma energía que QAOA y VQE, y la enumeración del QUBO confirma que su mínimo es la ruta óptima \citep{lucas2014}.
 
-\paragraph{QAOA y VQE.} Ambos aciertan en las cinco ejecuciones. QAOA ($p=2$) usa 356 evaluaciones y $1.1\,\mathrm{s}$; VQE, 720 evaluaciones y $2.0\,\mathrm{s}$. QAOA necesita la mitad de evaluaciones porque su ansatz alterna el propio Hamiltoniano de coste con el mezclador; el EfficientSU2 de VQE es genérico \citep{farhi2014, peruzzo2014}. Los dos reproducen un óptimo que la enumeración obtiene cuatro órdenes de magnitud antes.
+\paragraph{QAOA y VQE.} Ambos devuelven la ruta óptima en las cinco ejecuciones. QAOA ($p=2$) usa de media 356 evaluaciones, por debajo de su máximo de 640 (8 reinicios $\times$ 80 iteraciones), y $1.1\,\mathrm{s}$; VQE agota sus 720 (6 $\times$ 120) en $2.0\,\mathrm{s}$ \citep{farhi2014, peruzzo2014}. Con la lectura por mínima energía entre 3000 muestras, el éxito no mide cuánta probabilidad concentran en el óptimo. Los dos reproducen un óptimo que la enumeración obtiene cuatro órdenes de magnitud antes.
 
 \subsection{Minimum dominating set}
 
-Es la instancia más exigente para un método que muestrea: el óptimo, $\{\text{Ana}, \text{Enrique}\}$, es único entre 64 asignaciones, y 29 de las 64 no son factibles. También es la única en la que fallan solvers de las dos familias. La Figura~\ref{fig:mds_sol} compara el óptimo con la solución del greedy.
+El óptimo, $\{\text{Ana}, \text{Enrique}\}$, es único: 35 de los 64 subconjuntos son dominantes y solo ese tiene tamaño 2. Es la única instancia en la que fallan el greedy y QAOA. La Figura~\ref{fig:mds_sol} compara el óptimo con la solución del greedy.
 
 \begin{figure}[!htbp]
 \centering
@@ -226,13 +228,13 @@ Es la instancia más exigente para un método que muestrea: el óptimo, $\{\text
 
 \paragraph{Fuerza bruta e ILP.} Ambos devuelven el óptimo; la enumeración en $0.2\,\mathrm{ms}$ y el ILP de cobertura en $0.05\,\mathrm{s}$.
 
-\paragraph{Greedy.} Elige primero a Mario, que cubre cuatro vértices, y después necesita a Sarah y a Ana para cubrir a Enrique y a Saul: tamaño 3, éxito 0. La regla de máxima cobertura no deshace la primera elección, y el óptimo no contiene a Mario. Es el único fallo de la familia clásica y no depende de la semilla: la regla es determinista.
+\paragraph{Greedy.} Elige primero a Mario, que cubre cuatro vértices, y después necesita a Sarah y a Ana para cubrir a Enrique y a Saul: tamaño 3, éxito 0. La regla de máxima cobertura no deshace la primera elección, y el óptimo no contiene a Mario. Es el único caso en que fuerza bruta, greedy o ILP no alcanzan el óptimo, y no depende de la semilla: la regla es determinista.
 
 \paragraph{QUBO + SA.} Acierta en las 20 semillas en $7\,\mathrm{ms}$. Sobre la misma formulación, con $A=1$ y $B=2$, el recocido clásico encuentra el óptimo; el QUBO no es la causa de los fallos de QAOA \citep{lucas2014}.
 
-\paragraph{QAOA.} Acierta en siete de las ocho semillas. La semilla fallida devuelve $\{\text{Enrique}, \text{Saul}\}$, que deja a Mario sin dominar: una solución infactible con energía QUBO $2+B=4$, de ahí el coste medio $2.25$. Esa semilla termina con la energía esperada más alta de las ocho ($-9.96$) y con probabilidad nula de medir el óptimo. La siguiente peor ($-10.04$) acierta, pero mide el óptimo solo con probabilidad $0.11$; las otras seis terminan entre $-11.8$ y $-12.5$ y lo miden con probabilidad entre $0.62$ y $0.75$. La calidad de la medida sigue a la energía alcanzada por el optimizador. El fallo es de optimización variacional: con $p=3$ y 20 reinicios de COBYLA, una semilla se queda en un mínimo local de los parámetros \citep{farhi2014, lubinski2024}. Es además el solver más lento del corpus ($12.6\,\mathrm{s}$, 4000 evaluaciones).
+\paragraph{QAOA.} Acierta en siete de las ocho semillas. La semilla fallida devuelve $\{\text{Enrique}, \text{Saul}\}$, que deja a Mario sin dominar: una solución infactible con energía QUBO $2+B=4$, de ahí el coste medio $2.25$. Esa semilla termina con la energía esperada más alta de las ocho ($-9.96$) y con probabilidad nula de medir el óptimo. La siguiente peor ($-10.04$) acierta, pero mide el óptimo solo con probabilidad $0.11$; las otras seis terminan entre $-11.8$ y $-12.5$ y lo miden con probabilidad entre $0.62$ y $0.75$. La probabilidad de medir el óptimo sigue, por tanto, a la energía alcanzada por el optimizador (media $0.53$ en las ocho semillas). Con $p=3$ y 20 reinicios de COBYLA, que agotan las 4000 evaluaciones, la semilla fallida termina en parámetros de mayor energía: el fallo está en la optimización de los parámetros, no en la formulación \citep{farhi2014, lubinski2024}. Es además el solver más lento de la familia ($12.6\,\mathrm{s}$).
 
-\paragraph{VQE.} Acierta en las cinco ejecuciones con 600 evaluaciones y $1.6\,\mathrm{s}$. Sobre la misma energía, el EfficientSU2 con seis reinicios evita el mínimo local en el que cae QAOA en una semilla. Sigue siendo dos órdenes de magnitud más lento que el SA \citep{peruzzo2014}.
+\paragraph{VQE.} Acierta en las cinco ejecuciones; agota sus 600 evaluaciones (6 reinicios $\times$ 100) en $1.6\,\mathrm{s}$. Con la lectura por mínima energía entre 4000 muestras, el éxito no indica cuánta probabilidad concentra el estado en el óptimo, y el notebook no la registra. Es dos órdenes de magnitud más lento que el SA \citep{peruzzo2014}.
 
 \subsection{MaxCut}
 
@@ -245,9 +247,9 @@ Instancia HamLib de 6 vértices y 12 aristas, con corte óptimo 8. Los seis solv
 \label{fig:maxcut_corte}
 \end{figure}
 
-\paragraph{Clásicos.} La enumeración recorre las $2^6$ asignaciones en $0.3\,\mathrm{ms}$. La búsqueda local del greedy, que voltea el vértice que más aumenta el corte, llega a un óptimo desde una asignación aleatoria. El SA lo hace en las 20 semillas en $3\,\mathrm{ms}$. El ILP tarda $0.66\,\mathrm{s}$, más que en el TSP ($0.07\,\mathrm{s}$), cuyo ILP tardó $1.28\,\mathrm{s}$ en una ejecución anterior. Ese tiempo mide la llamada a CBC, no la dificultad de la instancia.
+\paragraph{Clásicos.} La enumeración recorre las $2^6$ asignaciones en $0.3\,\mathrm{ms}$. La búsqueda local del greedy, que voltea el vértice que más aumenta el corte, llega a un óptimo con un solo volteo desde una asignación aleatoria. El SA lo hace en las 20 semillas en $3\,\mathrm{ms}$. El ILP tarda $0.66\,\mathrm{s}$, frente a $0.07\,\mathrm{s}$ en el TSP; en una ejecución anterior el ILP del TSP tardó $1.28\,\mathrm{s}$, así que estos tiempos no ordenan las instancias por dificultad.
 
-\paragraph{QAOA y VQE.} QAOA ($p=2$) acierta en las ocho ejecuciones con 40 pasos de Adagrad y $0.64\,\mathrm{s}$; VQE, con 240 evaluaciones y $0.98\,\mathrm{s}$. MaxCut es el caso de uso estándar de QAOA: el Hamiltoniano de coste es el propio corte y no hay penalizaciones \citep{farhi2014, pennylaneQaoaMaxcut}. Con un 28\,\% de asignaciones óptimas, concentrar la probabilidad en alguna de ellas requiere pocas iteraciones.
+\paragraph{QAOA y VQE.} QAOA ($p=2$) acierta en las ocho ejecuciones con 40 pasos de Adagrad y $0.64\,\mathrm{s}$. Su lectura es el bitstring más frecuente de 200 muestras, y con los parámetros finales guardados el estado asigna probabilidad $0.93$ a los cortes óptimos en las ocho ejecuciones, frente a $0.28$ de una muestra uniforme: aquí sí hay concentración medida. MaxCut es el caso de uso estándar de QAOA: el Hamiltoniano de coste es el propio corte y no hay penalizaciones \citep{farhi2014, pennylaneQaoaMaxcut}. VQE acierta con 240 evaluaciones (3 reinicios $\times$ 80) y $0.98\,\mathrm{s}$, con lectura del mejor corte entre 500 muestras.
 
 \subsection{Lectura de la familia}
 
@@ -260,14 +262,14 @@ La Figura~\ref{fig:opt_success} resume calidad y tiempo medios. Los métodos exa
 \label{fig:opt_success}
 \end{figure}
 
-El único fallo cuántico aparece en la instancia más difícil para un muestreador (óptimo único, 45\,\% del espacio infactible) y no en la más fácil (28\,\% de asignaciones óptimas). Con $n\le 6$ el circuito no explora un espacio que la enumeración no recorra antes. Lo que mide el experimento es si el ansatz concentra probabilidad en el óptimo del QUBO, y su coste es simular ese ansatz \citep{farhi2014, lubinski2024}.
+El único fallo cuántico aparece en el MDS. No se explica por la rareza del óptimo: en el TSP el óptimo también es un único bitstring de 64 y QAOA acierta en las cinco ejecuciones. Lo que se mide en el MDS es una semilla que termina con mayor energía esperada y probabilidad nula de medir el óptimo. Como la lectura en TSP y MDS toma el mejor de miles de bitstrings, el success rate de esos casos es una cota optimista; la probabilidad de medir el óptimo, registrada en QAOA sobre MDS y calculable en QAOA sobre MaxCut a partir de los parámetros guardados, es la medida que distingue a los solvers. Con $n\le 6$ el circuito no explora un espacio que la enumeración no recorra antes \citep{farhi2014, lubinski2024}.
 
 \section{Discusión: la representación como eje}\label{sec:discusion_representacion}
 
-Las dos familias se leen con la misma pregunta: en qué espacio se resuelve el problema y si ese espacio está alineado con la estructura del dato o de la instancia \citep{lloyd2020, huang2021, parzygnat2025}.
+Las dos familias se leen con la misma pregunta: en qué espacio se resuelve el problema y qué permite afirmar el experimento sobre ese espacio \citep{lloyd2020, huang2021, parzygnat2025}.
 
-\paragraph{En clasificación} el feature map decide más que el modelo que lo lee. El mismo QSVM pasa de ser el peor modelo en Iris a empatar con el mejor en Ising. Lo único que cambia es si el generador del dato comparte estructura con el mapa: el Hamiltoniano de Ising tiene términos $Z_iZ_{i+1}$ y el mapa ZZ los entrelaza. En datos convencionales ese mismo mapa es una hipótesis inductiva peor que un RBF \citep{havlicek2019, huang2021}. Los embeddings angulares son más estables entre datasets, pero tampoco superan al RBF en ninguno \citep{bowles2024}.
+\paragraph{En clasificación} el mismo QSVM pasa de ser el peor modelo en Iris a empatar con el mejor en Ising. El experimento no permite atribuir ese cambio a una afinidad entre el mapa ZZ y el Hamiltoniano de Ising: el mapa actúa sobre componentes principales de las amplitudes, no sobre los espines, y en Ising los seis modelos superan $0.95$ de accuracy. Lo que sí muestra es que, con el mismo preproceso, el mapa ZZ generalizó peor que un RBF en los dos datasets convencionales, en línea con \citet{huang2021}, y que ningún modelo cuántico superó al SVM en ningún dataset. Entre los cuánticos, la QNN es el más regular (13 puntos de rango de accuracy) y el VQC el menos (28) \citep{bowles2024}.
 
-\paragraph{En optimización} la representación es común a SA, QAOA y VQE, y el SA, que acierta en MDS y MaxCut y en 18 de 20 semillas del TSP, certifica que el QUBO es correcto. Las diferencias aparecen después: dependen de cuánta masa ocupa el óptimo en el espacio de bitstrings y de si el optimizador clásico del bucle variacional la encuentra. La formulación determina el paisaje; el ansatz y su optimización, si se alcanza el mínimo \citep{lucas2014, lubinski2024}.
+\paragraph{En optimización} la representación es común a SA, QAOA y VQE, y la enumeración del QUBO confirma que su mínimo es el óptimo de cada instancia; el SA lo alcanza en MDS y MaxCut y en 18 de 20 semillas del TSP. Las diferencias aparecen después, en si el optimizador del bucle variacional encuentra parámetros que concentren probabilidad en ese mínimo \citep{lucas2014, lubinski2024}.
 
-\paragraph{Límite del régimen.} Con 4 qubits en clasificación y 6 en optimización, el experimento mide cercanía al clásico, no ventaja asintótica \citep{preskill2018, thanasilp2022}. Los resultados dan paridad o déficit de calidad y un coste temporal mayor, que en simulación crece con $2^n$. Quedan tres preguntas abiertas: si la alineación observada en Ising se mantiene al crecer la cadena; si en un QUBO con óptimo menos degenerado QAOA se separa del annealing; y qué parte del coste se debe a la simulación y cuál al método.
+\paragraph{Límite del régimen.} Con 4 qubits en clasificación y 6 en optimización, el experimento mide cercanía al clásico, no ventaja asintótica \citep{preskill2018, thanasilp2022}. Los resultados dan paridad o déficit de calidad y un coste temporal mayor, que en simulación crece con $2^n$. Quedan tres preguntas abiertas: si la paridad observada en Ising se mantiene al crecer la cadena y al codificar los espines directamente en qubits; cuánta probabilidad concentran QAOA y VQE en el óptimo cuando la lectura no puede apoyarse en miles de muestras de un espacio pequeño; y qué parte del coste se debe a la simulación y cuál al método.
