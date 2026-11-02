@@ -10,13 +10,13 @@ El objetivo general de este trabajo es evaluar de forma empírica y sistemática
 \section{Objetivos específicos}
 
 \begin{enumerate}
-    \item Formular el marco del estudio en tres ejes: clasificación (\emph{qué}), optimización (\emph{cómo}) y representación (feature map / QUBO--Ising) \citep{lloyd2020, pennylaneEmbedBlog, parzygnat2025}.
+    \item Definir un marco conceptual que organice el estudio en torno a clasificación, optimización y representación (feature map / QUBO--Ising) \citep{lloyd2020, pennylaneEmbedBlog, parzygnat2025}.
 
-    \item Implementar pipelines comparables de clasificación sobre Iris, Bars and Stripes e Ising, con SVM, Random Forest y XGBoost frente a QSVM, QNN y VQC, bajo el mismo split, escalado y PCA cuando aplique \citep{sklearnIris, pennylaneBarsAndStripes, pennylaneIsing, pennylaneVariationalClassifier, schuld2021}.
+    \item Diseñar e implementar pipelines de clasificación comparables entre modelos clásicos y cuánticos bajo un protocolo justo de partición, escalado y reducción dimensional cuando el presupuesto de qubits lo exija \citep{schuld2021, havlicek2019, bowles2024}.
 
-    \item Implementar pipelines comparables de optimización sobre TSP, Minimum Dominating Set y MaxCut (HamLib), con fuerza bruta, greedy, ILP y QUBO+SA frente a QAOA y VQE \citep{farhi2014, peruzzo2014, sawaya2024hamlib, pennylaneHamlibMaxcut, lucas2014}.
+    \item Diseñar e implementar pipelines de optimización combinatoria comparables entre solvers clásicos y cuántico-inspirados (incluidos QAOA y VQE) sobre formulaciones QUBO/Ising compartidas \citep{farhi2014, peruzzo2014, lucas2014, lubinski2024}.
 
-    \item Medir calidad (Acc/F1; coste, gap relativo, éxito) y esfuerzo (tiempos, evaluaciones) y sintetizar los resultados en los notebooks \texttt{Results\_*} \citep{bowles2024, lubinski2024}.
+    \item Evaluar calidad de la solución y esfuerzo computacional con métricas comunes, de forma reproducible \citep{bowles2024, cerezo2021}.
 
-    \item Interpretar los hallazgos en el régimen de pocos qubits y simulación $2^n$, delimitando qué se puede y no se puede concluir sobre ventaja cuántica \citep{huang2021, thanasilp2022, mcclean2018}.
+    \item Interpretar los resultados en el régimen NISQ de pocos qubits y simulación clásica, delimitando qué se puede y no se puede afirmar sobre ventaja cuántica \citep{huang2021, thanasilp2022, mcclean2018, preskill2018}.
 \end{enumerate}
