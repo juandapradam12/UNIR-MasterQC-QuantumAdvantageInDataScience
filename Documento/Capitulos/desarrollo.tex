@@ -24,7 +24,7 @@ Optimización & PuLP + CBC (ILP); NetworkX (grafos); annealing simulado propio s
 Visualización & matplotlib y utilidades propias de storytelling & 3.11 \\
 \bottomrule
 \end{tabularx}
-\caption{Entorno software del estudio. Las versiones son las fijadas en las dependencias del repositorio, en el orden en que aparecen los paquetes.}
+\caption{Entorno software del estudio, con versiones en el orden en que aparecen los paquetes. Python es la versión del entorno virtual de ejecución; las demás versiones son las fijadas en las dependencias del repositorio, que no fijan \texttt{qiskit-machine-learning}.}
 \label{tab:entorno}
 \end{table}
 
@@ -81,7 +81,7 @@ Sobre esos ejes se fijan dos familias con la misma lógica de comparación justa
 
 \subsection{Datasets}
 
-Los tres datasets difieren en el origen del dato. Iris y Bars and Stripes son datasets \emph{convencionales}: el dato es clásico y cualquier estructura cuántica la introduce el feature map. Ising es dato \emph{de sistema}: cada muestra procede del estado fundamental de un Hamiltoniano y la etiqueta es su fase \citep{pennylaneWhatIsQuantumDataset, pennylaneConventionalDatasets, pennylaneIsing}. La diferencia condiciona qué representación tiene sentido. La Tabla~\ref{tab:datasets_clasif} resume tamaño, dimensión y partición de cada uno.
+Los tres datasets difieren en el origen del dato. Iris y Bars and Stripes son datasets \emph{convencionales}: el dato es clásico y cualquier estructura cuántica la introduce el feature map. Ising es dato \emph{de sistema}: cada muestra procede del estado fundamental de un Hamiltoniano y la etiqueta es su fase \citep{pennylaneWhatIsQuantumDataset, pennylaneConventionalDatasets, pennylaneIsing}. La Tabla~\ref{tab:datasets_clasif} resume tamaño, dimensión y partición de cada uno.
 
 \begin{table}[!htbp]
 \centering
@@ -207,11 +207,11 @@ La PCA, cuando existe, se aplica a clásicos y cuánticos por igual: se compara 
 
 \subsection{Representación en el espacio de Hilbert}\label{sec:hilbert}
 
-El feature map es un mapeo $\phi\colon\mathcal{X}\to\mathcal{H}$ que toma los datos en su espacio original $\mathcal{X}\subseteq\mathbb{R}^{d}$ y los transforma a estados en el espacio de Hilbert $\mathcal{H}=\bigl(\mathbb{C}^{2}\bigr)^{\otimes n}\simeq\mathbb{C}^{2^{n}}$: $\mathbf{x}\mapsto\lvert\phi(\mathbf{x})\rangle$ \citep{lloyd2020, pennylaneGlossaryEmbedding, schuld2021, parateEncodingGuide}. Tras PCA (si $d>n$) y, cuando el mapa es angular o ZZ, MinMax$[0,\pi]$, cada muestra se prepara con un circuito unitario $U_{\phi}(\mathbf{x})$ tal que $\lvert\phi(\mathbf{x})\rangle=U_{\phi}(\mathbf{x})\lvert 0\rangle^{\otimes n}$. Sin ese embedding el dato clásico no es un estado cuántico; la utilidad de $\phi$ depende de la alineación entre la geometría inducida en $\mathcal{H}$ y la estructura del generador de etiquetas \citep{huang2021, pennylaneEmbedBlog, parzygnat2025}. Con presupuesto $n=4$, $\mathcal{H}\simeq\mathbb{C}^{16}$. Se consideran cuatro embeddings:
+El feature map es un mapeo $\phi\colon\mathcal{X}\to\mathcal{H}$ que toma los datos en su espacio original $\mathcal{X}\subseteq\mathbb{R}^{d}$ y los transforma a estados en el espacio de Hilbert $\mathcal{H}=\bigl(\mathbb{C}^{2}\bigr)^{\otimes n}\simeq\mathbb{C}^{2^{n}}$: $\mathbf{x}\mapsto\lvert\phi(\mathbf{x})\rangle$ \citep{lloyd2020, pennylaneGlossaryEmbedding, schuld2021, parateEncodingGuide}. Tras PCA (si $d>n$) y, cuando el mapa es angular o ZZ, MinMax$[0,\pi]$, cada muestra se prepara con un circuito unitario $U_{\phi}(\mathbf{x})$ tal que $\lvert\phi(\mathbf{x})\rangle=U_{\phi}(\mathbf{x})\lvert 0\rangle^{\otimes n}$. Sin ese embedding el dato clásico no es un estado cuántico. Según \citet{huang2021}, la utilidad de $\phi$ depende de cómo se ajusta la geometría inducida en $\mathcal{H}$ a la estructura de las etiquetas \citep{pennylaneEmbedBlog, parzygnat2025}. Con presupuesto $n=4$, $\mathcal{H}\simeq\mathbb{C}^{16}$. Se consideran cuatro embeddings:
 
 \begin{itemize}
     \item \textbf{Basis encoding.} Codifica cadenas binarias (o categorías discretizadas) en la base computacional: para $\mathbf{b}\in\{0,1\}^{n}$, $\lvert\phi(\mathbf{b})\rangle=\lvert b_1\cdots b_n\rangle=\bigotimes_{i}X^{b_i}\lvert 0\rangle$ \citep{parateEncodingGuide, pennylaneGlossaryEmbedding, pennylaneEmbedBlog}. Los estados son ortogonales; una medida en $Z$ recupera $\mathbf{b}$ con certeza. Escala como $\lceil\log_2 C\rceil$ qubits para $C$ categorías, pero no es natural para features continuas sin cuantización previa.
-    \item \textbf{Mapa ZZ (\texttt{ZZFeatureMap}).} Preparación producto $H^{\otimes n}$ seguida de rotaciones $R_Z(x_i)$ y puertas de fase entrelazadas $e^{-i\,\theta_{ij}Z_iZ_j}$ con $\theta_{ij}\propto(\pi-x_i)(\pi-x_j)$ (\texttt{entanglement=full}, alineado con el mapa de Qiskit) \citep{havlicek2019}. El producto interno en $\mathcal{H}$ define el kernel de fidelidad $K(\mathbf{x},\mathbf{x}')=\lvert\langle\phi(\mathbf{x})\vert\phi(\mathbf{x}')\rangle\rvert^{2}$.
+    \item \textbf{Mapa ZZ (\texttt{ZZFeatureMap}).} Preparación producto $H^{\otimes n}$ seguida de rotaciones $R_Z(x_i)$ y puertas de fase entrelazadas $e^{-i\,\theta_{ij}Z_iZ_j}$ con $\theta_{ij}\propto(\pi-x_i)(\pi-x_j)$ (implementación \texttt{zz\_feature\_map} de Qiskit, \texttt{entanglement=full}) \citep{havlicek2019}. El producto interno en $\mathcal{H}$ define el kernel de fidelidad $K(\mathbf{x},\mathbf{x}')=\lvert\langle\phi(\mathbf{x})\vert\phi(\mathbf{x}')\rangle\rvert^{2}$.
     \item \textbf{Angle embedding.} \texttt{AngleEmbedding} aplica rotaciones locales $R_{\sigma}(x_i)$ ($\sigma\in\{X,Y,Z\}$) sobre el qubit $i$, de modo que $\lvert\phi(\mathbf{x})\rangle=\bigotimes_{i=1}^{n}R_{\sigma}(x_i)\lvert 0\rangle$ \citep{pennylaneGlossaryEmbedding, pennylaneVariationalClassifier, parateEncodingGuide}. Codificación angular separable: no introduce entrelazamiento en la preparación del estado.
     \item \textbf{Preparación $R_Y(x_i)$.} Caso particular de angle embedding con $\sigma=Y$: $U_{\phi}(\mathbf{x})=\bigotimes_{i}R_Y(x_i)$, un parámetro de rotación por dimensión de feature \citep{pennylaneVariationalClassifier, cerezo2021}.
 \end{itemize}
@@ -238,7 +238,7 @@ Cuántica & VQC \citep{pennylaneVariationalClassifier} & preparación $R_Y(x_i)$
 \label{tab:modelos_clasif}
 \end{center}
 
-Los seis clasificadores se evalúan sobre las mismas particiones y el mismo $\mathbf{x}$ post-preproceso. La rama clásica opera directamente en $\mathbb{R}^{n}$. En la rama cuántica, cada modelo fija un $U_{\phi}$ y una regla de decisión sobre $\lvert\phi(\mathbf{x})\rangle$: el QSVM estima la matriz Gram de fidelidad $K(\mathbf{x},\mathbf{x}')=\lvert\langle\phi(\mathbf{x})\vert\phi(\mathbf{x}')\rangle\rvert^{2}$ y la entrega a un SVM con kernel precomputado; la QNN y el VQC componen $U_{\phi}$ con un ansatz variacional y clasifican a partir de valores esperados $\langle Z_i\rangle$ (con cabeza lineal entrenable en el caso híbrido QNN) \citep{havlicek2019, pennylaneVariationalClassifier, cerezo2021}. Así, $\phi$ define la representación; el modelo define cómo se lee esa representación.
+Los seis clasificadores se evalúan sobre las mismas particiones y el mismo $\mathbf{x}$ post-preproceso. La rama clásica opera directamente en $\mathbb{R}^{n}$. En la rama cuántica, cada modelo fija un $U_{\phi}$ y una regla de decisión sobre $\lvert\phi(\mathbf{x})\rangle$: el QSVM estima la matriz Gram de fidelidad $K(\mathbf{x},\mathbf{x}')=\lvert\langle\phi(\mathbf{x})\vert\phi(\mathbf{x}')\rangle\rvert^{2}$ y la usa como kernel de un \texttt{SVC}; la QNN y el VQC componen $U_{\phi}$ con un ansatz variacional y clasifican a partir de valores esperados $\langle Z_i\rangle$ (con cabeza lineal entrenable en el caso híbrido QNN) \citep{havlicek2019, pennylaneVariationalClassifier, cerezo2021}. Así, $\phi$ define la representación; el modelo define cómo se lee esa representación.
 
 \subsection{Métricas de clasificación y latencia}
 
@@ -296,7 +296,7 @@ TSP y MDS son NP-difíciles en su versión general \citep{garey1979}; aquí se u
 \end{figure}
 
 \paragraph{Minimum Dominating Set (MDS).}
-Grafo social de 6 vértices y 6 aristas (Figura~\ref{fig:mds_prelim}); el objetivo es el conjunto dominante de tamaño mínimo. El ILP es el modelo de cobertura estándar. El QUBO suma el tamaño del conjunto ($A=1$) y una penalización por vértice no dominado ($B=2$), con una variable por vértice (6 qubits).
+Grafo social de 6 vértices y 6 aristas (Figura~\ref{fig:mds_prelim}); el objetivo es el conjunto dominante de tamaño mínimo. El ILP es el modelo de cobertura estándar. El QUBO es $A\sum_v x_v + B\sum_v\bigl(1-\sum_{u\in N[v]}x_u\bigr)^2$, con $A=1$, $B=2$, una variable por vértice (6 qubits) y $N[v]$ la vecindad cerrada de $v$. La penalización actúa sobre cada vértice que queda sin dominar y también sobre cada vértice dominado más de una vez.
 
 \begin{figure}[!htbp]
 \centering
@@ -317,7 +317,7 @@ Instancia \texttt{circ\_offsets-1-2} de HamLib: $n=6$, 12 aristas y corte óptim
 
 \subsection{Preparación: de problema a QUBO/Ising}\label{sec:qubo}
 
-La reformulación QUBO--Ising es la cara de la representación en optimización: convierte el problema combinatorio en la minimización de una forma cuadrática sobre variables binarias, o de forma equivalente en la energía de un Hamiltoniano de espines $H_C$ \citep{lucas2014}. Las tres instancias no plantean la misma exigencia. MaxCut, tomado de HamLib, es el caso canónico de QAOA: el corte se escribe directamente como suma de términos $Z_iZ_j$ y no tiene restricciones \citep{sawaya2024hamlib, pennylaneHamlibMaxcut, pennylaneQaoaMaxcut}. TSP y MDS tienen restricciones (visitar cada nodo una vez, dominar todos los vértices), que se introducen como penalizaciones. Ahí la codificación tiene que preservar a la vez el coste y la factibilidad.
+La reformulación QUBO--Ising es la cara de la representación en optimización: convierte el problema combinatorio en la minimización de una forma cuadrática sobre variables binarias, o de forma equivalente en la energía de un Hamiltoniano de espines $H_C$ \citep{lucas2014}. Las tres instancias no plantean la misma exigencia. MaxCut, tomado de HamLib, es el caso canónico de QAOA: el corte se escribe directamente como suma de términos $Z_iZ_j$ y no tiene restricciones \citep{sawaya2024hamlib, pennylaneHamlibMaxcut, pennylaneQaoaMaxcut}. TSP y MDS tienen restricciones (elegir una sola ruta candidata; dominar todos los vértices), que se introducen como penalizaciones. Ahí la codificación tiene que preservar a la vez el coste y la factibilidad.
 
 \begin{figure}[!htbp]
 \centering
@@ -359,7 +359,7 @@ VQE \citep{peruzzo2014} & EfficientSU2; 5 ejecuciones $\times$ 6 reinicios COBYL
 \label{tab:solvers}
 \end{center}
 
-QAOA y VQE se simulan en statevector sobre CPU y leen la solución por muestreo de la distribución final.
+QAOA y VQE se simulan en statevector sobre CPU y leen la solución muestreando el estado final: en TSP y MDS toman el bitstring de menor energía QUBO entre 3000 o 4000 muestras; en MaxCut, VQE toma el de mayor corte entre 500 y QAOA, el más frecuente entre 200.
 
 \subsection{Métricas de optimización y latencia}
 
@@ -414,7 +414,7 @@ El código, los datos de entrada, las métricas y las figuras están en el repos
 
 \noindent Cada dataset o instancia tiene un notebook por modelo o solver; una carpeta de resultados por familia agrega las métricas y genera las figuras comparativas (Apéndice~\ref{anx:notebooks}).
 
-Las semillas están fijadas en las particiones y en los solvers estocásticos. Cada notebook escribe sus métricas en JSON; los notebooks de resultados solo leen esos JSON, generan las tablas resumen y las figuras, y las cifras de este documento salen de ellos. Las versiones de las dependencias están fijadas en el propio repositorio.
+Las semillas están fijadas en las particiones y en los solvers estocásticos. Cada notebook escribe sus métricas en JSON; los notebooks de resultados solo leen esos JSON, generan las tablas resumen y las figuras, y las cifras de este documento salen de ellos. Las versiones de las dependencias están fijadas en el propio repositorio, salvo \texttt{qiskit-machine-learning}.
 
 \section{Limitaciones del diseño}
 
