@@ -1,7 +1,15 @@
 % !TEX root = ../main.tex
 \chapter{Resultados y análisis}\label{cap:evaluacion}
 
-Este capítulo lee el corpus con la estructura del ciclo de modelado: dos familias, un apartado por dataset o instancia, y un apartado por implementación. Las métricas son las de las Tablas~\ref{tab:metricas_clasif} y~\ref{tab:metricas_opt}. Cada implementación se mira por tres lados: la tabla (calidad y latencia), la figura que enseña la decisión o la solución, y la técnica que produce esa decisión \citep{bowles2024, lubinski2024}. El VQC de este protocolo no exporta scores, así que su AUC queda en blanco.
+Este capítulo responde a la pregunta del trabajo con los datos del corpus: bajo un protocolo común y en simulación de pocos qubits, qué hacen los métodos cuánticos y cuántico-inspirados frente a sus referentes clásicos, en calidad y en coste. El Capítulo~\ref{cap:metodologia} fijó el dato, la representación, los modelos y las métricas. Aquí se ejecuta esa comparación y se interpreta, de lo particular a lo general.
+
+La presentación sigue las dos familias de casos de uso. En \textbf{clasificación} se recorren Iris, Bars and Stripes e Ising; en \textbf{optimización}, TSP, MDS y MaxCut. Cada dataset o instancia abre con una tabla con las seis implementaciones y las métricas de las Tablas~\ref{tab:metricas_clasif} y~\ref{tab:metricas_opt}. En clasificación son accuracy, F1, AUC, gap de generalización y latencias; en optimización, success rate, coste, gap al óptimo $C^\star$ y tiempo. Debajo, cada implementación tiene su propio apartado.
+
+Cada uno de esos apartados lee la implementación desde tres ángulos. El \textbf{cuantitativo} sitúa sus cifras respecto del resto: dónde gana, dónde empata y a qué coste temporal. El \textbf{visual} usa la figura que produce el propio método: la frontera de decisión sobre el plano principal en clasificación, o la ruta, el conjunto o el corte devuelto en optimización. Ahí se ve la causa del error o del acierto que la tabla solo resume. El \textbf{técnico} relaciona ese comportamiento con la hipótesis del método: el kernel, el bagging o el boosting en los clásicos; el feature map y el ansatz en los cuánticos; la formulación QUBO y el bucle variacional en optimización \citep{huang2021, cerezo2021, lucas2014}.
+
+Cada familia cierra con una lectura cruzada. La pregunta no es solo quién gana una tabla. Importa qué técnica explica cada resultado, cuándo la representación cuántica está alineada con el generador del dato, y si una mejora de calidad compensa el tiempo de simular el circuito \citep{bowles2024, lubinski2024}. Esa lectura deja abiertos tres debates que retoman los capítulos siguientes: si los empates observados son una señal del método o del tamaño del problema; qué cambiaría en hardware real, con ruido y sin simulación de estado; y qué indican estos resultados sobre dónde buscar ventaja más allá de demostraciones pequeñas \citep{preskill2018, thanasilp2022}.
+
+En la notación de tablas: el VQC no exporta scores de probabilidad, por lo que su AUC no se reporta.
 
 \section{Clasificación}
 
