@@ -76,33 +76,72 @@ La PCA, cuando existe, se aplica a clásicos y cuánticos por igual: se compara 
 
 \begin{figure}[!htbp]
 \centering
-\begin{tikzpicture}[font=\footnotesize, thick,
-  box/.style={draw=unirnavy, fill=unirazul!10, rounded corners, align=center, inner sep=5pt, minimum width=2.4cm}]
-  \node[box] (d) at (0,0) {Dato crudo};
-  \node[box] (s) at (3.0,0) {Split\\estratificado};
-  \node[box] (p) at (6.0,0) {PCA$\to$4\\si $d>4$};
-  \node[box] (m) at (9.0,0) {MinMax\\$[0,\pi]$};
-  \node[box] (q) at (4.5,-1.8) {Modelos C};
-  \node[box] (r) at (7.5,-1.8) {Modelos Q};
-  \draw[->,unirnavy] (d)--(s)--(p)--(m);
-  \draw[->,unirnavy] (m.south) |- (q.east);
-  \draw[->,unirnavy] (m.south) |- (r.west);
+\begin{tikzpicture}[font=\scriptsize, thick, >=Stealth,
+  box/.style={draw=unirnavy, fill=unirazul!10, rounded corners=3pt,
+              align=center, inner sep=3.5pt, minimum height=0.8cm},
+  qbox/.style={draw=unirnavy, fill=unirclaro!40, rounded corners=3pt,
+               align=center, inner sep=3.5pt, minimum height=0.8cm},
+  cbox/.style={draw=unirgris, fill=unirgris!15, rounded corners=3pt,
+               align=center, inner sep=3.5pt, minimum height=0.8cm}]
+
+  % --- Protocolo compartido (arriba) ---
+  \node[box, minimum width=1.55cm] (d) at (0.0, 0) {Dato\\crudo};
+  \node[box, minimum width=1.85cm] (s) at (2.15, 0) {Split\\$40\%$ test};
+  \node[box, minimum width=1.85cm] (p) at (4.35, 0) {PCA$\to$4\\si $d>4$};
+  \node[box, minimum width=1.85cm] (m) at (6.55, 0) {MinMax\\$[0,\pi]$};
+  \node[box, minimum width=1.75cm] (x) at (8.65, 0) {$X$ listo};
+
+  \draw[->, unirnavy] (d) -- (s);
+  \draw[->, unirnavy] (s) -- (p);
+  \draw[->, unirnavy] (p) -- (m);
+  \draw[->, unirnavy] (m) -- (x);
+
+  \draw[decorate, decoration={brace, amplitude=4pt, mirror}, unirnavy]
+    ([yshift=-1pt]d.south west) -- ([yshift=-1pt]x.south east)
+    node[midway, below=6pt, font=\scriptsize\bfseries, text=unirnavy]
+      {Mismo preproceso para C y Q};
+
+  % --- Bifurcación ---
+  \coordinate (fork) at (8.65, -1.35);
+  \draw[->, unirnavy] (x.south) -- (fork);
+
+  % Rama C
+  \node[cbox, minimum width=3.2cm] (c) at (3.6, -2.45)
+    {\textbf{Rama clásica}\\[-1pt]{\tiny SVM · Random Forest · XGBoost}};
+  \draw[->, unirgris!85!black] (fork) -| node[pos=0.25, above, font=\tiny, text=unirgris] {fit directo} (c.north);
+
+  % Rama Q
+  \node[qbox, minimum width=2.55cm] (emb) at (8.65, -2.45)
+    {\textbf{Embedding}\\[-1pt]{\tiny ZZ / angle / $R_Y$}};
+  \node[qbox, minimum width=2.55cm] (hil) at (11.45, -2.45)
+    {Hilbert\\[-1pt]{\tiny $\lvert\phi(x)\rangle$}};
+  \node[qbox, minimum width=3.2cm] (q) at (10.05, -3.75)
+    {\textbf{Rama cuántica}\\[-1pt]{\tiny QSVM · QNN · VQC}};
+  \draw[->, unirnavy] (fork) -- (emb.north);
+  \draw[->, unirnavy] (emb) -- (hil);
+  \draw[->, unirnavy] (hil.south) -- ++(0,-0.25) -| (q.north);
+
+  % Métricas
+  \node[box, minimum width=5.6cm] (met) at (6.8, -5.05)
+    {\textbf{Comparación}\\[-1pt]{\tiny Acc, F1, AUC \quad|\quad train\_time\_s, inference\_time\_s}};
+  \draw[->, unirgris!85!black] (c.south) -- ++(0,-0.35) -| ([xshift=-1.4cm]met.north);
+  \draw[->, unirnavy] (q.south) -- ++(0,-0.2) -| ([xshift=1.4cm]met.north);
 \end{tikzpicture}
-\caption{Preparación compartida en clasificación: el mismo $X$ procesado alimenta baselines clásicos y modelos cuánticos.}
+\caption{Preparación compartida y bifurcación C/Q. Tras split, PCA (si $d>4$) y MinMax$[0,\pi]$, el mismo $X$ alimenta baselines clásicos; en la rama cuántica pasa antes por el embedding al espacio de Hilbert. Ambas ramas se evalúan con las mismas métricas de calidad y latencia.}
 \label{fig:prep_clasif}
 \end{figure}
 
 \subsection{Representación en el espacio de Hilbert}
 
-Con presupuesto de $n=4$ qubits, el estado vive en $\mathbb{C}^{2^4}$. Tres mapas aparecen en el corpus \citep{pennylaneGlossaryEmbedding, lloyd2020}:
+El feature map es una función de los \textbf{datos}, no del algoritmo: $\mathbf{x}\mapsto\lvert\phi(\mathbf{x})\rangle$ lleva el vector clásico (tras PCA y MinMax$[0,\pi]$) a un estado en $\mathbb{C}^{2^n}$ con $n=4$ qubits \citep{lloyd2020, pennylaneGlossaryEmbedding, schuld2021}. Sin ese paso el dato no entra al circuito; la utilidad del mapa depende de su alineación con la estructura del generador \citep{huang2021, pennylaneEmbedBlog, parzygnat2025}. En el corpus se usan tres embeddings:
 
 \begin{itemize}
-    \item \textbf{QSVM --- ZZFeatureMap / mapa ZZ propio.} Cada componente $x_i\in[0,\pi]$ entra vía $R_Z$ tras Hadamard; el entrelazamiento ZZ usa ángulos $\propto(\pi-x_i)(\pi-x_j)$ (variante alineada con el mapa de Qiskit, \texttt{entanglement=full}) \citep{havlicek2019}. El kernel estima fidelidad entre estados $\lvert\langle\phi(x)\vert\phi(x')\rangle\rvert^2$ (PennyLane statevector o \texttt{FidelityStatevectorKernel}).
-    \item \textbf{QNN --- AngleEmbedding + BasicEntanglerLayers.} \texttt{AngleEmbedding} rota qubits con las features; capas entrelazadas entrenables; se leen $\langle Z_i\rangle$ y una cabeza lineal PyTorch clasifica \citep{pennylaneVariationalClassifier}.
-    \item \textbf{VQC --- state preparation $R_Y(x_i)$ + capas \texttt{Rot}+CNOT.} Circuito variacional optimizado con Nesterov; salida por valores esperados $\langle Z\rangle$ \citep{pennylaneVariationalClassifier, cerezo2021}.
+    \item \textbf{Mapa ZZ (\texttt{ZZFeatureMap}).} Cada $x_i\in[0,\pi]$ entra vía $R_Z$ tras Hadamard; el entrelazamiento ZZ usa ángulos $\propto(\pi-x_i)(\pi-x_j)$ (\texttt{entanglement=full}, alineado con el mapa de Qiskit) \citep{havlicek2019}. Produce un estado $\lvert\phi(\mathbf{x})\rangle$ cuya geometría induce un kernel de fidelidad $K(\mathbf{x},\mathbf{x}')=\lvert\langle\phi(\mathbf{x})\vert\phi(\mathbf{x}')\rangle\rvert^2$.
+    \item \textbf{Angle embedding.} \texttt{AngleEmbedding} de PennyLane rota cada qubit con una componente de $\mathbf{x}$ (típicamente $R_X$/$R_Y$/$R_Z$ según el eje elegido) \citep{pennylaneGlossaryEmbedding, pennylaneVariationalClassifier}. Codifica el dato en ángulos de rotación locales, sin entrelazamiento en la propia preparación.
+    \item \textbf{Preparación $R_Y(x_i)$.} Un $R_Y$ por qubit con ángulo igual a la feature correspondiente: embedding angular mínimo, un parámetro por dimensión \citep{pennylaneVariationalClassifier, cerezo2021}.
 \end{itemize}
 
-Sin un embedding, el dato clásico no entra al circuito: la representación es el paso que hace cuántico el pipeline \citep{pennylaneEmbedBlog, parzygnat2025}.
+Las capas entrenables (\texttt{BasicEntanglerLayers}, \texttt{Rot}+CNOT), el kernel de fidelidad y la cabeza de clasificación pertenecen al \emph{modelo}, no al mapa: se detallan en la sección siguiente. El mismo $\mathbf{x}$ podría, en principio, alimentarse con cualquiera de los tres embeddings; en los notebooks cada pipeline fija uno.
 
 \subsection{Modelos}
 
@@ -115,14 +154,14 @@ Sin un embedding, el dato clásico no entra al circuito: la representación es e
 Clásica & SVM (RBF) & \texttt{sklearn.svm.SVC} \\
 Clásica & Random Forest & \texttt{sklearn.ensemble} \\
 Clásica & XGBoost & \texttt{XGBClassifier} \\
-Cuántica & QSVM & kernel ZZ + \texttt{SVC(precomputed/fidelity)} \\
-Cuántica & QNN & PennyLane + PyTorch \\
-Cuántica & VQC & circuito variacional PennyLane \\
+Cuántica & QSVM & mapa ZZ + kernel fidelidad + \texttt{SVC} \\
+Cuántica & QNN & angle embedding + \texttt{BasicEntanglerLayers} + cabeza PyTorch \\
+Cuántica & VQC & prep.\ $R_Y(x_i)$ + capas \texttt{Rot}+CNOT (Nesterov) \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-Cada dataset tiene un notebook por modelo bajo \texttt{IrisClassification/}, \texttt{BSClassification/} e \texttt{IsingClassification/}.
+Cada dataset tiene un notebook por modelo bajo \texttt{IrisClassification/}, \texttt{BSClassification/} e \texttt{IsingClassification/}. El mapa (datos$\to$Hilbert) queda fijado por el notebook; lo que diferencia a QSVM, QNN y VQC es cómo se \emph{usa} ese estado (kernel vs.\ circuito variacional + lectura $\langle Z\rangle$).
 
 \subsection{Métricas de clasificación y latencia}
 
