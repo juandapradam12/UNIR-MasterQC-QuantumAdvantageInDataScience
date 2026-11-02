@@ -389,7 +389,7 @@ Evaluar de forma empírica si los algoritmos cuánticos NISQ ofrecen ventaja med
 \fig{0.58\textheight}{ising_f1_ranking.png}
 \end{column}
 \end{columns}
-\mensaje{QSVM = SVM: F1 0.985, con los seis modelos por encima de 0.95 de accuracy}
+\mensaje{QSVM = SVM: F1 0.985, con los seis modelos en 0.95 de accuracy o más}
 \end{frame}
 
 \begin{frame}{El coste de simular el circuito}
@@ -460,7 +460,7 @@ VQE & 1 & 1 & 1 \\
   \node[head=unirgris] (b) at (6.6,0) {Déficit o fallo};
   \node[cuerpo=unirazul, text width=5.6cm, minimum height=3.2cm, below=0.1cm of a, align=left] {%
     \begin{itemize}\setlength{\itemsep}{4pt}
-      \item Ising: QSVM = SVM, con todos los modelos por encima de 0.95
+      \item Ising: QSVM = SVM, con todos los modelos en 0.95 de accuracy o más
       \item TSP y MaxCut: QAOA y VQE reproducen $C^\star$, más lentos
     \end{itemize}};
   \node[cuerpo=unirgris, text width=5.6cm, minimum height=3.2cm, below=0.1cm of b, align=left] {%
@@ -483,7 +483,7 @@ VQE & 1 & 1 & 1 \\
   \node[numsq=unirazul] (c1) at (0,0) {1};
   \node[txt, right=0.2cm of c1] {\textbf{Sin ventaja en clasificación.} SVM-RBF mejor o empatado en los tres datasets};
   \node[numsq=unirnavy] (c2) at (6.7,0) {2};
-  \node[txt, right=0.2cm of c2] {\textbf{ZZ solo empata en Ising.} El dataset que todos resuelven por encima de 0.95};
+  \node[txt, right=0.2cm of c2] {\textbf{ZZ solo empata en Ising.} El dataset en el que todos alcanzan 0.95 de accuracy};
   \node[numsq=unirnavy] (c3) at (0,-1.9) {3};
   \node[txt, right=0.2cm of c3] {\textbf{Optimización sin mejora.} QAOA y VQE tardan 0.6--12.6 s por ejecución; la enumeración, $<1$ ms};
   \node[numsq=unirazul] (c4) at (6.7,-1.9) {4};
@@ -498,7 +498,7 @@ VQE & 1 & 1 & 1 \\
 \begin{frame}{Trabajo futuro}
 \centering
 \begin{tikzpicture}[font=\small]
-  \node[tile=unirazul] at (0,0)      {\textbf{Escala}\\ \scriptsize cadenas de Ising de 6--12 espines};
+  \node[tile=unirazul] at (0,0)      {\textbf{Escala}\\ \scriptsize cadenas de Ising de 8 y 16 espines};
   \node[tile=unirnavy] at (4.1,0)    {\textbf{QUBO mayores}\\ \scriptsize probabilidad del óptimo; QAOA con $p$ creciente frente a SA};
   \node[tile=unirazul] at (8.2,0)    {\textbf{Hardware real}\\ \scriptsize shots y mitigación de errores};
   \node[tile=unirnavy] at (0,-1.9)   {\textbf{Representación}\\ \scriptsize basis encoding y embeddings entrenables};

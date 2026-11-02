@@ -2,7 +2,7 @@
 \chapter{Líneas de trabajo futuro}
 \label{cap:futuro}
 
-Las líneas de la Tabla~\ref{tab:futuro} parten de las preguntas abiertas de la Sección~\ref{sec:discusion_representacion} y de los límites del diseño. Las tres primeras atacan directamente esas preguntas; las tres últimas amplían el alcance. Todas cambian un único factor del protocolo y mantienen el criterio de comparación: el modelo cuántico frente al mejor clásico, con la representación como variable controlada.
+Las líneas de la Tabla~\ref{tab:futuro} parten de las preguntas abiertas de la Sección~\ref{sec:discusion_representacion} y de los límites del diseño. Las tres primeras atacan directamente esas preguntas; las tres últimas amplían el alcance. Todas mantienen el criterio de comparación: el modelo cuántico frente al mejor clásico, con la representación como variable controlada.
 
 \begin{table}[!htbp]
 \centering
@@ -12,7 +12,7 @@ Las líneas de la Tabla~\ref{tab:futuro} parten de las preguntas abiertas de la 
 \toprule
 \textbf{Línea} & \textbf{Acción concreta} & \textbf{Pregunta que responde} \\
 \midrule
-Escala del caso Ising & Cadenas de Ising de 6 a 12 espines con codificación directa en qubits; QSVM-ZZ frente a SVM-RBF. & ¿Se mantiene la paridad observada en Ising al crecer el sistema y sin PCA? \\
+Escala del caso Ising & Cadenas de Ising de 8 y 16 espines del mismo catálogo \texttt{qspin} \citep{pennylaneIsing}, con codificación directa en qubits; QSVM-ZZ frente a SVM-RBF. & ¿Se mantiene la paridad observada en Ising al crecer el sistema y sin PCA? \\
 \addlinespace
 Instancias QUBO mayores & TSP de 6 a 8 ciudades y MDS/MaxCut de 10 a 20 nodos de HamLib; QAOA con $p$ creciente frente a SA \citep{zhou2020, sawaya2024hamlib, pennylaneHamlibTsp}. & ¿Cuánta probabilidad concentra QAOA en el óptimo al crecer $p$ y el tamaño, frente al éxito de SA? \\
 \addlinespace

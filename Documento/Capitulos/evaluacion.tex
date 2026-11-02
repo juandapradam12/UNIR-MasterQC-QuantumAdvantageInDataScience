@@ -5,7 +5,7 @@ Este capítulo aplica el protocolo del Capítulo~\ref{cap:metodologia} y respond
 
 \section{Clasificación}
 
-La Figura~\ref{fig:cls_dataset} resume la familia. En Iris y Bars and Stripes la media cuántica de accuracy queda $0.083$ y $0.101$ por debajo de la clásica; en Ising las dos medias coinciden ($0.971$). Ising es también el dataset en el que los seis modelos superan $0.95$ de accuracy: la paridad aparece en el caso más fácil del corpus.
+La Figura~\ref{fig:cls_dataset} resume la familia. En Iris y Bars and Stripes la media cuántica de accuracy queda $0.083$ y $0.101$ por debajo de la clásica; en Ising las dos medias coinciden ($0.971$). Ising es también el dataset en el que los seis modelos alcanzan al menos $0.95$ de accuracy: la paridad aparece en el caso más fácil del corpus.
 
 \begin{figure}[!htbp]
 \centering
@@ -59,7 +59,7 @@ VQC & 0.950 & 0.950 & --- & $-0.006$ & 49.305 & 0.151 \\
 
 \subsection{Bars and Stripes}
 
-El patrón $4\times 4$ se aplana ($d=16$) y la PCA a cuatro componentes retiene el 57.5\,\% de la varianza. En el plano principal las dos clases ocupan la misma región (Figura~\ref{fig:bs_prelim}). Es el dataset con menor accuracy para cinco de los seis modelos (el QSVM rinde aún peor en Iris) y en el que la familia cuántica queda más lejos (Tabla~\ref{tab:res_bs}).
+El patrón $4\times 4$ se aplana ($d=16$) y la PCA a cuatro componentes retiene el 57.5\,\% de la varianza. En el plano principal las dos clases ocupan la misma región (Figura~\ref{fig:bs_prelim}). Es el dataset con menor accuracy para cinco de los seis modelos (el QSVM rinde aún peor en Iris) y en el que la familia cuántica queda más lejos (Tabla~\ref{tab:res_bs}). La Figura~\ref{fig:bs_fronteras} muestra que las dos primeras componentes no bastan para separar las clases: el SVM asigna casi todo el plano a una sola clase y aun así acierta el 87\,\% del test, así que su decisión depende de la tercera y la cuarta componentes. Sobre ese mismo plano, el QSVM vuelve a fragmentar el espacio en islas.
 
 \begin{table}[!htbp]
 \centering
@@ -100,7 +100,7 @@ VQC & 0.696 & 0.688 & --- & 0.014 & 12.432 & 1.872 \\
 
 \paragraph{QNN.} Es el mejor modelo cuántico del dataset. Su AUC ($0.936$) es prácticamente la del SVM, aunque su F1 quede 5.5 puntos por debajo. Su accuracy de train ($0.811$) es menor que la de test ($0.817$): no hay sobreajuste, y el modelo tampoco ajusta mejor los datos con los que se entrena.
 
-\paragraph{VQC.} F1 $0.688$, el mínimo del corpus, con accuracy de train $0.710$: el modelo no ajusta ni el train. Lee solo dos valores esperados, $\langle Z_0\rangle$ y $\langle Z_1\rangle$, tras dos capas \texttt{Rot}+CNOT. En Iris el mismo circuito igualaba a los árboles \citep{cerezo2021}.
+\paragraph{VQC.} F1 $0.688$, el mínimo del corpus, con accuracy de train $0.710$: el modelo no ajusta ni el train. Lee solo dos valores esperados, $\langle Z_0\rangle$ y $\langle Z_1\rangle$, tras dos capas \texttt{Rot}+CNOT. En Iris, con el mismo ansatz y tres valores esperados, igualaba a los árboles \citep{cerezo2021}.
 
 \subsection{Ising}
 
@@ -268,7 +268,7 @@ El único fallo cuántico aparece en el MDS. No se explica por la rareza del óp
 
 Las dos familias se leen con la misma pregunta: en qué espacio se resuelve el problema y qué permite afirmar el experimento sobre ese espacio \citep{lloyd2020, huang2021, parzygnat2025}.
 
-\paragraph{En clasificación} el mismo QSVM pasa de ser el peor modelo en Iris a empatar con el mejor en Ising. El experimento no permite atribuir ese cambio a una afinidad entre el mapa ZZ y el Hamiltoniano de Ising: el mapa actúa sobre componentes principales de las amplitudes, no sobre los espines, y en Ising los seis modelos superan $0.95$ de accuracy. Lo que sí muestra es que, con el mismo preproceso, el mapa ZZ generalizó peor que un RBF en los dos datasets convencionales, en línea con \citet{huang2021}, y que ningún modelo cuántico superó al SVM en ningún dataset. Entre los cuánticos, la QNN es el más regular (13 puntos de rango de accuracy) y el VQC el menos (28) \citep{bowles2024}.
+\paragraph{En clasificación} el mismo QSVM pasa de ser el peor modelo en Iris a empatar con el mejor en Ising. El experimento no permite atribuir ese cambio a una afinidad entre el mapa ZZ y el Hamiltoniano de Ising: el mapa actúa sobre componentes principales de las amplitudes, no sobre los espines, y en Ising los seis modelos alcanzan al menos $0.95$ de accuracy. Lo que sí muestra es que, con el mismo preproceso, el mapa ZZ generalizó peor que un RBF en los dos datasets convencionales, en línea con \citet{huang2021}, y que ningún modelo cuántico superó al SVM en ningún dataset. Entre los cuánticos, la QNN es el más regular (13 puntos de rango de accuracy) y el VQC el menos (28) \citep{bowles2024}.
 
 \paragraph{En optimización} la representación es común a SA, QAOA y VQE, y la enumeración del QUBO confirma que su mínimo es el óptimo de cada instancia; el SA lo alcanza en MDS y MaxCut y en 18 de 20 semillas del TSP. Las diferencias aparecen después, en si el optimizador del bucle variacional encuentra parámetros que concentren probabilidad en ese mínimo \citep{lucas2014, lubinski2024}.
 

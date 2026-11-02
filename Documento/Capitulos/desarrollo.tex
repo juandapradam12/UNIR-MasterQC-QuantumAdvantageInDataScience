@@ -7,6 +7,8 @@ Este capítulo describe cómo se ejecutaron los experimentos del TFM: entorno so
 
 \section{Entorno tecnológico}
 
+La Tabla~\ref{tab:entorno} recoge el software del estudio y sus versiones.
+
 \begin{table}[!htbp]
 \centering
 \small
@@ -58,6 +60,8 @@ Sobre esos ejes se fijan dos familias con la misma lógica de comparación justa
     \item \textbf{Clasificación:} mismos splits, mismo escalado y, cuando $d>4$, misma PCA a 4 componentes para \emph{todos} los modelos (clásicos y cuánticos).
     \item \textbf{Optimización:} misma instancia por problema; mismo óptimo de referencia; solvers clásicos y cuántico-inspirados evaluados con las mismas métricas de calidad y tiempo.
 \end{enumerate}
+
+\noindent La Figura~\ref{fig:pipeline_global} resume el recorrido común a las dos familias.
 
 \begin{figure}[!htbp]
 \centering
@@ -211,7 +215,7 @@ El feature map es un mapeo $\phi\colon\mathcal{X}\to\mathcal{H}$ que toma los da
 
 \begin{itemize}
     \item \textbf{Basis encoding.} Codifica cadenas binarias (o categorías discretizadas) en la base computacional: para $\mathbf{b}\in\{0,1\}^{n}$, $\lvert\phi(\mathbf{b})\rangle=\lvert b_1\cdots b_n\rangle=\bigotimes_{i}X^{b_i}\lvert 0\rangle$ \citep{parateEncodingGuide, pennylaneGlossaryEmbedding, pennylaneEmbedBlog}. Los estados son ortogonales; una medida en $Z$ recupera $\mathbf{b}$ con certeza. Escala como $\lceil\log_2 C\rceil$ qubits para $C$ categorías, pero no es natural para features continuas sin cuantización previa.
-    \item \textbf{Mapa ZZ (\texttt{ZZFeatureMap}).} Preparación producto $H^{\otimes n}$ seguida de rotaciones $R_Z(x_i)$ y puertas de fase entrelazadas $e^{-i\,\theta_{ij}Z_iZ_j}$ con $\theta_{ij}\propto(\pi-x_i)(\pi-x_j)$ (implementación \texttt{zz\_feature\_map} de Qiskit, \texttt{entanglement=full}) \citep{havlicek2019}. El producto interno en $\mathcal{H}$ define el kernel de fidelidad $K(\mathbf{x},\mathbf{x}')=\lvert\langle\phi(\mathbf{x})\vert\phi(\mathbf{x}')\rangle\rvert^{2}$.
+    \item \textbf{Mapa ZZ (\texttt{ZZFeatureMap}).} Preparación producto $H^{\otimes n}$ seguida de fases de ángulo $2x_i$ en cada qubit y puertas de fase entrelazadas $e^{-i\,\theta_{ij}Z_iZ_j}$ con $\theta_{ij}\propto(\pi-x_i)(\pi-x_j)$ (implementación \texttt{zz\_feature\_map} de Qiskit, \texttt{entanglement=full}) \citep{havlicek2019}. El producto interno en $\mathcal{H}$ define el kernel de fidelidad $K(\mathbf{x},\mathbf{x}')=\lvert\langle\phi(\mathbf{x})\vert\phi(\mathbf{x}')\rangle\rvert^{2}$.
     \item \textbf{Angle embedding.} \texttt{AngleEmbedding} aplica rotaciones locales $R_{\sigma}(x_i)$ ($\sigma\in\{X,Y,Z\}$) sobre el qubit $i$, de modo que $\lvert\phi(\mathbf{x})\rangle=\bigotimes_{i=1}^{n}R_{\sigma}(x_i)\lvert 0\rangle$ \citep{pennylaneGlossaryEmbedding, pennylaneVariationalClassifier, parateEncodingGuide}. Codificación angular separable: no introduce entrelazamiento en la preparación del estado.
     \item \textbf{Preparación $R_Y(x_i)$.} Caso particular de angle embedding con $\sigma=Y$: $U_{\phi}(\mathbf{x})=\bigotimes_{i}R_Y(x_i)$, un parámetro de rotación por dimensión de feature \citep{pennylaneVariationalClassifier, cerezo2021}.
 \end{itemize}
@@ -385,7 +389,7 @@ Latencia & Tiempo medio wall-clock y, si el solver evalúa un Hamiltoniano, núm
 
 \section{Comparación clásico vs cuántico}
 
-Clásico y cuántico se comparan a lo largo de todo el ciclo de modelado: representación, elección del modelo o del solver, ajuste y lectura del resultado. Cada etapa tiene una lectura cualitativa, que fija la hipótesis del método, y una cuantitativa, que la mide con las métricas de las Tablas~\ref{tab:metricas_clasif} y~\ref{tab:metricas_opt} \citep{bowles2024, lubinski2024, yu2026}.
+Clásico y cuántico se comparan a lo largo de todo el ciclo de modelado: representación, elección del modelo o del solver, ajuste y lectura del resultado. Cada etapa tiene una lectura cualitativa, que fija la hipótesis del método, y una cuantitativa, que la mide con las métricas de las Tablas~\ref{tab:metricas_clasif} y~\ref{tab:metricas_opt}. La Tabla~\ref{tab:ciclo} detalla ambas lecturas por etapa \citep{bowles2024, lubinski2024, yu2026}.
 
 \begin{table}[!htbp]
 \centering
