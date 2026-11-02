@@ -7,7 +7,7 @@ Classification uses three datasets: Iris, Bars and Stripes and one-dimensional I
 
 Optimisation covers three problems: the Travelling Salesperson Problem (TSP), the Minimum Dominating Set (MDS) and Maximum Cut on a HamLib instance. QAOA and VQE are evaluated against brute force, greedy, ILP and Simulated Annealing on QUBO.
 
-The SVM obtains the best or tied-best F1 on all three datasets and is the fastest model. Quantum models fall behind on Iris and Bars and Stripes; the QSVM ties the SVM only on Ising, where the ZZ feature map shares structure with the Hamiltonian that generates the data. In optimisation every method except greedy on MDS reaches or nearly reaches the optimum, but QAOA and VQE take 0.6 to 12.6 seconds where enumeration takes under a millisecond, and QAOA misses one of eight seeds on the instance with a unique optimum. There is no quantum advantage in this regime; parity depends on how well the representation is aligned with the problem.
+The SVM obtains the best or tied-best F1 on all three datasets and is the fastest model. Quantum models fall behind on Iris and Bars and Stripes; the QSVM ties the SVM only on Ising, the dataset on which all six models exceed 0.95 accuracy. In optimisation every method except greedy on MDS reaches or nearly reaches the optimum, but QAOA and VQE take 0.6 to 12.6 seconds where enumeration takes under a millisecond, and QAOA misses one of eight seeds on MDS. There is no quantum advantage in this regime: quality parity, where it appears, comes at a higher time cost.
 
 \vspace{0.5em}
 \noindent\textbf{Keywords:} quantum computing, quantum-inspired, data science, classification, combinatorial optimisation, Iris, Bars and Stripes, Ising, TSP, MDS, MaxCut, QSVM, VQC, QAOA, VQE, NISQ.

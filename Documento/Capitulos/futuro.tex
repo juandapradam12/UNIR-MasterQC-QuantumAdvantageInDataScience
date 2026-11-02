@@ -12,9 +12,9 @@ Las líneas de la Tabla~\ref{tab:futuro} parten de las preguntas abiertas de la 
 \toprule
 \textbf{Línea} & \textbf{Acción concreta} & \textbf{Pregunta que responde} \\
 \midrule
-Escala de la alineación & Cadenas de Ising de 6 a 12 espines con codificación directa en qubits; QSVM-ZZ frente a SVM-RBF. & ¿Se mantiene la paridad observada en Ising al crecer el sistema? \\
+Escala del caso Ising & Cadenas de Ising de 6 a 12 espines con codificación directa en qubits; QSVM-ZZ frente a SVM-RBF. & ¿Se mantiene la paridad observada en Ising al crecer el sistema y sin PCA? \\
 \addlinespace
-Instancias QUBO mayores & TSP de 6 a 8 ciudades y MDS/MaxCut de 10 a 20 nodos de HamLib; QAOA con $p$ creciente frente a SA \citep{zhou2020, sawaya2024hamlib, pennylaneHamlibTsp}. & ¿Separa la profundidad de QAOA su rendimiento del de un annealing cuando el óptimo es único? \\
+Instancias QUBO mayores & TSP de 6 a 8 ciudades y MDS/MaxCut de 10 a 20 nodos de HamLib; QAOA con $p$ creciente frente a SA \citep{zhou2020, sawaya2024hamlib, pennylaneHamlibTsp}. & ¿Cuánta probabilidad concentra QAOA en el óptimo al crecer $p$ y el tamaño, frente al éxito de SA? \\
 \addlinespace
 Hardware real & Ejecución por shots con mitigación de errores, kernel por medidas aleatorizadas \citep{haug2023} y compilación estructurada \citep{rovara2026}. & ¿Qué parte del coste se debe a la simulación y cuál al método? \\
 \addlinespace
@@ -22,7 +22,7 @@ Representación & Basis encoding sin PCA en Bars and Stripes, re-uploading \cite
 \addlinespace
 Entrenabilidad & Búsqueda de hiperparámetros, validación cruzada con intervalos de confianza y varianza del gradiente al crecer profundidad y qubits \citep{mcclean2018, cerezo2023}. & ¿Limita el paisaje de pérdida a QNN, VQC y QAOA antes que la representación? \\
 \addlinespace
-Otras familias & Regresión sobre Friedman~\#1 \citep{friedman1991, kulkarniQlr}, clustering \citep{aimeur2007, sentis2019, kerenidis2019qmeans} y qPCA o autoencoders cuánticos en lugar de la PCA \citep{lloyd2014, romero2017}, con la salvedad de \citet{tang2021}. & ¿Se reproduce el patrón de alineación fuera de la clasificación? \\
+Otras familias & Regresión sobre Friedman~\#1 \citep{friedman1991, kulkarniQlr}, clustering \citep{aimeur2007, sentis2019, kerenidis2019qmeans} y qPCA o autoencoders cuánticos en lugar de la PCA \citep{lloyd2014, romero2017}, con la salvedad de \citet{tang2021}. & ¿Se mantiene fuera de la clasificación el resultado observado aquí? \\
 \bottomrule
 \end{tabularx}
 \caption{Líneas de trabajo futuro.}
