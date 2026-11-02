@@ -7,6 +7,7 @@
 \usetikzlibrary{positioning}         % sintaxis: below=Xcm of nodo
 \usetikzlibrary{decorations.pathreplacing} % llaves y anotaciones de rango
 \usetikzlibrary{fit}                       % envolver nodos con una caja (fit=()())
+\usetikzlibrary{arrows.meta}               % puntas de flecha (Stealth)
 \usepackage{Estilos/unir}
 
 % Paleta de las figuras: azules y grises de la plantilla de defensa de UNIR.
@@ -30,9 +31,37 @@
 \usepackage{booktabs}   % líneas profesionales (\toprule, \midrule, \bottomrule)
 \newtheorem{conjetura}{Conjetura}[chapter]  % entorno para conjeturas originales del TFM
 \usepackage{caption}    % personalización de captions
-% Añade "Fuente: elaboración propia." debajo de cada figura
+% Añade "Fuente: elaboración propia." debajo de cada figura y tabla
 \DeclareCaptionTextFormat{fuente}{#1\par\footnotesize\normalfont\textit{Fuente: elaboración propia.}}
 \captionsetup[figure]{textformat=fuente}
+\captionsetup[table]{textformat=fuente}
+
+% Figuras del corpus actual (antes bajo POCs/)
+\graphicspath{%
+  {Imagenes/}%
+  {../Notebooks/Classification/ResultsClassification/figures/}%
+  {../Notebooks/Optimization/ResultsOptimization/figures/}%
+  {../Notebooks/Classification/IrisClassification/figures/}%
+  {../Notebooks/Classification/BSClassification/figures/}%
+  {../Notebooks/Classification/IsingClassification/figures/}%
+  {../Notebooks/Optimization/TSPOptimization/figures/}%
+  {../Notebooks/Optimization/MinimumDominatingSetOptimization/figures/}%
+  {../Notebooks/Optimization/MaxCutOptimization/figures/}%
+}
+% No abortar la compilación si falta un PNG heredado del corpus viejo
+\makeatletter
+\let\tfm@Gin@setfile\Gin@setfile
+\def\Gin@setfile#1#2#3{%
+  \IfFileExists{\Gin@base\Gin@ext}{%
+    \tfm@Gin@setfile{#1}{#2}{#3}%
+  }{%
+    \PackageWarning{graphicx}{Missing figure `\Gin@base\Gin@ext' --- placeholder}%
+    \setlength{\@tempdima}{\Gin@req@width}%
+    \ifdim\@tempdima=\z@ \setlength{\@tempdima}{0.85\linewidth}\fi
+    \fbox{\parbox{\@tempdima}{\centering\footnotesize\textit{[Figura pendiente: \texttt{\Gin@base\Gin@ext}]}}}%
+  }%
+}
+\makeatother
 
 \title{La Evolución de la Ciencia de Datos hacia la Computación Cuántica: Análisis de la Ventaja Cuántica en Casos Aplicados}
 \titulacion{Máster en Computación Cuántica}
@@ -42,6 +71,7 @@
 \nombreciudad{Barcelona, España}
 
 \begin{document}
+\decimalpoint
 
 \pagenumbering{alph}
 \maketitle
@@ -59,7 +89,6 @@
 \include{Capitulos/objetivos}
 \include{Capitulos/desarrollo}
 \include{Capitulos/evaluacion}
-\include{Capitulos/investigacion_original}
 \include{Capitulos/conclusiones}
 \include{Capitulos/futuro}
 \include{Capitulos/referencias}

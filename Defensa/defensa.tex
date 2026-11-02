@@ -14,10 +14,10 @@
 \usepackage{colortbl}
 \usepackage{graphicx}
 \usepackage{tikz}
-\usetikzlibrary{positioning,fit,arrows.meta,babel,calc}
+\usetikzlibrary{positioning,fit,arrows.meta,babel,calc,decorations.pathreplacing}
 \usepackage[authoryear,round]{natbib}
 
-\graphicspath{{../Imagenes/}{../../POCs/data/output/figures/}{../}}
+\graphicspath{{../Documento/Imagenes/}{../Notebooks/Classification/ResultsClassification/figures/}{../Notebooks/Optimization/ResultsOptimization/figures/}{../Notebooks/Classification/IrisClassification/figures/}{../Notebooks/Classification/BSClassification/figures/}{../Notebooks/Classification/IsingClassification/figures/}{../Notebooks/Optimization/TSPOptimization/figures/}{../Notebooks/Optimization/MinimumDominatingSetOptimization/figures/}{../Notebooks/Optimization/MaxCutOptimization/figures/}}
 
 % ── Diseño alineado con la plantilla de defensa de UNIR (PowerPoint) ──
 % Paleta de la plantilla: azul UNIR, azul oscuro, grises (sin verdes ni rojos).
@@ -54,9 +54,7 @@
 \makeatletter
 \setbeamertemplate{frametitle}{%
   \vskip 0.30cm
-  \edef\unir@sec{\detokenize\expandafter{\insertsectionhead}}%
-  \edef\unir@ttl{\detokenize\expandafter{\insertframetitle}}%
-  \ifx\unir@sec\unir@ttl
+  \ifnum\pdfstrcmp{\detokenize\expandafter{\secname}}{\detokenize\expandafter{\beamer@frametitle}}=0
     {\fontsize{14}{16}\selectfont\bfseries\color{unirnavy}\insertframetitle\par}%
   \else
     {\fontsize{14}{16}\selectfont\bfseries\color{unirazul}\insertsectionhead\par}%
@@ -65,14 +63,15 @@
   \vskip 0.12cm}
 \makeatother
 \setbeamerfont{frametitle}{size=\normalsize}
+\setbeamertemplate{frametitle continuation}{}
 
+\tikzset{numcirc/.style={circle, fill=#1, text=white, font=\bfseries, minimum size=0.75cm},
+  numsq/.style={rectangle, rounded corners=3pt, fill=#1, text=white, font=\Large\bfseries, minimum width=1.0cm, minimum height=1.0cm},
+  head/.style={rectangle, rounded corners=3pt, fill=#1, text=white, font=\bfseries, minimum width=6.0cm, minimum height=0.8cm},
+  tile/.style={rectangle, rounded corners=4pt, fill=#1, text=white, align=center, text width=3.5cm, minimum height=1.55cm, font=\small}}
 \tikzset{cuerpo/.style={rectangle, rounded corners=3pt, very thick, draw=#1, fill=#1!8,
                        align=left, inner sep=5pt, anchor=north}}
 
-% Celdas de resultado de la síntesis Q vs C
-\newcommand{\ganaQ}{\cellcolor{unirazul}\textcolor{white}{\textbf{Gana Q}}}
-\newcommand{\ganaC}{\cellcolor{unirclaro}\textbf{Gana C}}
-\newcommand{\empate}{\cellcolor{unirazul!14}Empate}
 
 % Pie: logotipo UNIR a la izquierda y «pág. NN» con barra vertical a la derecha
 \newcommand{\unirpagina}{%
@@ -88,14 +87,23 @@
     \hfill\raisebox{0.14cm}{\unirpagina}\hskip0.85cm}%
   \vskip0.12cm}
 
-\title{Ventaja cuántica en ciencia de datos:\\
-condiciones empíricas, métodos híbridos\\
-y criterios de activación selectiva}
+\title{La Evolución de la Ciencia de Datos hacia la Computación Cuántica:\\
+Análisis de la Ventaja Cuántica en Casos Aplicados}
 \subtitle{Defensa del Trabajo de Fin de Máster}
 \author{Juan David Prada Malagón}
 \institute{Máster en Computación Cuántica · UNIR\\[2pt]
 Director: Ricardo Rafael Domínguez Reyes}
 \date{}
+
+% Imagen con altura máxima y proporción conservada
+\newcommand{\fig}[2]{\includegraphics[width=\linewidth,height=#1,keepaspectratio]{#2}}
+% Pie de imagen breve
+\newcommand{\pie}[1]{\\[-0.1em]{\scriptsize\color{unirgris}#1}}
+% Mensaje de cierre de diapositiva
+\newcommand{\mensaje}[1]{\vfill\begin{tikzpicture}\node[rectangle, rounded corners=3pt, fill=unirnavy, text=white,
+  font=\footnotesize\bfseries, text width=0.96\linewidth, align=center, inner sep=5pt] {#1};\end{tikzpicture}}
+% Tarjeta de texto breve
+\newcommand{\tarjeta}[3]{\begin{tikzpicture}\node[cuerpo=#1, text width=#2, align=center, anchor=center] {#3};\end{tikzpicture}}
 
 \begin{document}
 
@@ -106,8 +114,8 @@ Director: Ricardo Rafael Domínguez Reyes}
 \begin{tikzpicture}[remember picture,overlay]
   \fill[unirazul] (current page.north west) rectangle ($(current page.south east)+(0,1.15)$);
   \node[text=white, align=center, text width=11cm, inner sep=0pt] (tt) at ($(current page.center)+(0,0.55)$)
-    {{\fontsize{20}{24}\selectfont\bfseries\hyphenpenalty=10000 Ventaja cuántica en ciencia de datos:\\
-      condiciones empíricas,\\ métodos híbridos y criterios\\ de activación selectiva\par}
+    {{\fontsize{20}{24}\selectfont\bfseries\hyphenpenalty=10000 La Evolución de la Ciencia de Datos\\
+      hacia la Computación Cuántica:\\ Análisis de la Ventaja Cuántica\\ en Casos Aplicados\par}
      \vspace{0.55cm}
      {\large Defensa del Trabajo de Fin de Máster\par}
      \vspace{0.3cm}
@@ -123,737 +131,382 @@ Director: Ricardo Rafael Domínguez Reyes}
 
 \begin{frame}[plain]
 \begin{tikzpicture}[remember picture,overlay]
-  \fill[unirazul] (current page.north west) rectangle (current page.south |- current page.south west);
   \fill[unirazul] (current page.north west) rectangle ($(current page.south)$);
   \node[text=white, anchor=west] at ($(current page.west)+(1.6,0)$) {{\fontsize{34}{38}\selectfont ÍNDICE}};
   \node[anchor=west, align=left, inner sep=0pt, font=\fontsize{11.5}{14}\bfseries\selectfont] at ($(current page.center)+(0.35,0)$)
     {
-    \textcolor{unirclaro}{01 --}\,\textcolor{unirnavy}{Motivación}\\[0.30cm]
-    \textcolor{unirclaro}{02 --}\,\textcolor{unirnavy}{Introducción}\\[0.30cm]
-    \textcolor{unirclaro}{03 --}\,\textcolor{unirnavy}{Contexto y estado de la técnica}\\[0.30cm]
-    \textcolor{unirclaro}{04 --}\,\textcolor{unirnavy}{Planteamiento y metodología}\\[0.30cm]
-    \textcolor{unirclaro}{05 --}\,\textcolor{unirnavy}{Resultados: Q vs C}\\[0.30cm]
-    \textcolor{unirclaro}{06 --}\,\textcolor{unirnavy}{Conjeturas: $\mathcal{Q}$ y QCR}\\[0.30cm]
-    \textcolor{unirclaro}{07 --}\,\textcolor{unirnavy}{Evidencia de las conjeturas}\\[0.30cm]
-    \textcolor{unirclaro}{08 --}\,\textcolor{unirnavy}{Conclusiones y limitaciones}\\[0.30cm]
-    \textcolor{unirclaro}{09 --}\,\textcolor{unirnavy}{Trabajo futuro}
+    \textcolor{unirclaro}{01 --}\,\textcolor{unirnavy}{Introducción}\\[0.32cm]
+    \textcolor{unirclaro}{02 --}\,\textcolor{unirnavy}{Motivación}\\[0.32cm]
+    \textcolor{unirclaro}{03 --}\,\textcolor{unirnavy}{Objetivos}\\[0.32cm]
+    \textcolor{unirclaro}{04 --}\,\textcolor{unirnavy}{Contexto y estado de la técnica}\\[0.32cm]
+    \textcolor{unirclaro}{05 --}\,\textcolor{unirnavy}{Resultados y análisis}\\[0.32cm]
+    \textcolor{unirclaro}{06 --}\,\textcolor{unirnavy}{Conclusiones}\\[0.32cm]
+    \textcolor{unirclaro}{07 --}\,\textcolor{unirnavy}{Trabajo futuro}
     };
-\end{tikzpicture}
-\end{frame}
-
-% =====================================================================
-\section{Motivación}
-% =====================================================================
-\begin{frame}{La brecha entre promesa y evidencia}
-\begin{columns}[T]
-\begin{column}{0.55\textwidth}
-\begin{itemize}
-  \item La ciencia de datos escala en dimensionalidad y complejidad combinatoria \citep{jordan2015, biamonte2017}.
-  \item Los algoritmos variacionales y de kernel prometen ventaja en la era NISQ \citep{preskill2018, farhi2014, schuld2021}.
-  \item Persiste una \textbf{brecha} entre promesas teóricas y evidencia reproducible sobre datos reales.
-\end{itemize}
-\end{column}
-\begin{column}{0.42\textwidth}
-\begin{block}{Pregunta práctica}
-\textquestiondown{}Cuándo activar un módulo cuántico\\
-y cuándo quedarse con el stack clásico?
-\end{block}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}{Estructura del TFM}
-\centering
-\begin{tikzpicture}[font=\scriptsize, thick, scale=0.85, every node/.style={transform shape},
-    capnodo/.style={rectangle, rounded corners=4pt, very thick,
-                minimum width=2.8cm, minimum height=0.75cm,
-                align=center, inner sep=3pt},
-    bloque/.style={rectangle, rounded corners=6pt, dashed,
-                   inner sep=6pt, very thick},
-    arr/.style={->, thick, gray!60}]
-  \node[capnodo, draw=blue!55!black, fill=blue!8]  (c1) at (0,    0) {\textbf{Cap. 1}\\Introducción};
-  \node[capnodo, draw=blue!55!black, fill=blue!8]  (c2) at (0,  -1.35) {\textbf{Cap. 2}\\Contexto};
-  \node[capnodo, draw=blue!55!black, fill=blue!8]  (c3) at (0,  -2.7) {\textbf{Cap. 3}\\Objetivos};
-  \node[capnodo, draw=orange!60!black, fill=orange!7] (c4) at (4.6, -1.35) {\textbf{Cap. 4}\\Metodología};
-  \node[capnodo, draw=orange!60!black, fill=orange!7] (c5) at (4.6, -2.7) {\textbf{Cap. 5}\\Evaluación};
-  \node[capnodo, draw=violet!60!black, fill=violet!7] (c6) at (9.2, -0.8) {\textbf{Cap. 6}\\QCR / $\mathcal{Q}$};
-  \node[capnodo, draw=violet!60!black, fill=violet!7] (c7) at (9.2, -2.15) {\textbf{Cap. 7}\\Conclusiones};
-  \node[capnodo, draw=violet!60!black, fill=violet!7] (c8) at (9.2, -3.5) {\textbf{Cap. 8}\\Futuro};
-  \node[bloque, draw=blue!40,   fit=(c1)(c2)(c3),
-        label={[blue!60!black, font=\scriptsize\bfseries]above:Marco teórico}]   {};
-  \node[bloque, draw=orange!45, fit=(c4)(c5),
-        label={[orange!65!black, font=\scriptsize\bfseries]above:Implementación}] {};
-  \node[bloque, draw=violet!45, fit=(c6)(c7)(c8),
-        label={[violet!60!black, font=\scriptsize\bfseries]above:Discusión y cierre}] {};
-  \draw[arr] (c3.east)  -- ++(0.55, 0) |- (c4.west);
-  \draw[arr] (c4.south) -- (c5.north);
-  \draw[arr] (c5.east)  -- ++(0.55, 0) |- (c6.west);
-  \draw[arr] (c6.south) -- (c7.north);
-  \draw[arr] (c7.south) -- (c8.north);
-  \draw[->, thick, dashed, gray!50]
-    (c5.north east) to[out=25, in=200] node[midway, above, font=\tiny, gray!65]{valida} (c6.south west);
 \end{tikzpicture}
 \end{frame}
 
 % =====================================================================
 \section{Introducción}
 % =====================================================================
-\begin{frame}{Planteamiento del problema}
-\vspace{0.4em}
-\begin{block}{Pregunta de investigación}
-\itshape
-\textquestiondown{}En qué condiciones, y para qué tipos de problemas de ciencia de datos,
-los algoritmos cuánticos disponibles en la era NISQ ofrecen una
-ventaja real y medible frente a los algoritmos clásicos?
-\end{block}
-
-\vspace{0.8em}
+\begin{frame}{Seis problemas, un mismo protocolo}
+\centering
+{\small\textquestiondown{}Mejoran los métodos cuánticos, simulados con pocos qubits, la calidad o el coste frente a los clásicos?}\\[0.1em]
 \begin{columns}[T]
-\begin{column}{0.31\textwidth}
-\centering\textbf{\textcolor{unirnavy}{Qué se compara}}\\[0.2em]
-{\small algoritmos cuánticos frente al mejor clásico, en igualdad de condiciones}
+\begin{column}{0.32\textwidth}\centering
+\fig{0.255\textheight}{svm_iris_pca_scatter.png}\pie{Iris: dato convencional}\\[0.3em]
+\fig{0.255\textheight}{instance_tsp_graph.png}\pie{TSP: 5 nodos}
 \end{column}
-\begin{column}{0.31\textwidth}
-\centering\textbf{\textcolor{unirnavy}{Dónde}}\\[0.2em]
-{\small cinco casos de uso comunes y tres clases de datos}
+\begin{column}{0.32\textwidth}\centering
+\fig{0.255\textheight}{svm_bs_samples.png}\pie{Bars and Stripes: patrones $4\times4$}\\[0.3em]
+\fig{0.255\textheight}{instance_mds_graph.png}\pie{MDS: 6 vértices}
 \end{column}
-\begin{column}{0.31\textwidth}
-\centering\textbf{\textcolor{unirnavy}{Qué se obtiene}}\\[0.2em]
-{\small las condiciones en que gana el cuántico y un criterio para activarlo}
+\begin{column}{0.32\textwidth}\centering
+\fig{0.255\textheight}{svm_ising_chain.png}\pie{Ising: dato de sistema}\\[0.3em]
+\fig{0.255\textheight}{instance_maxcut_graph.png}\pie{MaxCut (HamLib): 6 vértices}
 \end{column}
 \end{columns}
 \end{frame}
 
-\begin{frame}{Alcance}
+% =====================================================================
+\section{Motivación}
+% =====================================================================
+\begin{frame}{Mucha promesa, poca evidencia comparable}
+\centering
+\begin{tikzpicture}[font=\scriptsize, thick, scale=0.66, transform shape]
+  % Eje temporal
+  \draw[->, very thick, gray!55] (-0.3, 0) -- (14.8, 0);
+
+  % Marcas y etiquetas de año
+  \foreach \yr/\x in {2016/0, 2017/1.7, 2018/3.4, 2019/5.1, 2020/6.8, 2021/8.5, 2022/10.2, 2023/11.9, 2024/13.6} {
+    \draw[gray!45] (\x, -0.15) -- (\x, 0.15);
+    \node[below=5pt, gray!65] at (\x, 0) {\yr};
+  }
+
+  % ── IBM (arriba) ──────────────────────────────────────────────────────────
+  \node[circle, draw=blue!55!black, fill=blue!10, minimum size=0.85cm, align=center,
+        font=\bfseries\scriptsize] (i1) at (0, 1.8) {5q};
+  \node[above=2pt, blue!65!black, align=center, font=\scriptsize] at (i1.north) {IBM};
+  \draw[->, blue!35, thin] (i1.south) -- (0, 0.06);
+
+  \node[circle, draw=blue!55!black, fill=blue!12, minimum size=0.85cm, align=center,
+        font=\bfseries\scriptsize] (i2) at (5.1, 1.8) {27q};
+  \node[above=2pt, blue!65!black, align=center, font=\scriptsize] at (i2.north) {Falcon};
+  \draw[->, blue!35, thin] (i2.south) -- (5.1, 0.06);
+
+  \node[circle, draw=blue!55!black, fill=blue!14, minimum size=0.85cm, align=center,
+        font=\bfseries\scriptsize] (i3) at (6.8, 1.8) {65q};
+  \node[above=2pt, blue!65!black, align=center, font=\scriptsize] at (i3.north) {Humming.};
+  \draw[->, blue!35, thin] (i3.south) -- (6.8, 0.06);
+
+  \node[circle, draw=blue!55!black, fill=blue!17, minimum size=0.85cm, align=center,
+        font=\bfseries\scriptsize] (i4) at (8.5, 1.8) {127q};
+  \node[above=2pt, blue!65!black, align=center, font=\scriptsize] at (i4.north) {Eagle};
+  \draw[->, blue!35, thin] (i4.south) -- (8.5, 0.06);
+
+  \node[circle, draw=blue!55!black, fill=blue!20, minimum size=0.85cm, align=center,
+        font=\bfseries\scriptsize] (i5) at (10.2, 1.8) {433q};
+  \node[above=2pt, blue!65!black, align=center, font=\scriptsize] at (i5.north) {Osprey};
+  \draw[->, blue!35, thin] (i5.south) -- (10.2, 0.06);
+
+  \node[circle, draw=blue!55!black, fill=blue!24, minimum size=0.85cm, align=center,
+        font=\bfseries\tiny] (i6) at (11.9, 1.8) {1121q};
+  \node[above=2pt, blue!65!black, align=center, font=\scriptsize] at (i6.north) {Condor};
+  \draw[->, blue!35, thin] (i6.south) -- (11.9, 0.06);
+
+  % ── Google (abajo) ────────────────────────────────────────────────────────
+  \node[circle, draw=violet!50!black, fill=violet!10, minimum size=0.85cm, align=center,
+        font=\bfseries\scriptsize] (g1) at (3.4, -1.8) {72q};
+  \node[below=2pt, violet!55!black, align=center, font=\scriptsize] at (g1.south) {Bristle.};
+  \draw[->, violet!40, thin] (g1.north) -- (3.4, -0.06);
+
+  \node[circle, draw=violet!50!black, fill=violet!14, minimum size=0.85cm, align=center,
+        font=\bfseries\scriptsize] (g2) at (5.1, -1.8) {53q};
+  \node[below=2pt, violet!55!black, align=center, font=\scriptsize] at (g2.south) {Sycamore};
+  \draw[->, violet!40, thin] (g2.north) -- (5.1, -0.06);
+
+  \node[circle, draw=violet!50!black, fill=violet!18, minimum size=0.85cm, align=center,
+        font=\bfseries\scriptsize] (g3) at (13.6, -1.8) {105q};
+  \node[below=2pt, violet!55!black, align=center, font=\scriptsize] at (g3.south) {Willow};
+  \draw[->, violet!40, thin] (g3.north) -- (13.6, -0.06);
+
+
+  % Llave "Era NISQ"
+  \draw[decorate, decoration={brace, amplitude=5pt}, thick, orange!65!black]
+    (-0.2, 2.85) -- (14.3, 2.85);
+  \node[above=6pt, orange!65!black, font=\footnotesize\bfseries] at (7.0, 2.85)
+    {Era NISQ (Preskill, 2018)};
+
+  % Leyenda
+  \node[circle, draw=blue!55!black, fill=blue!14, minimum size=0.4cm] at (0.7, -3.1) {};
+  \node[right=2pt, font=\scriptsize] at (0.9, -3.1) {IBM Quantum};
+  \node[circle, draw=violet!50!black, fill=violet!12, minimum size=0.4cm] at (3.5, -3.1) {};
+  \node[right=2pt, font=\scriptsize] at (3.7, -3.1) {Google Quantum AI};
+\end{tikzpicture}
+\vspace{-0.4em}
 \begin{columns}[T]
-\begin{column}{0.46\textwidth}
-\textbf{Casos de uso comunes (5)}
-\begin{itemize}
-  \item Clasificación supervisada (QSVM)
-  \item Regresión (QK-SVR)
-  \item Detección de anomalías (OCSVM-ZZ)
-  \item Optimización (QAOA / VQE)
-  \item Series temporales (QK-SVR sobre lags)
-\end{itemize}
-{\footnotesize Nueve casos de uso con protocolo justo en el documento.}
+\begin{column}{0.48\textwidth}\centering
+\tarjeta{unirazul}{5.6cm}{\footnotesize\textbf{Promesa:} kernels en espacios de Hilbert grandes y QAOA/VQE en hardware NISQ \citep{havlicek2019, farhi2014}}
 \end{column}
-\begin{column}{0.50\textwidth}
-\textbf{Tres clases de datos}
-\begin{enumerate}
-  \item \textbf{Sintéticos con estructura cuántica nativa}: generados con el
-        \emph{feature map} del kernel cuántico (ZZ); la etiqueta o el objetivo
-        es el valor de un observable sobre el estado codificado
-  \item \textbf{Práctica}: datos reales de SKG Tecnología
-  \item \textbf{Referencia pública}
-\end{enumerate}
+\begin{column}{0.48\textwidth}\centering
+\tarjeta{unirnavy}{5.6cm}{\footnotesize\textbf{Evidencia:} con protocolo justo, los clásicos suelen igualar o ganar \citep{bowles2024, yu2026}}
 \end{column}
 \end{columns}
+\end{frame}
+
+% =====================================================================
+\section{Objetivos}
+% =====================================================================
+\begin{frame}{Objetivos}
+\begin{block}{Objetivo general}
+Evaluar de forma empírica si los algoritmos cuánticos NISQ ofrecen ventaja medible frente a los clásicos en clasificación y optimización.
+\end{block}
+\vspace{0.6em}
+\centering
+\begin{tikzpicture}[font=\footnotesize,
+  txt/.style={align=center, text width=2.15cm, font=\scriptsize}]
+  \foreach \i/\c/\t in {1/unirazul/{Marco conceptual:\\ clasificación, optimización, representación},
+                        2/unirnavy/{Pipelines de clasificación con protocolo justo},
+                        3/unirazul/{Pipelines de optimización sobre un QUBO común},
+                        4/unirnavy/{Calidad y coste con métricas comunes},
+                        5/unirazul/{Interpretar en régimen NISQ y delimitar}} {
+    \node[numcirc=\c] (n\i) at ({(\i-1)*2.55},0) {\i};
+    \node[txt, below=0.15cm of n\i] {\t};
+  }
+  \draw[unirclaro, line width=1pt] (n1) -- (n2) -- (n3) -- (n4) -- (n5);
+\end{tikzpicture}
 \end{frame}
 
 % =====================================================================
 \section{Contexto y estado de la técnica}
 % =====================================================================
-\begin{frame}{Era NISQ}
-\begin{block}{NISQ \citep{preskill2018}}
-Dispositivos de escala intermedia \textbf{ruidosos}: qubits limitados, decoherencia, sin corrección de errores a gran escala.
-\end{block}
-\begin{itemize}
-  \item Algoritmos viables hoy: \textbf{variacionales} (QAOA, VQE) e híbridos \citep{farhi2014, cerezo2021}.
-  \item Kernels cuánticos: acceso a espacios de Hilbert de alta dimensión \citep{schuld2021, huang2021}.
-  \item Distinción clave: \textbf{metodologías} maduras vs.\ \textbf{hardware} aún inmaduro.
-\end{itemize}
-\end{frame}
-% =====================================================================
-\section{Planteamiento y metodología}
-% =====================================================================
-\begin{frame}{Metodología en cuatro fases}
+\begin{frame}{La representación como puente}
 \centering
-\begin{tikzpicture}[font=\scriptsize,
-    cab/.style={rectangle, rounded corners=3pt, minimum width=3.25cm, minimum height=0.7cm,
-                align=center, text=white, font=\footnotesize\bfseries},
-    arr/.style={->, very thick, >=stealth, unirnavy}]
-  \node[cab, fill=unirazul] (h1) at (0,0) {1. Datos};
-  \node[cab, fill=unirnavy] (h2) at (3.55,0) {2. Modelos};
-  \node[cab, fill=unirgris] (h3) at (7.1,0) {3. Evaluación};
-  \node[cab, fill=unirazul!70!unirnavy] (h4) at (10.65,0) {4. Híbrido y diagnóstico};
-  \draw[arr] (h1) -- (h2); \draw[arr] (h2) -- (h3); \draw[arr] (h3) -- (h4);
-  \node[cuerpo=unirazul, text width=2.85cm, minimum height=4.6cm] at (0,-0.5) {%
-    \begin{itemize}\setlength{\itemsep}{3pt}\setlength{\leftmargini}{0.8em}
-      \item Tres clases: sintéticos nativos (ZZ), práctica SKG, referencia pública
-      \item Preprocesado: estandarizar, PCA a 2 componentes y escalar a $[-\pi,\pi]$
-      \item Particiones aleatorias repetidas; en series, 70/30 en orden temporal
-    \end{itemize}};
-  \node[cuerpo=unirnavy, text width=2.85cm, minimum height=4.6cm] at (3.55,-0.5) {%
-    \begin{itemize}\setlength{\itemsep}{3pt}\setlength{\leftmargini}{0.8em}
-      \item \textbf{Cuánticos:} QSVM, QK-SVR y OCSVM con kernel ZZ de 2 qubits; QAOA y VQE
-      \item \textbf{Clásicos:} SVM, regresión logística, Ridge, RF, GB, Isolation Forest, LOF;
-            Hungarian, ILP, Greedy, NN+2-opt, SA-QUBO
-    \end{itemize}};
-  \node[cuerpo=unirgris, text width=2.85cm, minimum height=4.6cm] at (7.1,-0.5) {%
-    \begin{itemize}\setlength{\itemsep}{3pt}\setlength{\leftmargini}{0.8em}
-      \item \textbf{Protocolo justo:} tabla A (mismas 2 variables para todos) y tabla B (el clásico, con todas)
-      \item \textbf{Métricas:} exactitud, $R^2$, AUC, $P$(óptimo)
-      \item 5--10 repeticiones; simulación exacta del vector de estado
-    \end{itemize}};
-  \node[cuerpo=unirazul!70!unirnavy, text width=2.85cm, minimum height=4.6cm] at (10.65,-0.5) {%
-    \begin{itemize}\setlength{\itemsep}{3pt}\setlength{\leftmargini}{0.8em}
-      \item Diagnóstico $\mathcal{Q}(\mathcal{D})$: indicadores previos a ejecutar el algoritmo
-      \item Criterios de activación del módulo cuántico
-      \item QCR: mapeo hacia una representación cuántica (conjetura)
-    \end{itemize}};
-  \node at (5.3,-5.5) [rectangle, rounded corners=3pt, fill=unirnavy, text=white, font=\footnotesize\bfseries,
-        minimum width=13.4cm, minimum height=0.7cm]
-    {Salida: para cada caso de uso y clase de datos, \textquestiondown{}gana Q o gana C?};
+\begin{tikzpicture}[font=\small, thick,
+  box/.style={draw=unirnavy, fill=unirazul!10, rounded corners=3pt, align=center, inner sep=6pt, minimum height=1.0cm},
+  chip/.style={draw=unirazul, fill=white, rounded corners=2pt, font=\scriptsize, inner sep=3pt},
+  arr/.style={->, unirnavy, line width=1.2pt}]
+  \node[font=\bfseries\color{unirazul}] at (-0.4,1.35) {Clasificación};
+  \node[box] (x) at (0,0) {$\mathbf{x}\in\mathbb{R}^4$};
+  \node[box, right=1.0cm of x] (u) {$U_\phi(\mathbf{x})$\\[-2pt]{\scriptsize feature map}};
+  \node[box, right=1.0cm of u] (s) {$\lvert\phi(\mathbf{x})\rangle\in\mathbb{C}^{16}$};
+  \node[box, right=1.0cm of s] (k) {kernel o\\ ansatz};
+  \draw[arr] (x) -- (u); \draw[arr] (u) -- (s); \draw[arr] (s) -- (k);
+  \node[chip, below=0.25cm of u] (c2) {angle (QNN)};
+  \node[chip, left=0.12cm of c2] {ZZ (QSVM)};
+  \node[chip, right=0.12cm of c2] {$R_Y$ (VQC)};
+
+  \node[font=\bfseries\color{unirazul}] at (-0.4,-1.85) {Optimización};
+  \node[box] (p) at (0,-3.05) {problema\\ combinatorio};
+  \node[box, right=1.0cm of p] (q) {QUBO\\[-2pt]{\scriptsize penalizaciones}};
+  \node[box, right=1.0cm of q] (h) {$H_C=\sum J_{ij}Z_iZ_j+\sum h_iZ_i$};
+  \node[box, right=1.0cm of h] (o) {SA, QAOA\\ o VQE};
+  \draw[arr] (p) -- (q); \draw[arr] (q) -- (h); \draw[arr] (h) -- (o);
 \end{tikzpicture}
+\\[0.3em]
+{\small El feature map y el QUBO fijan el espacio en el que opera el método cuántico \citep{lloyd2020, lucas2014}.}
 \end{frame}
 
-\begin{frame}{Modelos comparados}
-\centering
-{\footnotesize
-\renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{1.9cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
-\toprule
-\textbf{Caso de uso} & \textbf{Modelo cuántico} & \textbf{Modelos clásicos de referencia} \\
-\midrule
-Clasificación &
-\textbf{QSVM-ZZ}: kernel de fidelidad con \texttt{ZZFeatureMap} (2 qubits, 2 repeticiones,
-entrelazamiento completo) y SVM con matriz de Gram precalculada &
-Gradient Boosting, SVM-RBF, SVM lineal, regresión logística \\
-Regresión &
-\textbf{QK-SVR-ZZ}: el mismo kernel con SVR ($C{=}10$, $\varepsilon{=}0.1$) &
-Ridge, SVR-RBF, Random Forest, Gradient Boosting \\
-Anomalías &
-\textbf{OCSVM-ZZ}: SVM de una clase con el mismo kernel ($\nu{=}0.05$) &
-OCSVM-RBF, Isolation Forest, LOF \\
-Optimización &
-\textbf{QAOA} (COBYLA; $p{=}1$ en asignación y TSP, $p{=}3$ en MDS y portafolio) y
-\textbf{VQE} (\texttt{TwoLocal} Ry--CZ, 3 repeticiones) &
-Hungarian / ILP (PuLP-CBC), Greedy, fuerza bruta, vecino más cercano + 2-opt, recocido simulado sobre el QUBO (SA-QUBO) \\
-Series temporales &
-\textbf{QK-SVR-ZZ} sobre los 2 últimos valores (lags) &
-Ridge, SVR-RBF, Gradient Boosting \\
-\bottomrule
-\end{tabularx}}
-
-\vspace{0.6em}
-{\footnotesize Todos los modelos cuánticos se simulan con el vector de estado exacto (sin ruido de hardware).}
+\begin{frame}{Estado de la técnica}
+\begin{columns}[c]
+\begin{column}{0.46\textwidth}\centering
+\fig{0.62\textheight}{huang2021_fig2_geometria_kernel.png}\pie{Fig.~2 de \citet{huang2021}, CC BY 4.0}
+\end{column}
+\begin{column}{0.52\textwidth}
+\tarjeta{unirazul}{5.7cm}{\small\textbf{Kernels cuánticos:} la ventaja depende de la geometría del dato frente al kernel \citep{havlicek2019, huang2021, schuld2021kernels}}\\[0.35em]
+\tarjeta{unirnavy}{5.7cm}{\small\textbf{Variacionales:} QAOA y VQE, limitados por barren plateaus \citep{farhi2014, peruzzo2014, mcclean2018}}\\[0.35em]
+\tarjeta{unirgris}{5.7cm}{\small\textbf{Benchmarks:} sin protocolo común, las comparaciones son asimétricas \citep{bowles2024, yu2026}}
+\end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}{Datasets utilizados}
-\centering
-{\footnotesize
-\renewcommand{\arraystretch}{1.25}
-\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{1.7cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
-\toprule
-\textbf{Caso de uso} & \textbf{Sintético nativo} & \textbf{Práctica SKG} & \textbf{Referencia pública} \\
-\midrule
-Clasificación &
-\textbf{ZZ sintético}: $x\in[-\pi,\pi]^2$; etiqueta = signo de $\langle Z\otimes Z\rangle$ &
-\textbf{Incidentes NUSE (Bogotá)}: gravedad binaria del incidente &
-\textbf{Telco Churn}: abandono de clientes (IBM / Kaggle) \\
-Regresión &
-\textbf{ZZ sintético}: objetivo = $\langle Z\otimes Z\rangle$ &
-\textbf{Tiempos de viaje}: velocidad media a partir de lecturas y hora &
-\textbf{Friedman \#1}: función no lineal sintética con ruido \\
-Anomalías &
-\textbf{\texttt{zz\_phase}}: la fase minoritaria del estado ZZ son los atípicos &
-\textbf{Incidentes} con atípicos inyectados &
-\textbf{\texttt{moons}}: dos lunas con atípicos uniformes en su caja \\
-Series temporales &
-\textbf{\texttt{zz\_lag}}: objetivo = $\langle Z\otimes Z\rangle$ de los 2 últimos valores &
-\textbf{Velocidad de 5 corredores}: lecturas cada 5 minutos &
-\textbf{\texttt{sine}}: senoide con dos estacionalidades y ruido \\
-Optimización &
-\textbf{Asignación} agente--tarea (QUBO) y \textbf{MDS} (red de 6 nodos y grafos Erdős--Rényi) &
-Sin datos SKG (asignación real: trabajo futuro) &
-\textbf{Portafolio} de 6 activos (Yahoo Finance) y \textbf{TSP} con 4 capitales de Colombia \\
-\bottomrule
-\end{tabularx}}
-\end{frame}
 % =====================================================================
-\section{Resultados: Q vs C}
+\section{Resultados y análisis}
 % =====================================================================
-\begin{frame}{Mapa de errores: cuántico frente a clásico}
+\begin{frame}{Protocolo común}
 \centering
-\includegraphics[width=\linewidth,height=0.68\textheight,keepaspectratio]{13_mapa_errores_q_vs_c.png}
+\begin{tikzpicture}[font=\footnotesize, thick,
+  box/.style={draw=unirnavy, fill=unirazul!10, rounded corners=3pt, align=center, inner sep=5pt, minimum height=0.95cm},
+  cl/.style={draw=unirgris, fill=unirclaro!30, rounded corners=3pt, align=center, inner sep=5pt, minimum height=0.95cm, text width=3.3cm},
+  qu/.style={draw=unirazul, fill=unirazul!20, rounded corners=3pt, align=center, inner sep=5pt, minimum height=0.95cm, text width=3.3cm},
+  arr/.style={->, unirnavy, line width=1.1pt}]
+  \node[box] (d) at (0,0) {Iris · BS · Ising};
+  \node[box, right=0.8cm of d] (p) {split 60/40,\\ PCA a 4 si $d>4$,\\ MinMax $[0,\pi]$};
+  \node[cl, right=0.8cm of p, yshift=0.65cm] (c) {SVM · RF · XGBoost};
+  \node[qu, right=0.8cm of p, yshift=-0.65cm] (q) {QSVM · QNN · VQC};
+  \node[box, right=0.8cm of p, xshift=4.3cm] (m) {F1, AUC, gap,\\ $t_{\mathrm{train}}$, $t_{\mathrm{pred}}$};
+  \draw[arr] (d) -- (p); \draw[arr] (p.east) -- (c.west); \draw[arr] (p.east) -- (q.west);
+  \draw[arr] (c.east) -- (m.west); \draw[arr] (q.east) -- (m.west);
 
-\vspace{0.2em}
-{\footnotesize El cuántico (azul) solo es el mejor con datos nativos; en optimización, QAOA iguala al exacto, no lo supera.}
+  \node[box] (d2) at (0,-2.6) {TSP · MDS · MaxCut};
+  \node[box, right=0.8cm of d2] (p2) {QUBO / Ising\\ común};
+  \node[cl, right=0.8cm of p2, yshift=0.65cm, xshift=0.35cm] (c2) {Fuerza bruta · greedy · ILP · SA};
+  \node[qu, right=0.8cm of p2, yshift=-0.65cm, xshift=0.35cm] (q2) {QAOA · VQE};
+  \node[box, right=0.8cm of p2, xshift=4.65cm] (m2) {éxito, gap a $C^\star$,\\ tiempo};
+  \draw[arr] (d2) -- (p2); \draw[arr] (p2.east) -- (c2.west); \draw[arr] (p2.east) -- (q2.west);
+  \draw[arr] (c2.east) -- (m2.west); \draw[arr] (q2.east) -- (m2.west);
+\end{tikzpicture}
+\mensaje{Simulación de estado sobre CPU: 4 qubits en clasificación, hasta 6 en optimización}
 \end{frame}
 
-\begin{frame}{Síntesis: caso de uso $\times$ conjunto de datos}
+\begin{frame}{Clasificación: el cuántico solo empata en Ising}
 \centering
-{\scriptsize
-\renewcommand{\arraystretch}{1.0}
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}llll@{}}
-\toprule
-\textbf{Caso de uso} & \textbf{Clase de datos} & \textbf{Conjunto de datos} & \textbf{Resultado} \\
-\midrule
-Clasificación & Nativo & ZZ sintético & \ganaQ \\
- & SKG & Incidentes NUSE & \empate \\
- & Referencia & Telco Churn & \ganaC \\
-\midrule
-Regresión & Nativo & ZZ sintético & \ganaQ \\
- & SKG & Tiempos de viaje & \ganaC \\
- & Referencia & Friedman \#1 & \ganaC \\
-\midrule
-Anomalías & Nativo & \texttt{zz\_phase} & \ganaQ \\
- & SKG & Incidentes inyectados & \ganaC \\
- & Referencia & \texttt{moons} & \ganaC \\
-\midrule
-Series temporales & Nativo & \texttt{zz\_lag} & \ganaQ \\
- & SKG & Corredores & \ganaC \\
- & Referencia & \texttt{sine} & \ganaC \\
-\midrule
-Optimización & Nativo & Asignación QUBO & \empate \\
- & Nativo & MDS (grafos ER) & \ganaC \\
- & Referencia & Portafolio & \ganaC \\
- & Referencia & TSP $n{=}4$ & \empate \\
-\bottomrule
-\end{tabular}}
-
-\vspace{0.1em}
-{\scriptsize Empate: diferencia dentro de una desviación estándar de las repeticiones, o mismo valor óptimo.}
+\fig{0.70\textheight}{cls_classical_vs_quantum_by_dataset.png}
+\mensaje{Ningún modelo cuántico supera al SVM-RBF en ningún dataset}
 \end{frame}
 
-\begin{frame}{Criterio de activación del módulo cuántico}
-\centering
+\begin{frame}{Iris: el mapa ZZ fragmenta la frontera}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}\centering
+\fig{0.58\textheight}{svm_iris_pca_boundary.png}\pie{SVM-RBF: F1 0.967, 2 errores en el solape}
+\end{column}
+\begin{column}{0.48\textwidth}\centering
+\fig{0.58\textheight}{qsvm_iris_pca_boundary.png}\pie{QSVM-ZZ: F1 0.730, 16 errores, también en setosa}
+\end{column}
+\end{columns}
+\mensaje{QSVM: accuracy 0.967 en train y 0.733 en test, el mayor gap del corpus}
+\end{frame}
+
+\begin{frame}{Bars and Stripes: clases solapadas, el VQC cae}
+\begin{columns}[T]
+\begin{column}{0.44\textwidth}\centering
+\fig{0.56\textheight}{svm_bs_pca_scatter.png}\pie{PCA a 4: 57.5\,\% de la varianza; clases solapadas}
+\end{column}
+\begin{column}{0.52\textwidth}\centering
+\fig{0.60\textheight}{bs_f1_ranking.png}
+\end{column}
+\end{columns}
+\mensaje{VQC: F1 0.688 y accuracy de train 0.710; no ajusta ni el train}
+\end{frame}
+
+\begin{frame}{Ising: el dataset que todos resuelven}
+\begin{columns}[T]
+\begin{column}{0.44\textwidth}\centering
+\fig{0.46\textheight}{qsvm_ising_pca_boundary.png}\pie{QSVM: 1 error de 80, con islas también aquí}\\[0.3em]
+{\scriptsize El mapa ZZ actúa sobre la PCA de las\\ amplitudes, no sobre los espines}
+\end{column}
+\begin{column}{0.54\textwidth}\centering
+\fig{0.58\textheight}{ising_f1_ranking.png}
+\end{column}
+\end{columns}
+\mensaje{QSVM = SVM: F1 0.985, con los seis modelos en 0.95 de accuracy o más}
+\end{frame}
+
+\begin{frame}{El coste de simular el circuito}
+\begin{columns}[T]
+\begin{column}{0.54\textwidth}\centering
+\fig{0.60\textheight}{cls_performance_vs_cost.png}\pie{F1 medio frente a tiempo medio de entrenamiento}
+\end{column}
+\begin{column}{0.42\textwidth}\centering
+\fig{0.58\textheight}{cls_prediction_time.png}\pie{Tiempo medio de predicción}
+\end{column}
+\end{columns}
+\mensaje{SVM: mejor F1 medio (0.940) en 2 ms. QSVM y VQC predicen de dos a tres órdenes más despacio}
+\end{frame}
+
+\begin{frame}{Optimización: casi todos llegan al óptimo, a distinto coste}
+\begin{columns}[c]
+\begin{column}{0.55\textwidth}\centering
+\fig{0.72\textheight}{opt_success_vs_runtime_mean.png}
+\end{column}
+\begin{column}{0.43\textwidth}\centering
 {\footnotesize
 \renewcommand{\arraystretch}{1.15}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.6cm}>{\raggedright\arraybackslash}p{3.6cm}>{\raggedright\arraybackslash}p{3.2cm}>{\raggedright\arraybackslash}p{3.0cm}@{}}
+\begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Problema} & \textbf{Activar si} & \textbf{Módulo Q} & \textbf{Fallback} \\
+\textbf{Éxito} & \textbf{TSP} & \textbf{MDS} & \textbf{MaxCut} \\
 \midrule
-Clasif.\ /\ Regresión &
-coincidencia mapa--generador
-\emph{y} vence a GB/RF
-(no basta $\mathcal{Q}>0$ vs RBF) &
-QSVM / QK-SVR &
-GB / RF \\
-Anomalías &
-novedad alineada al mapa
-(\texttt{zz\_phase}) &
-OCSVM-ZZ &
-IF / LOF \\
-Forecasting &
-target alineado (\texttt{zz\_lag}) &
-QK-SVR &
-Ridge / GB \\
-Optimización / TSP &
-QUBO factible, $n$ viable &
-QAOA / VQE &
-Greedy / ILP / 2-opt \\
-Caso general &
-SKG/Telco sin estructura ZZ
-o $n$ demasiado grande &
-\textbf{no se activa} &
-pipeline clásico \\
+Fuerza bruta & 1 & 1 & 1 \\
+Greedy & 1 & \textbf{0} & 1 \\
+ILP & 1 & 1 & 1 \\
+QUBO + SA & 0.9 & 1 & 1 \\
+QAOA & 1 & \textbf{0.875} & 1 \\
+VQE & 1 & 1 & 1 \\
 \bottomrule
 \end{tabular}}
-\end{frame}
-
-% =====================================================================
-\section{Conjeturas}
-% =====================================================================
-\begin{frame}{De la evidencia emergen dos preguntas}
-\begin{block}{Preguntas originales (Cap.~6)}
-\begin{enumerate}
-  \item \textbf{P1 --- tests de cuanticidad}\\[0.35em]
-        \textquestiondown{}Se puede diagnosticar \emph{a priori} si un dataset tiene
-        \emph{estructura cuántica} (alineación mapa--dato) y, por tanto, admitirá ventaja?
-
-  \vspace{1.0em}
-  \item \textbf{P2 --- mapeos cuántico-compatibles}\\[0.35em]
-        Si no hay estructura nativa, \textquestiondown{}existe un nuevo mapeo $\psi$ y un espacio
-        de representación donde se conserve la estructura e información del dato,
-        adquiera estructura cuántica, y haya mapa de vuelta si hace falta?
-        (analogía con la transformada de Fourier)
-\end{enumerate}
-\end{block}
-\end{frame}
-
-\begin{frame}{Camino a la Conjetura 1 (I) --- por qué un perfil}
-\begin{columns}[T]
-\begin{column}{0.48\textwidth}
-\begin{block}{Literatura}
-\begin{itemize}
-  \item Ventaja cuántica de kernel $\Rightarrow$
-        alineación con etiquetas \textbf{y}
-        geometría no reproducible por el
-        clásico \citep{huang2021, liu2021}.
-  \item Un solo indicador no basta:
-        hace falta $A_Q > A_{cl}$
-        \textbf{y} $d_F$ grande
-        \citep{huang2021, schuld2021}.
-  \item Riesgo: el kernel cuántico puede
-        \textbf{concentrarse} y perder señal
-        --- vigilar $H(K)$ \citep{thanasilp2022}.
-\end{itemize}
-\end{block}
-\end{column}
-\begin{column}{0.48\textwidth}
-\begin{block}{Hecho empírico}
-Ventaja si el mapa que estructura el dato
-= mapa del modelo \textbf{cuántico}.
-Si no: gana el \textbf{clásico}.
-\end{block}
-\vspace{0.5em}
-\begin{block}{Idea corregida}
-No un escalar: un \textbf{vector}
-$\mathcal{Q}(\mathcal{D})=(\Delta A,\hat{d}_F,\Delta H,\hat g,\ldots)$
-que se \emph{mira} componente a componente.
-\end{block}
 \end{column}
 \end{columns}
+\mensaje{Fallan el greedy en MDS, SA en 2 de 20 semillas del TSP y QAOA en 1 de 8 del MDS}
 \end{frame}
 
-\begin{frame}{Camino a la Conjetura 1 (II) --- componentes y evidencia}
+\begin{frame}{TSP y MaxCut: QAOA reproduce el óptimo}
 \begin{columns}[T]
-\begin{column}{0.58\textwidth}
-\begin{block}{Interpretación (cuántico vs clásico)}
-{\footnotesize
-\begin{itemize}
-  \item $\Delta A$ --- \textquestiondown{}el cuántico ve mejor las clases?\\
-        $>0$: sí, más alineación con las etiquetas
-        que el clásico \citep{cortes2012, huang2021}.
-  \item $\hat{d}_F$ --- \textquestiondown{}la geometría es distinta?\\
-        Grande: el cuántico no es un clásico
-        disfrazado \citep{liu2021}.
-  \item $\Delta H$ --- \textquestiondown{}el kernel cuántico aporta
-        diversidad o se ha ``aplanado''?\\
-        Bajo/negativo: todas las similitudes se parecen
-        (concentración) $\Rightarrow$ poca info útil
-        \citep{thanasilp2022}.
-  \item $\hat g$ --- \textquestiondown{}el RBF reproduce la geometr\'ia
-        cu\'antica?\\
-        Cerca de $1$: s\'i; grande: no (necesario, no suficiente)
-        \citep{huang2021}.
-\end{itemize}}
-\end{block}
+\begin{column}{0.48\textwidth}\centering
+\fig{0.54\textheight}{qaoa_tsp_route.png}\pie{TSP: coste 16, el mejor bitstring de 3000 muestras}
 \end{column}
-\begin{column}{0.40\textwidth}
-\begin{block}{Evidencia (TFM)}
-Barrido $\alpha$ ($n{=}9$, NB08):
-mezcla de etiquetas, $X$ fijo.\\[0.25em]
-Hallazgo robusto:
-$\rho_S(\alpha,\Delta A){=}0.833$
-($p{=}0.005$).\\[0.25em]
-{\footnotesize $d_F$/$H$ constantes por diseño;
-no confundir con
-$\rho(\mathcal{Q},\mathrm{ventaja})$.}
-\end{block}
+\begin{column}{0.48\textwidth}\centering
+\fig{0.54\textheight}{qaoa_maxcut_cut.png}\pie{MaxCut: corte 8; P(corte óptimo) 0.93, uniforme 0.28}
 \end{column}
 \end{columns}
+\mensaje{Mismo óptimo que la enumeración: 0.6--2 s de simulación frente a menos de 1 ms}
 \end{frame}
 
-\begin{frame}{Conjetura 1 --- $\mathcal{Q}(\mathcal{D})$ como \textbf{vector}, no escalar}
-\begin{equation}
-  \mathcal{Q}(\mathcal{D})
-  \;=\;
-  \bigl(\Delta A,\; \hat{d}_F,\; \Delta H,\; \hat g\bigr)
-  \qquad\text{(perfil; sin pesos)}
-  \label{eq:Q}
-\end{equation}
-{\footnotesize
-Opcional en el documento: un escalar $w^\top\mathcal{Q}$ se probó y \textbf{falla} como ranking
-operativo --- por eso no se usa para decidir.}
-
-\vspace{0.4em}
+\begin{frame}{MDS: fallan el greedy y una semilla de QAOA}
 \begin{columns}[T]
-\begin{column}{0.48\textwidth}
-\begin{block}{Cómo se lee}
-{\footnotesize
-\begin{itemize}
-  \item $\Delta A$: \textquestiondown{}mejor alineación
-        que el clásico?
-  \item $\hat{d}_F$: \textquestiondown{}geometría distinta?
-  \item $\Delta H$: \textquestiondown{}diversidad o
-        concentración?
-  \item $\hat g$: \textquestiondown{}el RBF reproduce
-        la geometr\'ia cu\'antica?
-\end{itemize}}
-\end{block}
+\begin{column}{0.48\textwidth}\centering
+\fig{0.56\textheight}{greedy_mds_dominating_set.png}\pie{Greedy: tamaño 3, no óptimo}
 \end{column}
-\begin{column}{0.48\textwidth}
-\begin{alertblock}{Límite}
-{\footnotesize
-El vector describe geometría vs.\ RBF.
-La adopción exige ventaja vs.\
-mejor clásico \textbf{en el caso de uso}
-(clasif./reg./anomalías) y alineación
-mapa--generador.}
-\end{alertblock}
+\begin{column}{0.48\textwidth}\centering
+\fig{0.56\textheight}{qaoa_mds_dominating_set.png}\pie{QAOA: óptimo en 7/8 semillas, P(óptimo) 0.53, 12.6 s}
 \end{column}
 \end{columns}
+\mensaje{La semilla fallida devuelve un conjunto infactible; SA resuelve el mismo QUBO en 7 ms}
 \end{frame}
 
-\begin{frame}{Validación P1 --- barrido sintético ($\alpha$)}
-\begin{columns}[T]
-\begin{column}{0.62\textwidth}
+\begin{frame}{Discusión: dónde hay paridad y dónde no}
 \centering
-\includegraphics[width=\linewidth,height=0.68\textheight,keepaspectratio]{08_barrido_sintetico_alpha.png}
-\end{column}
-\begin{column}{0.36\textwidth}
-\begin{block}{Qué es (NB08 real)}
-{\footnotesize
-\begin{itemize}
-  \item $\alpha$: fracción de etiquetas
-        cuánticas ($X$ fijo).
-  \item $\Delta A$ crece con $\alpha$:
-        $\rho_S{=}0.833$ ($p{=}0.005$).
-  \item $d_F$ y $H$ \textbf{constantes}
-        (kernels no cambian con labels).
-\end{itemize}}
-\end{block}
-\begin{alertblock}{Límite}
-{\footnotesize
-$\rho{=}0.833$ es $\rho(\alpha,\Delta A)$,
-no $\rho(\mathcal{Q},\text{ventaja})$.
-Barrido structure-aware: trabajo futuro.}
-\end{alertblock}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}{P1 --- qué comparamos (mismas métricas)}
-\begin{block}{Estructura cuántica = vector $(\Delta A,\ \Delta H,\ d_F,\ g,\ \mathcal{Q})$}
-{\footnotesize
-\begin{itemize}
-  \item $\Delta A = A(K_Q,yy^\top)-A(K_{\mathrm{RBF}},yy^\top)$ --- alineaci\'on de \citep{cortes2012}
-  \item $\Delta H = H(K_Q)-H(K_{\mathrm{RBF}})$ --- proxy de \citep{thanasilp2022}
-  \item $d_F=\|K_Q-K_{\mathrm{RBF}}\|_F/n$ --- proxy propio (cf.\ \citep{liu2021})
-  \item $g$ (diferencia geom.) --- \citep{huang2021}; $\mathcal{Q}$ compuesto (este TFM)
-\end{itemize}
-\textbf{Mismo protocolo} en clasificación, regresión, anomalías y optimización
-(ZZ 2q, $n{=}60$, 3 repeats, RBF Frobenius-best).\\
-Optimización = \textbf{paisaje QUBO} (bitstrings $\to$ energía), no QAOA.\\
-Control nulo: $\Delta A$ con $y$ permutada. Sin accuracy / $R^2$ / AUC / coste.}
-\end{block}
-\vspace{0.2em}
-\begin{alertblock}{Nota: no hay $\Delta_{\mathrm{op}}$ aquí}
-{\footnotesize
-Eso era solo un nombre confuso para
-``accuracy(QSVM)$-$accuracy(mejor clásico)'' en clasificación.
-\textbf{No} es métrica de estructura. Se retiró de estas figuras.}
-\end{alertblock}
-\end{frame}
-
-\begin{frame}{P1 --- qué mide $g$ (Huang et al., 2021)}
-\begin{columns}[T]
-\begin{column}{0.56\textwidth}
-\centering
-\includegraphics[width=\linewidth,height=0.56\textheight,keepaspectratio]{huang2021_fig2_geometria_kernel.png}\\[-0.2em]
-{\tiny Fig.~2 de \citet{huang2021}, CC~BY~4.0}
-\end{column}
-\begin{column}{0.42\textwidth}
-\begin{block}{Idea}
-{\footnotesize
-$g$ compara las \textbf{flechas} (similitudes kernel) entre puntos en el espacio
-cl\'asico y en el cu\'antico. $g$ peque\~no: el kernel cl\'asico ya reproduce
-la geometr\'ia cu\'antica; $g$ grande: no.\\[0.3em]
-$d$ = dimensi\'on efectiva del dato en Hilbert.}
-\end{block}
-\begin{alertblock}{Nuestra medici\'on}
-{\scriptsize
-$g$: necesario, no suficiente; no usa $y$.
-Huang ($\lambda{=}10^{-3}$): $g\approx 76$--$85$ en casi todos los casos
-(42 en anomal\'ias-SKG, artefacto). $g\gg1$ pero igual para nativos y reales:
-\textbf{no discrimina}. Antes $\approx 3000$ (artefacto).}
-\end{alertblock}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}{P1 --- los cinco indicadores en los cuatro casos de uso}
-\begin{columns}[T]
-\begin{column}{0.66\textwidth}
-\centering
-\includegraphics[width=\linewidth,height=0.70\textheight,keepaspectratio]{08_estructura_comparativa_casos_uso.png}
-\end{column}
-\begin{column}{0.32\textwidth}
-\begin{block}{Cómo leerlo}
-{\footnotesize
-Un panel por indicador; eje X = caso de uso;
-3 barras = Nativo / SKG / Referencia
-(optimizaci\'on: asignaci\'on / MaxCut / TSP).\\[0.3em]
-\begin{itemize}
-  \item $\Delta A$: solo los nativos superan el ruido (banda azul);
-        el resto, dentro del ruido o por debajo (incluida la optimizaci\'on)
-  \item $\Delta H$, $d_F$, $g$: casi planos;
-        excepci\'on anomal\'ias-SKG = artefacto de escala (outliers $8\sigma$ comprimen el MinMax)
-  \item $\mathcal{Q}$: informativo; lo dominan indicadores planos
-\end{itemize}}
-\end{block}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}{P1 --- cómo interpretar}
-\begin{block}{\textquestiondown{}$\Delta A$ negativo + $\Delta H$ mínimo = estructura?}
-{\footnotesize
-\textbf{No.} Los \textbf{nativos} tienen $\Delta A>0$ sobre el ruido
-(clasif.\ $+0.20$, reg.\ $+0.28$, anom.\ $+0.09$); los datos reales y los
-paisajes de optimizaci\'on quedan dentro o por debajo del nulo
-($\Delta A<0$ = el RBF alinea mejor, no ``estructura negativa'').
-El \'unico $\Delta H$ m\'inimo (anomal\'ias-SKG, $0.44$) es un artefacto de escala.}
-\end{block}
-\vspace{0.35em}
-\begin{block}{\textquestiondown{}$d_F$ discrimina?}
-{\footnotesize
-\textbf{Aqu\'i, apenas}: $\approx 0.01$ en todos los casos; $g$ y $\Delta H$ tambi\'en planos.
-Solo $\Delta A$ usa $y$; los otros tres solo ven $X$.}
-\end{block}
-\vspace{0.35em}
-\begin{alertblock}{Lectura defendible}
-{\footnotesize
-Lo que separa estructura es $\Delta A$ (alineaci\'on mapa--dato \citep{liu2021,huang2021}),
-no $d_F$, $g$ ni $\Delta H$. Optimizaci\'on: paisaje QUBO con 2 qubits
-(PCA retiene $\approx 1/3$): \textbf{sin evidencia} de estructura; l\'imite del dise\~no.}
-\end{alertblock}
-\end{frame}
-
-\begin{frame}{Camino a la Conjetura 2 --- analogía con Fourier}
-\begin{block}{La idea, por analogía con la transformada de Fourier}
-Un problema difícil en un espacio puede volverse más simple en otro;
-allí se resuelve y, si hace falta, se regresa. Eso funciona gracias a tres propiedades:
-\begin{enumerate}
-  \item \textbf{conserva la información} (es invertible),
-  \item \textbf{hace visible la estructura} del problema,
-  \item tiene un \textbf{mapa de vuelta}.
-\end{enumerate}
-\end{block}
-\vspace{0.2em}
-\begin{alertblock}{La analogía con el kernel cuántico}
-Si el dato no tiene estructura cuántica, \textquestiondown{}existe un \textbf{mapeo $\psi$ y un espacio de
-representación $\mathcal{Z}$} donde se conserve la información del dato, adquiera estructura cuántica y se
-pueda sacar partido de los algoritmos cuánticos, con un mapeo de vuelta al espacio original cuando haga falta?
-\end{alertblock}
-\end{frame}
-
-\begin{frame}{Conjetura 2 --- espacio de representación QCR}
-\begin{center}
-\begin{tikzpicture}[font=\footnotesize, thick,
-    box/.style={rectangle, rounded corners=3pt, draw=blue!55!black, fill=blue!8,
-                minimum width=2.4cm, minimum height=0.7cm, align=center}]
-  \node[box] (X) at (0,0) {Espacio original\\$\mathcal{X}$};
-  \node[box, minimum width=3.6cm] (Z) at (5.2,0) {Representación cuántica\\$\mathcal{Z}$};
-  \node[box] (Y) at (10.2,0) {Resultado\\$\hat y$ o solución};
-  \draw[->, very thick] (X) -- node[above]{$\psi$} (Z);
-  \draw[->, very thick] (Z) -- node[above]{$f_Q$} (Y);
-  \draw[->, dashed, thick] (Y.south) to[bend left=10] node[below]{$\rho=\psi^{-1}$ (si hace falta)} (X.south);
+\begin{tikzpicture}[font=\small]
+  \node[head=unirazul] (a) at (0,0) {Paridad con el clásico};
+  \node[head=unirgris] (b) at (6.6,0) {Déficit o fallo};
+  \node[cuerpo=unirazul, text width=5.6cm, minimum height=3.2cm, below=0.1cm of a, align=left] {%
+    \begin{itemize}\setlength{\itemsep}{4pt}
+      \item Ising: QSVM = SVM, con todos los modelos en 0.95 de accuracy o más
+      \item TSP y MaxCut: QAOA y VQE reproducen $C^\star$, más lentos
+    \end{itemize}};
+  \node[cuerpo=unirgris, text width=5.6cm, minimum height=3.2cm, below=0.1cm of b, align=left] {%
+    \begin{itemize}\setlength{\itemsep}{4pt}
+      \item Iris y BS: QSVM con F1 0.730 y 0.758, frente a 0.967 y 0.870 del SVM
+      \item MDS: una semilla de QAOA termina en un conjunto infactible
+      \item TSP y MDS: éxito leído del mejor de miles de muestras, no prueba concentración
+    \end{itemize}};
 \end{tikzpicture}
-\end{center}
-\vspace{-2.2em}
-\begin{columns}[T]
-\begin{column}{0.50\textwidth}
-\begin{block}{Qué se pide de $\psi$}
-{\footnotesize
-\begin{enumerate}
-  \item $\psi:\mathcal{X}\to\mathcal{Z}$ es un \textbf{isomorfismo}: conserva estructura e información.
-  \item La \textbf{imagen} de $\psi$ tiene \textbf{estructura cuántica}.
-  \item El mapa de vuelta es su inversa, $\rho=\psi^{-1}$.
-\end{enumerate}
-}
-\end{block}
-\end{column}
-\begin{column}{0.47\textwidth}
-\begin{alertblock}{Comentarios}
-{\footnotesize
-\begin{itemize}
-  \item No sabemos con certeza la forma de $\psi$.
-  \item El coste de calcular $\psi$ debe tenerse en cuenta en las aplicaciones.
-  \item Queda como \textbf{conjetura abierta}.
-\end{itemize}
-}
-\end{alertblock}
-\end{column}
-\end{columns}
+\mensaje{Con $n\le6$ qubits se mide cercanía al clásico, no ventaja asintótica \citep{preskill2018, thanasilp2022}}
 \end{frame}
 
 % =====================================================================
 \section{Conclusiones}
 % =====================================================================
-\begin{frame}{Mensajes clave}
-\begin{columns}[T]
-\begin{column}{0.48\textwidth}
-\begin{block}{1. Ventaja condicionada}
-Solo gana el cuántico cuando el \emph{feature map} coincide con el generador de los datos.
-En datos reales (SKG, Telco) gana el clásico.
-\end{block}
-\begin{block}{2. Optimización: valor de modelado}
-QAOA iguala al óptimo exacto en problemas pequeños, pero no lo supera.
-\end{block}
-\end{column}
-\begin{column}{0.48\textwidth}
-\begin{block}{3. Diagnosticar antes de invertir}
-$\mathcal{Q}(\mathcal{D})$, como vector de indicadores, orienta la decisión; QCR queda planteada como conjetura.
-\end{block}
-\begin{block}{4. Adopción selectiva e híbrida}
-El módulo cuántico complementa al stack clásico; no lo sustituye.
-\end{block}
-\end{column}
-\end{columns}
-\vspace{0.3em}
-\begin{alertblock}{Respuesta a la pregunta del TFM}
-Hay ventaja medible cuando existe coincidencia mapa--generador; fuera de ahí, el clásico domina, y eso también es un resultado.
-\end{alertblock}
-\end{frame}
-
-\section{Limitaciones}
-
-\begin{frame}{Limitaciones del estudio}
-\begin{columns}[T]
-\begin{column}{0.48\textwidth}
-\begin{block}{Simulación ideal}
-Statevector sin ruido de hardware; el coste del kernel crece como $O(n^2)$.
-\end{block}
-\begin{block}{Escala reducida}
-2 qubits tras PCA y muestras pequeñas: los resultados son orientativos.
-\end{block}
-\end{column}
-\begin{column}{0.48\textwidth}
-\begin{block}{Alcance de los datos}
-SKG se usó como práctica (series: 5 corredores, un paso, sin ARIMA ni Prophet).
-\end{block}
-\begin{block}{Base teórica abierta}
-$\mathcal{Q}(\mathcal{D})$ es empírico y QCR carece de demostración.
-\end{block}
-\end{column}
-\end{columns}
-\end{frame}
-
-\section{Trabajo futuro}
-
-\begin{frame}{Hoja de ruta}
+\begin{frame}{Conclusiones}
 \centering
-\begin{tikzpicture}[font=\footnotesize,
-    fase/.style={rectangle, rounded corners=3pt, minimum width=4.3cm, minimum height=0.8cm,
-                 align=center, text=white, font=\footnotesize\bfseries},
-    arr/.style={->, line width=1.6pt, >=stealth, unirnavy}]
-  \node[fase, fill=unirazul] (h1) at (0,0) {Corto plazo};
-  \node[fase, fill=unirnavy] (h2) at (4.9,0) {Medio plazo};
-  \node[fase, fill=unirgris] (h3) at (9.8,0) {Largo plazo};
-  \draw[arr] (h1) -- (h2); \draw[arr] (h2) -- (h3);
-  \node[cuerpo=unirazul, text width=4.0cm, minimum height=3.4cm] at (0,-0.6) {%
-    \begin{itemize}\setlength{\itemsep}{3pt}\setlength{\leftmargini}{0.8em}
-      \item Hardware real con mitigación de errores
-      \item Más qubits y menos reducción por PCA
-      \item Más \emph{feature maps}
-    \end{itemize}};
-  \node[cuerpo=unirnavy, text width=4.0cm, minimum height=3.4cm] at (4.9,-0.6) {%
-    \begin{itemize}\setlength{\itemsep}{3pt}\setlength{\leftmargini}{0.8em}
-      \item Validar $\mathcal{Q}(\mathcal{D})$ en un corpus amplio
-      \item QAOA sobre asignación y rutas reales de SKG
-      \item Pruebas A/B cuántico--clásico
-    \end{itemize}};
-  \node[cuerpo=unirgris, text width=4.0cm, minimum height=3.4cm] at (9.8,-0.6) {%
-    \begin{itemize}\setlength{\itemsep}{3pt}\setlength{\leftmargini}{0.8em}
-      \item Demostrar o refutar QCR
-      \item Benchmarks con separación formal
-      \item Hardware tolerante a fallos
-    \end{itemize}};
+\begin{tikzpicture}[font=\small,
+  txt/.style={align=left, text width=4.6cm, anchor=west, font=\small}]
+  \node[numsq=unirazul] (c1) at (0,0) {1};
+  \node[txt, right=0.2cm of c1] {\textbf{Sin ventaja en clasificación.} SVM-RBF mejor o empatado en los tres datasets};
+  \node[numsq=unirnavy] (c2) at (6.7,0) {2};
+  \node[txt, right=0.2cm of c2] {\textbf{ZZ solo empata en Ising.} El dataset en el que todos alcanzan 0.95 de accuracy};
+  \node[numsq=unirnavy] (c3) at (0,-1.9) {3};
+  \node[txt, right=0.2cm of c3] {\textbf{Optimización sin mejora.} QAOA y VQE tardan 0.6--12.6 s por ejecución; la enumeración, $<1$ ms};
+  \node[numsq=unirazul] (c4) at (6.7,-1.9) {4};
+  \node[txt, right=0.2cm of c4] {\textbf{Régimen acotado.} 4--6 qubits simulados: cercanía, no ventaja};
 \end{tikzpicture}
+\mensaje{La paridad de calidad, cuando aparece, llega con un coste temporal mayor}
+\end{frame}
+
+% =====================================================================
+\section{Trabajo futuro}
+% =====================================================================
+\begin{frame}{Trabajo futuro}
+\centering
+\begin{tikzpicture}[font=\small]
+  \node[tile=unirazul] at (0,0)      {\textbf{Escala}\\ \scriptsize cadenas de Ising de 8 y 16 espines};
+  \node[tile=unirnavy] at (4.1,0)    {\textbf{QUBO mayores}\\ \scriptsize probabilidad del óptimo; QAOA con $p$ creciente frente a SA};
+  \node[tile=unirazul] at (8.2,0)    {\textbf{Hardware real}\\ \scriptsize shots y mitigación de errores};
+  \node[tile=unirnavy] at (0,-1.9)   {\textbf{Representación}\\ \scriptsize basis encoding y embeddings entrenables};
+  \node[tile=unirazul] at (4.1,-1.9) {\textbf{Entrenabilidad}\\ \scriptsize barren plateaus e hiperparámetros};
+  \node[tile=unirnavy] at (8.2,-1.9) {\textbf{Otras familias}\\ \scriptsize regresión y clustering};
+\end{tikzpicture}
+\\[0.6em]
+{\footnotesize\color{unirgris}\citet{zhou2020, haug2023, lloyd2020, mcclean2018, sentis2019}}
 \end{frame}
 
 \begin{frame}[plain]
@@ -871,41 +524,98 @@ $\mathcal{Q}(\mathcal{D})$ es empírico y QCR carece de demostración.
 
 \section{Referencias}
 
-\begin{frame}[allowframebreaks]{Selección}
-\bibliographystyle{plainnat}
+\begin{frame}[allowframebreaks]{Referencias}
+\scriptsize
 \begin{thebibliography}{99}
-\bibitem[Biamonte et~al.(2017)]{biamonte2017}
-Biamonte, J.\ et~al. (2017). \emph{Quantum machine learning}. Nature, 549, 195--202.
-
-\bibitem[Cortes et~al.(2012)]{cortes2012}
-Cortes, C., Mohri, M., \& Rostamizadeh, A. (2012). \emph{Algorithms for learning kernels based on centered alignment}. JMLR, 13, 795--828.
-
-\bibitem[Cerezo et~al.(2021)]{cerezo2021}
-Cerezo, M.\ et~al. (2021). \emph{Variational quantum algorithms}. Nat.\ Rev.\ Phys., 3, 625--644.
+\bibitem[Bowles et~al.(2024)]{bowles2024}
+	Bowles, J., Ahmed, S., \& Schuld, M. (2024).
+	\emph{Better than classical? The subtle art of benchmarking quantum machine learning models}.
+	arXiv preprint arXiv:2403.07059.
+	\url{https://doi.org/10.48550/arXiv.2403.07059}
 
 \bibitem[Farhi et~al.(2014)]{farhi2014}
-Farhi, E., Goldstone, J., \& Gutmann, S. (2014). \emph{A quantum approximate optimization algorithm}. arXiv:1411.4028.
+	Farhi, E., Goldstone, J., \& Gutmann, S. (2014).
+	\emph{A quantum approximate optimization algorithm}.
+	arXiv preprint arXiv:1411.4028.
+	\url{https://doi.org/10.48550/arXiv.1411.4028}
 
-\bibitem[Fastovets et~al.(2019)]{fastovets2019}
-Fastovets, D.\ V.\ et~al. (2019). \emph{Machine learning methods in quantum computing theory}. arXiv:1906.10175.
+\bibitem[Haug et~al.(2023)]{haug2023}
+	Haug, T., Self, C. N., \& Kim, M. S. (2023).
+	\emph{Quantum machine learning of large datasets using randomized measurements}.
+	Machine Learning: Science and Technology, 4(1), 015005.
+	\url{https://doi.org/10.1088/2632-2153/acb0b4}
+
+\bibitem[Havlíček et~al.(2019)]{havlicek2019}
+	Havlíček, V., Córcoles, A. D., Temme, K., Harrow, A. W., Kandala, A., Chow, J. M., \& Gambetta, J. M. (2019).
+	\emph{Supervised learning with quantum-enhanced feature spaces}.
+	Nature, 567(7747), 209--212.
+	\url{https://doi.org/10.1038/s41586-019-0980-2}
 
 \bibitem[Huang et~al.(2021)]{huang2021}
-Huang, H.-Y.\ et~al. (2021). \emph{Power of data in quantum machine learning}. Nat.\ Commun., 12, 2631.
+	Huang, H.-Y., Broughton, M., Mohseni, M., Babbush, R., Boixo, S., Neven, H., \& McClean, J. R. (2021).
+	\emph{Power of data in quantum machine learning}.
+	Nature Communications, 12(1), 2631.
+	\url{https://doi.org/10.1038/s41467-021-22539-9}
 
-\bibitem[Jordan \& Mitchell(2015)]{jordan2015}
-Jordan, M.\ I., \& Mitchell, T.\ M. (2015). \emph{Machine learning: Trends, perspectives, and prospects}. Science, 349(6245), 255--260.
+\bibitem[Lloyd et~al.(2020)]{lloyd2020}
+	Lloyd, S., Schuld, M., Ijaz, A., Izaac, J., \& Killoran, N. (2020).
+	\emph{Quantum embeddings for machine learning}.
+	arXiv preprint arXiv:2001.03622.
+	\url{https://doi.org/10.48550/arXiv.2001.03622}
 
-\bibitem[Liu et~al.(2021)]{liu2021}
-Liu, Y., Arunachalam, S., \& Temme, K. (2021). \emph{A rigorous and robust quantum speed-up in supervised machine learning}. Nat.\ Phys., 17, 1013--1017.
+\bibitem[Lucas(2014)]{lucas2014}
+	Lucas, A. (2014).
+	\emph{Ising formulations of many NP problems}.
+	Frontiers in Physics, 2, 5.
+	\url{https://doi.org/10.3389/fphy.2014.00005}
+
+\bibitem[McClean et~al.(2018)]{mcclean2018}
+	McClean, J. R., Boixo, S., Smelyanskiy, V. N., Babbush, R., \& Neven, H. (2018).
+	\emph{Barren plateaus in quantum neural network training landscapes}.
+	Nature Communications, 9(1), 4812.
+	\url{https://doi.org/10.1038/s41467-018-07090-4}
+
+\bibitem[Peruzzo et~al.(2014)]{peruzzo2014}
+	Peruzzo, A., McClean, J., Shadbolt, P., Yung, M.-H., Zhou, X.-Q., Love, P. J., \ldots\ O'Brien, J. L. (2014).
+	\emph{A variational eigenvalue solver on a photonic quantum processor}.
+	Nature Communications, 5(1), 4213.
+	\url{https://doi.org/10.1038/ncomms5213}
 
 \bibitem[Preskill(2018)]{preskill2018}
-Preskill, J. (2018). \emph{Quantum computing in the NISQ era and beyond}. Quantum, 2, 79.
+	Preskill, J. (2018).
+	\emph{Quantum computing in the NISQ era and beyond}.
+	Quantum, 2, 79.
+	\url{https://doi.org/10.22331/q-2018-08-06-79}
 
-\bibitem[Schuld(2021)]{schuld2021}
-Schuld, M. (2021). \emph{Supervised quantum machine learning models are kernel methods}. arXiv:2101.11020.
+\bibitem[Schuld(2021)]{schuld2021kernels}
+	Schuld, M. (2021).
+	\emph{Supervised quantum machine learning models are kernel methods}.
+	arXiv preprint arXiv:2101.11020.
+	\url{https://doi.org/10.48550/arXiv.2101.11020}
+
+\bibitem[Sent\'is et~al.(2019)]{sentis2019}
+	Sent\'is, G., Monr\`as, A., Mu\~noz-Tapia, R., Calsamiglia, J., \& Bagan, E. (2019).
+	\emph{Unsupervised classification of quantum data}.
+	Physical Review X, 9(4), 041029.
+	\url{https://doi.org/10.1103/PhysRevX.9.041029}
 
 \bibitem[Thanasilp et~al.(2024)]{thanasilp2022}
-Thanasilp, S., Wang, S., Cerezo, M., \& Holmes, Z. (2024). \emph{Exponential concentration in quantum kernel methods}. Nat.\ Commun., 15, 5200.
+	Thanasilp, S., Wang, S., Cerezo, M., \& Holmes, Z. (2024).
+	\emph{Exponential concentration in quantum kernel methods}.
+	Nature Communications, 15(1), 5200.
+	\url{https://doi.org/10.1038/s41467-024-49287-w}
+
+\bibitem[Yu et~al.(2026)]{yu2026}
+	Yu, C., Liu, J., Ge, Z., Wu, X., Zhu, L., Zhao, P., \& Zhao, J. (2026).
+	\emph{Quantum vs.\ classical machine learning: A unified empirical comparison}.
+	arXiv preprint arXiv:2607.01197.
+	\url{https://doi.org/10.48550/arXiv.2607.01197}
+
+\bibitem[Zhou et~al.(2020)]{zhou2020}
+	Zhou, L., Wang, S.-T., Choi, S., Pichler, H., \& Lukin, M. D. (2020).
+	\emph{Quantum approximate optimization algorithm: Performance, mechanism, and implementation on near-term devices}.
+	Physical Review X, 10(2), 021067.
+	\url{https://doi.org/10.1103/PhysRevX.10.021067}
 \end{thebibliography}
 \end{frame}
 
