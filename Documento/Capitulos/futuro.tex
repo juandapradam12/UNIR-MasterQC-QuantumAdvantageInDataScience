@@ -1,30 +1,30 @@
 % !TEX root = ../main.tex
-\chapter{Líneas de trabajo futuro}
+\chapter{Líneas futuras de investigación}
 \label{cap:futuro}
 
-Las líneas de la Tabla~\ref{tab:futuro} parten de las preguntas abiertas de la Sección~\ref{sec:discusion_representacion} y de los límites del diseño. Las tres primeras atacan directamente esas preguntas; las tres últimas amplían el alcance. Todas mantienen el criterio de comparación: el modelo cuántico frente al mejor clásico, con la representación como variable controlada.
+La Tabla~\ref{tab:futuro} recoge las líneas que extienden el estudio. Todas mantienen el criterio de comparación: el modelo cuántico frente al mejor clásico, con el mismo protocolo.
 
 \begin{table}[!htbp]
 \centering
 \footnotesize
 \renewcommand{\arraystretch}{1.1}
-\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.15\textwidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{0.28\textwidth}@{}}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}X@{}}
 \toprule
-\textbf{Línea} & \textbf{Acción concreta} & \textbf{Pregunta que responde} \\
+\textbf{Línea} & \textbf{Qué se propone} \\
 \midrule
-Escala del caso Ising & Cadenas de Ising de 8 y 16 espines del mismo catálogo \texttt{qspin} \citep{pennylaneIsing}, con codificación directa en qubits; QSVM-ZZ frente a SVM-RBF. & ¿Se mantiene la paridad observada en Ising al crecer el sistema y sin PCA? \\
+Más qubits en hardware cuántico & Ejecutar los casos con más qubits en hardware real, por shots y con mitigación de errores, con instancias mayores de HamLib \citep{sawaya2024hamlib, pennylaneHamlibTsp}, kernels estimados por medidas aleatorizadas \citep{haug2023} y compilación estructurada \citep{rovara2026}. \\
 \addlinespace
-Instancias QUBO mayores & TSP de 6 a 8 ciudades y MDS/MaxCut de 10 a 20 nodos de HamLib; QAOA con $p$ creciente frente a SA \citep{zhou2020, sawaya2024hamlib, pennylaneHamlibTsp}. & ¿Cuánta probabilidad concentra QAOA en el óptimo al crecer $p$ y el tamaño, frente al éxito de SA? \\
+Mapeos de representación & Comparar otros feature maps y codificaciones: basis encoding, re-uploading \citep{perezSalinas2020}, embeddings entrenables \citep{lloyd2020} y elección del circuito según la complejidad del dato \citep{dePaulaNeto2025}. \\
 \addlinespace
-Hardware real & Ejecución por shots con mitigación de errores, kernel por medidas aleatorizadas \citep{haug2023} y compilación estructurada \citep{rovara2026}. & ¿Qué parte del coste se debe a la simulación y cuál al método? \\
+Más familias de casos de uso & Extender el protocolo a clusterización \citep{aimeur2007, sentis2019, kerenidis2019qmeans}, series de tiempo, regresión \citep{friedman1991, kulkarniQlr} y simulación. \\
 \addlinespace
-Representación & Basis encoding sin PCA en Bars and Stripes, re-uploading \citep{perezSalinas2020}, embeddings entrenables \citep{lloyd2020} y elección del circuito según la complejidad del dato \citep{dePaulaNeto2025}. & ¿Puede elegirse el feature map antes de entrenar? \\
+Reducción de dimensionalidad & Sustituir la PCA por otros métodos, clásicos y cuánticos, como qPCA o autoencoders cuánticos \citep{lloyd2014, romero2017}, con la salvedad de \citet{tang2021}. \\
 \addlinespace
-Entrenabilidad & Búsqueda de hiperparámetros, validación cruzada con intervalos de confianza y varianza del gradiente al crecer profundidad y qubits \citep{mcclean2018, cerezo2023}. & ¿Limita el paisaje de pérdida a QNN, VQC y QAOA antes que la representación? \\
+Instancias diferentes a QUBO & Problemas cuya formulación natural no es cuadrática, como Max-$k$-SAT, y otras familias de Hamiltonianos de HamLib \citep{sawaya2024hamlib}. \\
 \addlinespace
-Otras familias & Regresión sobre Friedman~\#1 \citep{friedman1991, kulkarniQlr}, clustering \citep{aimeur2007, sentis2019, kerenidis2019qmeans} y qPCA o autoencoders cuánticos en lugar de la PCA \citep{lloyd2014, romero2017}, con la salvedad de \citet{tang2021}. & ¿Se mantiene fuera de la clasificación el resultado observado aquí? \\
+Diferentes conjuntos de datos & Repetir la comparación sobre otros datasets, reales y sintéticos, como los del benchmark de \citet{bowles2024}. \\
 \bottomrule
 \end{tabularx}
-\caption{Líneas de trabajo futuro.}
+\caption{Líneas futuras de investigación.}
 \label{tab:futuro}
 \end{table}
