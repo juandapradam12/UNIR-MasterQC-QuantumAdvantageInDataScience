@@ -519,15 +519,15 @@ VQE & 1 & 1 & 1 \\
 \begin{frame}{Conclusiones}
 \centering
 \begin{tikzpicture}[font=\small,
-  txt/.style={align=left, text width=4.6cm, anchor=west, font=\small}]
+  txt/.style={align=left, text width=4.6cm, anchor=west, font=\small, execute at begin node={\hyphenpenalty=10000\exhyphenpenalty=10000}}]
   \node[numsq=unirazul] (c1) at (0,0) {1};
-  \node[txt, right=0.2cm of c1] {\textbf{Sin ventaja en clasificación.} SVM-RBF mejor o empatado en los tres datasets};
+  \node[txt, right=0.2cm of c1] {\textbf{Sin ventaja en clasificación.} Los modelos clásicos igualan o superan a los cuánticos en todos los datasets};
   \node[numsq=unirnavy] (c2) at (6.7,0) {2};
-  \node[txt, right=0.2cm of c2] {\textbf{ZZ solo empata en Ising.} El dataset en el que todos alcanzan 0.95 de accuracy};
+  \node[txt, right=0.2cm of c2] {\textbf{Paridad solo en lo fácil.} El kernel cuántico empata donde todos aciertan y generaliza peor en datos convencionales};
   \node[numsq=unirnavy] (c3) at (0,-1.9) {3};
-  \node[txt, right=0.2cm of c3] {\textbf{Optimización sin mejora.} QAOA y VQE tardan 0.6--12.6 s por ejecución; la enumeración, $<1$ ms};
+  \node[txt, right=0.2cm of c3] {\textbf{Optimización sin mejora.} QAOA y VQE llegan al óptimo casi siempre, pero los métodos clásicos lo obtienen antes};
   \node[numsq=unirazul] (c4) at (6.7,-1.9) {4};
-  \node[txt, right=0.2cm of c4] {\textbf{Régimen acotado.} 4--6 qubits simulados: cercanía, no ventaja};
+  \node[txt, right=0.2cm of c4] {\textbf{Régimen acotado.} Con pocos qubits simulados se mide cercanía al clásico, no ventaja};
 \end{tikzpicture}
 \mensaje{La paridad de calidad, cuando aparece, llega con un coste temporal mayor}
 \end{frame}
