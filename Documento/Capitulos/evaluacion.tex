@@ -229,7 +229,7 @@ F1 $0.688$, el mínimo del corpus de clasificación, con $12.4\,\mathrm{s}$ de e
 
 \subsection{Ising}
 
-Las features son amplitudes del estado fundamental de una cadena de cuatro espines. La etiqueta es la fase, $y=\mathbf{1}[h>|J|]$, y $h$ no entra como variable. Tras la PCA el plano se organiza en dos ramas. Es el único dataset en el que un modelo cuántico empata con el mejor clásico (Tabla~\ref{tab:res_ising}).
+Las features son amplitudes del estado fundamental de la cadena de cuatro espines de la Figura~\ref{fig:ising_chain}. La etiqueta es la fase, $y=\mathbf{1}[h>|J|]$, con transición en $h_c=|J|=1$, y $h$ no entra como variable. Es el único dataset en el que un modelo cuántico empata con el mejor clásico (Tabla~\ref{tab:res_ising}). Aquí las fronteras sobre el plano principal no explican nada del sistema, así que la lectura de cada implementación se apoya en la tabla y en el grafo: qué modelo reconoce la fase de ese Hamiltoniano y a qué coste.
 
 \begin{table}[!htbp]
 \centering
@@ -260,69 +260,27 @@ VQC & 0.975 & 0.969 & --- & 0.000 & 18.231 & 0.332 \\
 
 \subsubsection{SVM}
 
-F1 $0.985$, AUC $1.000$, gap $0.013$, en alrededor de un milisegundo. El recall macro ($0.979$) queda un punto bajo el accuracy: la clase minoritaria de fase concentra el error residual. La Figura~\ref{fig:ising_svm} sigue las dos ramas del plano. El RBF no necesita saber que el vector viene de un estado cuántico; la geometría tras la PCA ya es separable. Por eso el empate posterior del QSVM no es, por sí solo, una ventaja operativa: el mismo F1 llega antes por el kernel clásico.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.72\textwidth]{svm_ising_pca_boundary.png}
-\caption{Frontera del SVM en Ising. Las dos ramas de fase quedan separadas; el error residual es de una clase.}
-\label{fig:ising_svm}
-\end{figure}
+F1 $0.985$, AUC $1.000$, gap $0.013$, en alrededor de un milisegundo. El recall macro ($0.979$) queda un punto bajo el accuracy: el error residual está en una de las dos fases. El RBF no necesita saber que el vector viene de un estado cuántico: las amplitudes del estado fundamental cambian lo bastante con $h$ como para que un margen clásico separe orden y desorden. Por eso el empate posterior del QSVM no es, por sí solo, una ventaja operativa: el mismo F1 llega antes por el kernel clásico.
 
 \subsubsection{Random Forest}
 
-F1 $0.969$ y AUC $1.000$, con gap $0.025$. El bosque ordena las fases tan bien como el SVM en AUC y pierde algo de F1 en la etiqueta dura. La Figura~\ref{fig:ising_rf} corta las ramas con umbrales. Con componentes principales tan estructuradas, un árbol encuentra el corte; el bagging no añade mucho sobre un solo margen. El tiempo ($0.062\,\mathrm{s}$) sigue siendo inferior al de cualquier circuito.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.72\textwidth]{rf_ising_pca_boundary.png}
-\caption{Frontera del Random Forest en Ising. AUC perfecto y F1 un punto por debajo del SVM.}
-\label{fig:ising_rf}
-\end{figure}
+F1 $0.969$ y AUC $1.000$, con gap $0.025$. El bosque ordena las fases tan bien como el SVM en AUC y pierde algo de F1 en la etiqueta dura. Los umbrales sobre componentes de las amplitudes bastan para distinguir la fase; el bagging no añade mucho sobre un solo margen. El tiempo ($0.062\,\mathrm{s}$) sigue siendo inferior al de cualquier circuito.
 
 \subsubsection{XGBoost}
 
-F1 $0.937$, recall macro $0.917$, AUC $0.996$, gap $0.050$. Es el clásico que más se deja la fase minoritaria. El boosting, con este tamaño de muestra, ajusta de más el corte entre ramas (Figura~\ref{fig:ising_xgb}). El dato premia un margen global; una secuencia de árboles cortos no es esa hipótesis. Aun así el ajuste dura $0.012\,\mathrm{s}$.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.72\textwidth]{xgb_ising_pca_boundary.png}
-\caption{Frontera de XGBoost en Ising. El recall macro cae a $0.917$: la fase menos representada concentra los errores.}
-\label{fig:ising_xgb}
-\end{figure}
+F1 $0.937$, recall macro $0.917$, AUC $0.996$, gap $0.050$. Es el clásico que más se deja una de las fases. El boosting, con este tamaño de muestra, sobreajusta el corte cerca de la transición. El dato premia un margen global; una secuencia de árboles cortos no es esa hipótesis. Aun así el ajuste dura $0.012\,\mathrm{s}$.
 
 \subsubsection{QSVM}
 
-Empata con el SVM en Acc $0.988$, F1 $0.985$, AUC $1.000$ y gap $0.013$. La Figura~\ref{fig:ising_qsvm} sigue las dos ramas y deja un error visible en la zona de transición. Aquí el mapa ZZ sí está cerca del generador: las features son amplitudes de un estado de Ising y la etiqueta es la fase de ese mismo Hamiltoniano \citep{huang2021, havlicek2019}. El empate de calidad no arrastra al tiempo. El ajuste dura $0.153\,\mathrm{s}$ y la inferencia $0.206\,\mathrm{s}$, frente a $0.001\,\mathrm{s}$ del SVM. La discusión queda en la alineación dato--mapa: cuando el kernel cuántico está en el espacio correcto, recupera al clásico; la simulación del solape sigue costando más que evaluar un RBF.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.72\textwidth]{qsvm_ising_pca_boundary.png}
-\caption{Frontera del QSVM en Ising. El mapa ZZ separa las ramas de fase; queda un error junto a la transición.}
-\label{fig:ising_qsvm}
-\end{figure}
+Empata con el SVM en Acc $0.988$, F1 $0.985$, AUC $1.000$ y gap $0.013$. Aquí el mapa ZZ sí está cerca del generador: las features son amplitudes del estado de la cadena de la Figura~\ref{fig:ising_chain} y la etiqueta es la fase de ese mismo Hamiltoniano, cuyas interacciones son precisamente términos $Z_iZ_{i+1}$ \citep{huang2021, havlicek2019}. El empate de calidad no arrastra al tiempo. El ajuste dura $0.153\,\mathrm{s}$ y la predicción $0.206\,\mathrm{s}$, frente a $0.001\,\mathrm{s}$ del SVM. La discusión queda en la alineación dato--mapa: cuando el kernel cuántico está en el espacio correcto, recupera al clásico; la simulación del solape sigue costando más que evaluar un RBF.
 
 \subsubsection{QNN}
 
-F1 $0.937$ y AUC $0.996$, las mismas cifras que XGBoost, con gap menor ($0.017$). La cabeza lineal sobre angle embedding no aprovecha la estructura de fase mejor que un boosting corto, y el entrenamiento sube a $2.84\,\mathrm{s}$. La Figura~\ref{fig:ising_qnn} muestra la frontera. En un dato donde el kernel ZZ ya empata con el RBF, cambiar a un embedding angular separable y entrenar capas es una hipótesis más débil: se pierde la interacción $Z_iZ_j$ que justificaba el mapa.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.72\textwidth]{qnn_ising_pca_boundary.png}
-\caption{Frontera de la QNN en Ising. La calidad queda en el nivel de XGBoost, por debajo del par SVM--QSVM.}
-\label{fig:ising_qnn}
-\end{figure}
+F1 $0.937$ y AUC $0.996$, las mismas cifras que XGBoost, con gap menor ($0.017$). La cabeza lineal sobre angle embedding no aprovecha la estructura de fase mejor que un boosting corto, y el entrenamiento sube a $2.84\,\mathrm{s}$. En un dato donde el kernel ZZ ya empata con el RBF, cambiar a un embedding angular separable y entrenar capas es una hipótesis más débil: se pierde la interacción $Z_iZ_j$ que refleja los acoplamientos de la cadena.
 
 \subsubsection{VQC}
 
-F1 $0.969$, el mismo que el Random Forest, gap $0.000$ y $18.2\,\mathrm{s}$ de entrenamiento. La preparación $R_Y$ más el ansatz variacional cabe en la geometría de dos ramas (Figura~\ref{fig:ising_vqc}) sin el sobreajuste de XGBoost. No alcanza el empate SVM--QSVM. Cada predicción reejecuta el circuito ($0.332\,\mathrm{s}$). Frente al QSVM, el VQC no usa el kernel alineado con el Hamiltoniano; frente al SVM, repite una calidad intermedia a un coste de simulación que en este tamaño no se justifica \citep{bowles2024}.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.72\textwidth]{vqc_ising_pca_boundary.png}
-\caption{Frontera del VQC en Ising. Gap nulo y F1 de bosque, con el mayor tiempo de inferencia de la tabla tras el QSVM.}
-\label{fig:ising_vqc}
-\end{figure}
+F1 $0.969$, el mismo que el Random Forest, gap $0.000$ y $18.2\,\mathrm{s}$ de entrenamiento. La preparación $R_Y$ más el ansatz variacional distingue las fases sin el sobreajuste de XGBoost, pero no alcanza el empate SVM--QSVM. Cada predicción reejecuta el circuito ($0.332\,\mathrm{s}$). Frente al QSVM, el VQC no usa un mapa con los acoplamientos $Z_iZ_j$ de la cadena; frente al SVM, repite una calidad intermedia a un coste de simulación que en este tamaño no se justifica \citep{bowles2024}.
 
 \subsection{Lectura de la familia}
 

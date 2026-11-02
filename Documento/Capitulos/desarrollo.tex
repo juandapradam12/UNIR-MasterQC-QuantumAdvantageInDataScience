@@ -88,20 +88,13 @@ Patrones binarios $4\times 4$ del catálogo PennyLane (\texttt{bars-and-stripes}
 \end{figure}
 
 \paragraph{Ising (fases).}
-Datos PennyLane \texttt{qspin} / Ising \citep{pennylaneIsing}: amplitudes del ground state (parte real e imaginaria) de cadenas 1D de cuatro espines (Figura~\ref{fig:ising_chain}). La etiqueta de fase se deriva del campo transversal, $y=\mathbf{1}[h>|J|]$; $h$ \textbf{no} entra como feature (evitar fuga de etiqueta). Tras el aplanado, $d>4$; se aplica PCA a 4. El split estratifica también por $h$ en QNN/VQC. La Figura~\ref{fig:ising_prelim} es esa nube todavía sin frontera de clasificador.
+Datos PennyLane \texttt{qspin} / Ising \citep{pennylaneIsing}: amplitudes del ground state (parte real e imaginaria) de cadenas 1D de cuatro espines (Figura~\ref{fig:ising_chain}). La etiqueta de fase se deriva del campo transversal, $y=\mathbf{1}[h>|J|]$; $h$ \textbf{no} entra como feature (evitar fuga de etiqueta). Tras el aplanado, $d>4$; se aplica PCA a 4. El split estratifica también por $h$ en QNN/VQC.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.78\textwidth]{svm_ising_chain.png}
-\caption{Sistema de Ising antes de extraer features: cadena 1D de cuatro espines, abierta o cerrada. Las variables del modelo son las amplitudes del estado fundamental, no este grafo.}
+\caption{Sistema de Ising: cadena 1D de cuatro espines con acoplamiento $J$ entre vecinos y campo transversal $h$, en layout abierto o cerrado. Las features son las amplitudes del estado fundamental de este Hamiltoniano para cada $h$.}
 \label{fig:ising_chain}
-\end{figure}
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.72\textwidth]{svm_ising_pca_scatter.png}
-\caption{Ising antes de los clasificadores. Proyección de las amplitudes; las dos fases ocupan ramas distintas. Círculos huecos: test.}
-\label{fig:ising_prelim}
 \end{figure}
 
 \subsection{Preparación compartida}
@@ -173,7 +166,7 @@ La PCA, cuando existe, se aplica a clásicos y cuánticos por igual: se compara 
 \label{fig:prep_clasif}
 \end{figure}
 
-Las Figuras~\ref{fig:iris_prelim}, \ref{fig:bs_prelim} y~\ref{fig:ising_prelim} son esa geometría antes de ajustar ningún modelo. En Iris la proyección es solo visual ($d=4$); en Bars and Stripes e Ising el clasificador recibe cuatro componentes. El patrón crudo de Bars and Stripes está en la Figura~\ref{fig:bs_samples}.
+Las Figuras~\ref{fig:iris_prelim} y~\ref{fig:bs_prelim} son esa geometría antes de ajustar ningún modelo. En Iris la proyección es solo visual ($d=4$); en Bars and Stripes el clasificador recibe cuatro componentes. En Ising la proyección no aporta lectura física: el dato se entiende desde el sistema de la Figura~\ref{fig:ising_chain}.
 
 \subsection{Representación en el espacio de Hilbert}
 
