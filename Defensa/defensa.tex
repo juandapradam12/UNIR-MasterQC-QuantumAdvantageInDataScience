@@ -292,10 +292,9 @@ Evaluar de forma empírica si los algoritmos cuánticos NISQ ofrecen ventaja med
   \node[box, right=1.0cm of u] (s) {$\lvert\phi(\mathbf{x})\rangle\in\mathbb{C}^{16}$};
   \node[box, right=1.0cm of s] (k) {kernel o\\ ansatz};
   \draw[arr] (x) -- (u); \draw[arr] (u) -- (s); \draw[arr] (s) -- (k);
-  \node[chip, below=0.25cm of u, xshift=-1.6cm] {basis};
-  \node[chip, below=0.25cm of u, xshift=-0.45cm] {ZZ};
-  \node[chip, below=0.25cm of u, xshift=0.6cm] {angle};
-  \node[chip, below=0.25cm of u, xshift=1.6cm] {$R_Y$};
+  \node[chip, below=0.25cm of u] (c2) {angle (QNN)};
+  \node[chip, left=0.12cm of c2] {ZZ (QSVM)};
+  \node[chip, right=0.12cm of c2] {$R_Y$ (VQC)};
 
   \node[font=\bfseries\color{unirazul}] at (-0.4,-1.85) {Optimización};
   \node[box] (p) at (0,-3.05) {problema\\ combinatorio};
@@ -305,7 +304,7 @@ Evaluar de forma empírica si los algoritmos cuánticos NISQ ofrecen ventaja med
   \draw[arr] (p) -- (q); \draw[arr] (q) -- (h); \draw[arr] (h) -- (o);
 \end{tikzpicture}
 \\[0.3em]
-{\small El espacio donde se resuelve el problema decide qué estructura puede explotar el algoritmo \citep{lloyd2020, lucas2014}.}
+{\small El feature map y el QUBO fijan el espacio en el que opera el método cuántico \citep{lloyd2020, lucas2014}.}
 \end{frame}
 
 \begin{frame}{Estado de la técnica}
@@ -332,7 +331,7 @@ Evaluar de forma empírica si los algoritmos cuánticos NISQ ofrecen ventaja med
   qu/.style={draw=unirazul, fill=unirazul!20, rounded corners=3pt, align=center, inner sep=5pt, minimum height=0.95cm, text width=3.3cm},
   arr/.style={->, unirnavy, line width=1.1pt}]
   \node[box] (d) at (0,0) {Iris · BS · Ising};
-  \node[box, right=0.8cm of d] (p) {split 60/40, PCA a 4,\\ MinMax $[0,\pi]$};
+  \node[box, right=0.8cm of d] (p) {split 60/40,\\ PCA a 4 si $d>4$,\\ MinMax $[0,\pi]$};
   \node[cl, right=0.8cm of p, yshift=0.65cm] (c) {SVM · RF · XGBoost};
   \node[qu, right=0.8cm of p, yshift=-0.65cm] (q) {QSVM · QNN · VQC};
   \node[box, right=0.8cm of p, xshift=4.3cm] (m) {F1, AUC, gap,\\ $t_{\mathrm{train}}$, $t_{\mathrm{pred}}$};
@@ -353,54 +352,56 @@ Evaluar de forma empírica si los algoritmos cuánticos NISQ ofrecen ventaja med
 \begin{frame}{Clasificación: el cuántico solo empata en Ising}
 \centering
 \fig{0.70\textheight}{cls_classical_vs_quantum_by_dataset.png}
-\mensaje{Media de la familia: $-0.083$ en Iris, $-0.101$ en Bars and Stripes, $0.000$ en Ising}
+\mensaje{Ningún modelo cuántico supera al SVM-RBF en ningún dataset}
 \end{frame}
 
 \begin{frame}{Iris: el mapa ZZ fragmenta la frontera}
 \begin{columns}[T]
 \begin{column}{0.48\textwidth}\centering
-\fig{0.66\textheight}{svm_iris_pca_boundary.png}\pie{SVM-RBF: F1 0.967}
+\fig{0.58\textheight}{svm_iris_pca_boundary.png}\pie{SVM-RBF: F1 0.967, 2 errores en el solape}
 \end{column}
 \begin{column}{0.48\textwidth}\centering
-\fig{0.66\textheight}{qsvm_iris_pca_boundary.png}\pie{QSVM-ZZ: F1 0.730}
+\fig{0.58\textheight}{qsvm_iris_pca_boundary.png}\pie{QSVM-ZZ: F1 0.730, 16 errores, también en setosa}
 \end{column}
 \end{columns}
+\mensaje{QSVM: accuracy 0.967 en train y 0.733 en test, el mayor gap del corpus}
 \end{frame}
 
-\begin{frame}{Bars and Stripes: nube mezclada, el VQC cae}
+\begin{frame}{Bars and Stripes: clases solapadas, el VQC cae}
 \begin{columns}[T]
-\begin{column}{0.52\textwidth}\centering
-\fig{0.68\textheight}{bs_f1_ranking.png}
-\end{column}
 \begin{column}{0.44\textwidth}\centering
-\fig{0.62\textheight}{vqc_bs_pca_boundary.png}\pie{VQC: F1 0.688, el peor del dataset}
+\fig{0.56\textheight}{svm_bs_pca_scatter.png}\pie{PCA a 4: 57.5\,\% de la varianza; clases solapadas}
+\end{column}
+\begin{column}{0.52\textwidth}\centering
+\fig{0.60\textheight}{bs_f1_ranking.png}
 \end{column}
 \end{columns}
+\mensaje{VQC: F1 0.688 y accuracy de train 0.710; no ajusta ni el train}
 \end{frame}
 
 \begin{frame}{Ising: el dataset que todos resuelven}
-\begin{columns}[c]
+\begin{columns}[T]
 \begin{column}{0.44\textwidth}\centering
-\fig{0.48\textheight}{svm_ising_chain.png}\\[0.4em]
-{\small Los seis modelos superan 0.95 de accuracy.\\ El mapa ZZ actúa sobre la PCA\\ de las amplitudes, no sobre los espines}
+\fig{0.46\textheight}{qsvm_ising_pca_boundary.png}\pie{QSVM: 1 error de 80, con islas también aquí}\\[0.3em]
+{\scriptsize El mapa ZZ actúa sobre la PCA de las\\ amplitudes, no sobre los espines}
 \end{column}
 \begin{column}{0.54\textwidth}\centering
-\fig{0.68\textheight}{ising_f1_ranking.png}
+\fig{0.58\textheight}{ising_f1_ranking.png}
 \end{column}
 \end{columns}
-\mensaje{QSVM = SVM: F1 0.985. Única paridad cuántica en clasificación}
+\mensaje{QSVM = SVM: F1 0.985, con los seis modelos por encima de 0.95 de accuracy}
 \end{frame}
 
 \begin{frame}{El coste de simular el circuito}
 \begin{columns}[T]
-\begin{column}{0.46\textwidth}\centering
-\fig{0.66\textheight}{cls_performance_vs_cost.png}
+\begin{column}{0.54\textwidth}\centering
+\fig{0.60\textheight}{cls_performance_vs_cost.png}\pie{F1 medio frente a tiempo medio de entrenamiento}
 \end{column}
-\begin{column}{0.52\textwidth}\centering
-\fig{0.62\textheight}{cls_runtimes.png}
+\begin{column}{0.42\textwidth}\centering
+\fig{0.58\textheight}{cls_prediction_time.png}\pie{Tiempo medio de predicción}
 \end{column}
 \end{columns}
-\mensaje{SVM: mejor F1 en milisegundos. VQC: decenas de segundos sin mejorar la calidad}
+\mensaje{SVM: mejor F1 medio (0.940) en 2 ms. QSVM y VQC predicen de dos a tres órdenes más despacio}
 \end{frame}
 
 \begin{frame}{Optimización: casi todos llegan al óptimo, a distinto coste}
@@ -425,27 +426,28 @@ VQE & 1 & 1 & 1 \\
 \end{tabular}}
 \end{column}
 \end{columns}
+\mensaje{Fallan el greedy en MDS, SA en 2 de 20 semillas del TSP y QAOA en 1 de 8 del MDS}
 \end{frame}
 
 \begin{frame}{TSP y MaxCut: QAOA reproduce el óptimo}
 \begin{columns}[T]
 \begin{column}{0.48\textwidth}\centering
-\fig{0.60\textheight}{qaoa_tsp_route.png}\pie{TSP: ruta óptima, coste 16}
+\fig{0.54\textheight}{qaoa_tsp_route.png}\pie{TSP: coste 16, el mejor bitstring de 3000 muestras}
 \end{column}
 \begin{column}{0.48\textwidth}\centering
-\fig{0.60\textheight}{qaoa_maxcut_cut.png}\pie{MaxCut: corte 8; 18 de 64 asignaciones son óptimas}
+\fig{0.54\textheight}{qaoa_maxcut_cut.png}\pie{MaxCut: corte 8; P(corte óptimo) 0.93, uniforme 0.28}
 \end{column}
 \end{columns}
-\mensaje{Mismo óptimo que la enumeración: 0.6--2 s de simulación frente a $<1$ ms}
+\mensaje{Mismo óptimo que la enumeración: 0.6--2 s de simulación frente a menos de 1 ms}
 \end{frame}
 
 \begin{frame}{MDS: fallan el greedy y una semilla de QAOA}
 \begin{columns}[T]
 \begin{column}{0.48\textwidth}\centering
-\fig{0.60\textheight}{greedy_mds_dominating_set.png}\pie{Greedy: tamaño 3, no óptimo}
+\fig{0.56\textheight}{greedy_mds_dominating_set.png}\pie{Greedy: tamaño 3, no óptimo}
 \end{column}
 \begin{column}{0.48\textwidth}\centering
-\fig{0.60\textheight}{qaoa_mds_dominating_set.png}\pie{QAOA: óptimo en 7 de 8 semillas; 12.6 s}
+\fig{0.56\textheight}{qaoa_mds_dominating_set.png}\pie{QAOA: óptimo en 7/8 semillas, P(óptimo) 0.53, 12.6 s}
 \end{column}
 \end{columns}
 \mensaje{La semilla fallida devuelve un conjunto infactible; SA resuelve el mismo QUBO en 7 ms}
@@ -463,8 +465,9 @@ VQE & 1 & 1 & 1 \\
     \end{itemize}};
   \node[cuerpo=unirgris, text width=5.6cm, minimum height=3.2cm, below=0.1cm of b, align=left] {%
     \begin{itemize}\setlength{\itemsep}{4pt}
-      \item Iris y BS: el QSVM fragmenta la frontera (F1 0.730 y 0.758)
+      \item Iris y BS: QSVM con F1 0.730 y 0.758, frente a 0.967 y 0.870 del SVM
       \item MDS: una semilla de QAOA termina en un conjunto infactible
+      \item TSP y MDS: éxito leído del mejor de miles de muestras, no prueba concentración
     \end{itemize}};
 \end{tikzpicture}
 \mensaje{Con $n\le6$ qubits se mide cercanía al clásico, no ventaja asintótica \citep{preskill2018, thanasilp2022}}
@@ -482,7 +485,7 @@ VQE & 1 & 1 & 1 \\
   \node[numsq=unirnavy] (c2) at (6.7,0) {2};
   \node[txt, right=0.2cm of c2] {\textbf{ZZ solo empata en Ising.} El dataset que todos resuelven por encima de 0.95};
   \node[numsq=unirnavy] (c3) at (0,-1.9) {3};
-  \node[txt, right=0.2cm of c3] {\textbf{Optimización sin mejora.} QAOA y VQE reproducen $C^\star$ con más coste};
+  \node[txt, right=0.2cm of c3] {\textbf{Optimización sin mejora.} QAOA y VQE tardan 0.6--12.6 s por ejecución; la enumeración, $<1$ ms};
   \node[numsq=unirazul] (c4) at (6.7,-1.9) {4};
   \node[txt, right=0.2cm of c4] {\textbf{Régimen acotado.} 4--6 qubits simulados: cercanía, no ventaja};
 \end{tikzpicture}
