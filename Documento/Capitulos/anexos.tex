@@ -6,6 +6,92 @@
 \renewcommand{\thetable}{\thechapter.\arabic{table}}
 
 % =====================================================================
+\section{Repositorio del proyecto}
+\label{anx:repo}
+% =====================================================================
+
+El código, los datos de entrada, las métricas, las figuras, este documento y las diapositivas de la defensa están en un repositorio público de GitHub, con \texttt{main} como rama principal:
+
+\begin{center}
+\url{https://github.com/juandapradam12/UNIR-MasterQC-QuantumAdvantageInDataScience}
+\end{center}
+
+\noindent La Tabla~\ref{tab:repo} describe el primer nivel del repositorio.
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Elemento} & \textbf{Contenido} \\
+\midrule
+\texttt{Notebooks/} & Corpus experimental: un notebook por modelo o solver, sus métricas en JSON y sus figuras \\
+\texttt{Notebooks/lib/} & Utilidades comunes: resolución de las carpetas \texttt{metrics/} y \texttt{figures/} de cada caso (\texttt{case\_paths.py}) y figuras de fronteras, instancias y soluciones (\texttt{storytelling.py}) \\
+\texttt{Documento/} & Fuente LaTeX de esta memoria: \texttt{main.tex}, un fichero por capítulo en \texttt{Capitulos/}, estilo UNIR en \texttt{Estilos/} e imágenes en \texttt{Imagenes/} \\
+\texttt{Defensa/} & Diapositivas de la defensa en Beamer (\texttt{defensa.tex}), que reutilizan las figuras de \texttt{Notebooks/} y \texttt{Documento/Imagenes/} \\
+\texttt{Notas/} & Notas de trabajo y referencias candidatas \\
+\texttt{requirements.txt} & Dependencias de Python con versión fijada \\
+\bottomrule
+\end{tabularx}
+\caption{Primer nivel del repositorio.}
+\label{tab:repo}
+\end{table}
+
+La Figura~\ref{fig:repo_tree} muestra el árbol de carpetas. Las ocho carpetas de caso repiten la misma estructura, que se detalla para Iris y para TSP.
+
+\begin{figure}[!htbp]
+\centering
+\begin{minipage}{0.92\linewidth}
+\scriptsize
+\begin{verbatim}
+UNIR-MasterQC-QuantumAdvantageInDataScience/
+|-- requirements.txt
+|-- Notebooks/
+|   |-- lib/                      case_paths.py, storytelling.py
+|   |-- Classification/
+|   |   |-- IrisClassification/
+|   |   |   |-- Classic_SVM_Iris.ipynb, RandomForest_Iris.ipynb,
+|   |   |   |   XGBoost_Iris.ipynb, QSVM_Iris.ipynb, QNN_Iris.ipynb,
+|   |   |   |   Variational_Classifier_Iris.ipynb
+|   |   |   |-- metrics/          svm_iris.json, ..., vqc_iris.json
+|   |   |   `-- figures/
+|   |   |-- BSClassification/     misma estructura
+|   |   |-- IsingClassification/  misma estructura
+|   |   `-- ResultsClassification/
+|   |       |-- Results_Iris.ipynb, Results_BS.ipynb, Results_Ising.ipynb,
+|   |       |   Results_Classification.ipynb
+|   |       |-- metrics/          resúmenes CSV y medias en JSON
+|   |       `-- figures/
+|   `-- Optimization/
+|       |-- TSPOptimization/
+|       |   |-- BruteForce.ipynb, Greedy.ipynb, ILP.ipynb,
+|       |   |   QUBO_Simulated_Annealing.ipynb, QUBO_QAOA.ipynb,
+|       |   |   QUBO_VQE.ipynb
+|       |   |-- metrics/          bruteforce_tsp.json, ..., vqe_tsp.json
+|       |   `-- figures/
+|       |-- MinimumDominatingSetOptimization/   misma estructura
+|       |-- MaxCutOptimization/   misma estructura, más
+|       |   `-- instance/         hamlib_maxcut.json
+|       `-- ResultsOptimization/
+|           |-- Results_TSP.ipynb, Results_MDS.ipynb, Results_MaxCut.ipynb,
+|           |   Results_Optimization.ipynb
+|           |-- metrics/          resúmenes CSV
+|           `-- figures/
+|-- Documento/
+|   |-- main.tex
+|   |-- Capitulos/  Estilos/  Imagenes/
+|-- Defensa/
+|   `-- defensa.tex
+`-- Notas/
+\end{verbatim}
+\end{minipage}
+\caption{Árbol de carpetas del repositorio. Se omiten las figuras y los PDF compilados.}
+\label{fig:repo_tree}
+\end{figure}
+
+% =====================================================================
 \section{Catálogo de notebooks}
 \label{anx:notebooks}
 % =====================================================================
@@ -33,4 +119,56 @@ La Tabla~\ref{tab:notebooks} resume la organización del corpus experimental, re
 \end{tabularx}
 \caption{Organización del corpus experimental.}
 \label{tab:notebooks}
+\end{table}
+
+% =====================================================================
+\section{Formato de las salidas}
+\label{anx:salidas}
+% =====================================================================
+
+Cada notebook de modelo o solver escribe un JSON en la carpeta \texttt{metrics/} de su caso. Los notebooks de resultados solo leen esos JSON y escriben los resúmenes CSV y las figuras comparativas (Tabla~\ref{tab:salidas}).
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.6cm} >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Fichero} & \textbf{Campos} \\
+\midrule
+JSON de clasificación & \texttt{model}, \texttt{family}, \texttt{protocol}; \texttt{train} y \texttt{test} con accuracy, precision, recall, F1 y AUC; \texttt{train\_time\_s}, \texttt{inference\_time\_s} \\
+JSON de optimización & \texttt{problem}, \texttt{solver}, \texttt{family}, \texttt{protocol}, \texttt{instance}; \texttt{quality} (óptimo, coste medio y mejor, gap medio), \texttt{success\_rate}, \texttt{time\_s}, \texttt{effort}; \texttt{runs} con una entrada por semilla (bitstring, solución, coste, factibilidad, éxito, gap, tiempo y, en QAOA y VQE, evaluaciones de energía y profundidad del circuito) \\
+Instancia MaxCut & \texttt{hamlib\_maxcut.json}: origen e identificador en HamLib, número de vértices, aristas, corte óptimo y bitstrings óptimos \\
+Resúmenes CSV & Una tabla por dataset o instancia y tablas agregadas de clasificación y de optimización, en las carpetas \texttt{metrics/} de resultados \\
+\bottomrule
+\end{tabularx}
+\caption{Ficheros de salida del corpus experimental.}
+\label{tab:salidas}
+\end{table}
+
+% =====================================================================
+\section{Reproducción}
+\label{anx:reproduccion}
+% =====================================================================
+
+Los notebooks localizan \texttt{Notebooks/lib/} y las carpetas de su caso subiendo por los directorios padre, así que pueden ejecutarse desde la raíz del repositorio o desde su propia carpeta. La Tabla~\ref{tab:reproduccion} recoge el orden de ejecución.
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{@{}c >{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Paso} & \textbf{Acción} & \textbf{Detalle} \\
+\midrule
+1 & Entorno & Entorno virtual con Python 3.14; \texttt{pip install -r requirements.txt}; \texttt{qiskit-machine-learning} se instala aparte porque no está fijado \\
+2 & Notebooks de caso & Ejecutar los notebooks de modelo o solver de cada carpeta de caso, en cualquier orden; cada uno escribe su JSON y sus figuras \\
+3 & Notebooks de resultados & Ejecutar \texttt{Results\_*.ipynb} en \texttt{ResultsClassification/} y \texttt{ResultsOptimization/}, que regeneran los CSV y las figuras comparativas \\
+4 & Documento y defensa & Compilar \texttt{Documento/main.tex} y \texttt{Defensa/defensa.tex} con \texttt{pdflatex}, dos pasadas cada uno \\
+\bottomrule
+\end{tabularx}
+\caption{Pasos para reproducir los resultados, el documento y la defensa.}
+\label{tab:reproduccion}
 \end{table}
