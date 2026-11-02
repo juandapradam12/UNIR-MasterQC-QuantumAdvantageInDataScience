@@ -6,183 +6,128 @@
 \renewcommand{\thetable}{\thechapter.\arabic{table}}
 
 % =====================================================================
-\section{Catálogo de notebooks y pruebas de concepto}
+\section{Repositorio y catálogo de notebooks}
 \label{anx:notebooks}
 % =====================================================================
 
-La Tabla~\ref{tab:notebooks} resume la estructura del corpus experimental bajo \texttt{Notebooks/}. El entorno se fija en \texttt{requirements.txt} (raíz del repositorio).
+El código, los datos de entrada, las métricas y las figuras del trabajo están en el repositorio público:
 
-\begin{table}[ht]
+\begin{center}
+\url{https://github.com/juandapradam12/UNIR-MasterQC-QuantumAdvantageInDataScience}
+\end{center}
+
+La Tabla~\ref{tab:notebooks} resume la organización del corpus experimental, repartido entre las carpetas \texttt{Notebooks/Classification/} y \texttt{Notebooks/Optimization/}. Cada dataset o instancia tiene un notebook por modelo o solver, y una carpeta de resultados agrega las métricas y genera las figuras comparativas del Capítulo~\ref{cap:evaluacion}.
+
+\begin{table}[!htbp]
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.15}
-\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{4.6cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{3.0cm}@{}}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{4.6cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2.6cm}@{}}
 \toprule
-\textbf{Ruta} & \textbf{Contenido} & \textbf{Datos} \\
+\textbf{Carpeta} & \textbf{Contenido} & \textbf{Datos} \\
 \midrule
-\texttt{Classification/IrisClassification/} & SVM, RF, XGBoost, QSVM, QNN, VQC & Iris \\
-\texttt{Classification/BSClassification/} & mismo stack & Bars and Stripes \\
-\texttt{Classification/IsingClassification/} & mismo stack (fase vía $h$) & Ising 1D \\
-\texttt{Classification/ResultsClassification/} & \texttt{Results\_*.ipynb}, métricas CSV, figuras storytelling & agregados \\
-\texttt{Optimization/TSPOptimization/} & BF, greedy, ILP, SA, QAOA, VQE & TSP \\
-\texttt{Optimization/MinimumDominatingSetOptimization/} & mismo stack de solvers & MDS \\
-\texttt{Optimization/MaxCutOptimization/} & mismo stack de solvers & MaxCut (HamLib) \\
-\texttt{Optimization/ResultsOptimization/} & \texttt{Results\_*.ipynb}, métricas CSV, figuras storytelling & agregados \\
-\texttt{lib/} & \texttt{case\_paths.py}, \texttt{storytelling.py} & utilidades \\
+\texttt{IrisClassification/} & SVM, RF, XGBoost, QSVM, QNN, VQC & Iris \\
+\texttt{BSClassification/} & mismos seis modelos & Bars and Stripes \\
+\texttt{IsingClassification/} & mismos seis modelos & Ising 1D \\
+\texttt{ResultsClassification/} & agregación de métricas y figuras comparativas & tres datasets \\
+\texttt{TSPOptimization/} & fuerza bruta, greedy, ILP, QUBO+SA, QAOA, VQE & TSP \\
+\texttt{MinimumDominating-} \texttt{SetOptimization/} & mismos seis solvers & MDS \\
+\texttt{MaxCutOptimization/} & mismos seis solvers & MaxCut (HamLib) \\
+\texttt{ResultsOptimization/} & agregación de métricas y figuras comparativas & tres instancias \\
 \bottomrule
 \end{tabularx}
-\caption{Catálogo del corpus actual en \texttt{Notebooks/}. Figuras por caso en \texttt{*/figures/}; agregados en \texttt{Results*/figures/} y \texttt{Results*/metrics/}.}
+\caption{Organización del corpus experimental. Fuente: elaboración propia.}
 \label{tab:notebooks}
 \end{table}
 
-Los datasets de entrada viven en \texttt{datasets/} (\texttt{bars-and-stripes}, \texttt{qspin}, \texttt{hamlib-maxcut}, etc.).
-
 % =====================================================================
-\section{Entorno de software y dependencias}
+\section{Entorno de software}
 \label{anx:entorno}
 % =====================================================================
 
-Los experimentos se ejecutaron en dos entornos. Las cifras, tablas y figuras de este documento proceden de las ejecuciones del entorno~B, que reproduce los cuadernos y los módulos \texttt{qml\_v2}; el entorno~A es el del autor, donde se desarrolló el código.
+La Tabla~\ref{tab:entornos} recoge las versiones fijadas en \texttt{requirements.txt}, con las que se ejecutaron todos los notebooks. Toda la computación cuántica se realiza en simulación de estado sobre CPU.
 
-\begin{table}[ht]
+\begin{table}[!htbp]
 \centering
 \small
-\begin{tabular}{>{\raggedright\arraybackslash}p{4.6cm}>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}p{4.6cm}}
-\hline
-\textbf{Componente} & \textbf{Entorno A (autor)} & \textbf{Entorno B (reejecución)} \\
-\hline
-Sistema operativo & macOS (Apple M-series, 16~GB RAM) & Linux (kernel 6.12) \\
-Python & 3.14 (Notebook~07: 3.14.4) & 3.12.3 \\
-Qiskit & 2.3.0 & 2.6.1 \\
-\texttt{qiskit-aer} & 0.15 & 0.18.2 \\
-\texttt{qiskit-algorithms} & --- & 0.4.0 \\
-\texttt{qiskit-machine-learning} & --- & 0.9.1 \\
-\texttt{qiskit-optimization} & --- & 0.7.0 \\
-\texttt{qiskit-finance} & --- & 0.4.1 \\
-scikit-learn & 1.8.0 & 1.9.1 \\
-XGBoost & 3.2.0 & 3.4.1 \\
-SciPy & 1.15 & 1.18.1 \\
-NumPy & 2.2 & 2.5.4 \\
-pandas & 2.3 & 3.1.0 \\
-matplotlib & 3.10 & 3.11.2 \\
-seaborn & --- & 0.13.2 \\
-NetworkX & --- & 3.7 \\
-\texttt{yfinance} & --- & 1.7.0 \\
-PuLP (solver CBC) & 2.9 & 2.9.0 \\
-Jupyter (\texttt{nbconvert}, \texttt{ipykernel}) & --- & 7.17.2, 7.4.0 \\
-\texttt{pytest} & --- & 9.2.0 \\
-\LaTeX{} & --- & TeX Live 2023 (pdfTeX 1.40.25) \\
-\hline
+\begin{tabular}{@{}ll@{\hspace{2.5em}}ll@{}}
+\toprule
+\textbf{Paquete} & \textbf{Versión} & \textbf{Paquete} & \textbf{Versión} \\
+\midrule
+PennyLane & 0.45.1 & scikit-learn & 1.9.1 \\
+PennyLane Lightning & 0.45.0 & XGBoost & 3.1.2 \\
+Qiskit \citep{Qiskit} & 2.6.1 & PuLP (CBC) & 2.9.0 \\
+Qiskit Aer & 0.18.2 & NetworkX & 3.7 \\
+PyTorch & 2.15.0 & NumPy & 2.5.4 \\
+SciPy & 1.18.1 & pandas & 3.1.0 \\
+h5py & 3.16.0 & matplotlib & 3.11.2 \\
+\bottomrule
 \end{tabular}
-\caption{Versiones de los entornos de ejecución. Una celda con guiones indica que la versión no se registró en el entorno A. Los metadatos de todos los cuadernos ejecutados (01 a 11, salvo el 01b) registran Python~3.12.3.}
+\caption{Versiones de las dependencias principales. Fuente: elaboración propia.}
 \label{tab:entornos}
 \end{table}
 
-El archivo \texttt{requirements.txt} fija las versiones mínimas (no exactas) de las dependencias, y PuLP se limita a la serie~2 porque las series~3 y~4 cambiaron la API que usa \texttt{qml\_v2.optimization}. Los paquetes \texttt{geopandas}, \texttt{umap-learn} y \texttt{yfinance} no estaban instalados en el entorno~B: el Notebook~04 leyó los precios de la caché \texttt{portfolio\_prices.csv}, el Notebook~09 usó MDS en lugar de UMAP (Estrategia~4) y el Notebook~02, que requiere \texttt{geopandas} y datos propios, conserva las salidas de su ejecución original. Las cifras de este documento se contrastaron con las ejecuciones del entorno~B y las discrepancias halladas se corrigieron; los resultados de \texttt{qml\_v2} (clasificación, regresión, anomalías, series temporales, alineación de mapas, MDS-QAOA, TSP y optimización) coincidieron salvo en los tiempos de ejecución. Los datos de SKG Tecnología son privados y no se distribuyen, de modo que los resultados sobre SKG solo son reproducibles por la propia organización.
-
 % =====================================================================
-\section{Datasets utilizados}
+\section{Datasets e instancias}
 \label{anx:datasets}
 % =====================================================================
 
-\begin{table}[ht]
+La Tabla~\ref{tab:datasets} resume el tamaño de cada dataset e instancia y la partición usada. En clasificación, la partición es estratificada con 40\,\% de test y semilla 123; la varianza explicada se refiere a la PCA a cuatro componentes.
+
+\begin{table}[!htbp]
 \centering
 \footnotesize
 \setlength{\tabcolsep}{5pt}
 \renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.2cm} c >{\raggedright\arraybackslash}p{2.4cm} >{\raggedright\arraybackslash}X@{}}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{3.0cm}@{}}
 \toprule
-\textbf{Dataset} & \textbf{Registros} & \textbf{Origen} & \textbf{Uso en el TFM} \\
+\textbf{Dataset / instancia} & \textbf{Tamaño} & \textbf{Origen} & \textbf{Preparación} \\
 \midrule
-Cuántico-nativo & 150--200 & Sintético & Casos 1, 2, 6, 8, 9 (benchmark de ventaja cuántica; $n=200$ en los Notebooks 01 y 03, $n=150$ en el 06) \\[3pt]
-SKG — Incidentes NUSE Bogotá & 27.326 & SKG Tecnología & Casos 1, 6, 8, 9 (clasificación de gravedad) \\[3pt]
-SKG — Tiempos de viaje & 81.121 & SKG Tecnología & Caso 2 (regresión de velocidad media) \\[3pt]
-SKG — Agentes en campo & 58.245 lecturas (753 dispositivos) & SKG Tecnología & Notebook 02 (bases por localidad); el Caso 3 usa matrices de coste sintéticas \\[3pt]
-Telco Customer Churn & 7.043 & IBM / Kaggle & Casos 1, 6, 8, 9 (benchmark clasificación) \\[3pt]
-Friedman~\#1 & 300 & Sintético & Caso 2 (benchmark regresión no lineal) \\[3pt]
-Red social (MDS) & 6 nodos & Sintético & Caso 7 (paradigma híbrido) \\[3pt]
-\texttt{zz\_phase} / moons / blobs & $n=160$ & Sintético QML~v2 & Caso 8 (anomalías one-class) \\[3pt]
-Telco / SKG inyectados & subsample & Práctica + spikes & Caso 8 (no usan churn/gravedad) \\[3pt]
-Colombia capitals (TSP) & $n\leq 12$ & Geo QML~v2 & \texttt{tsp\_optimization} \\[3pt]
-SKG speed series / sine / zz\_lag & lags & Práctica / sintético & \texttt{timeseries} \\
+Iris & 150 muestras, $d=4$, 3 clases (90/60) & scikit-learn \citep{sklearnIris} & sin PCA \\
+Bars and Stripes & 1200 muestras, $d=16$, 2 clases (720/480) & PennyLane, $4\times 4$ \citep{pennylaneBarsAndStripes} & PCA a 4 (57.5\,\% var.) \\
+Ising 1D & 200 muestras, $d=32$, 2 fases (120/80) & PennyLane \texttt{qspin}, cadenas abierta y cerrada de 4 espines \citep{pennylaneIsing} & PCA a 4 (99.9\,\% var.) \\
+\addlinespace
+TSP & 5 nodos, grafo completo & instancia propia & QUBO \\
+MDS & 6 vértices, 6 aristas & instancia propia & QUBO con penalización \\
+MaxCut & 6 vértices, 12 aristas & HamLib \citep{sawaya2024hamlib} & Ising sin restricciones \\
 \bottomrule
 \end{tabularx}
-\caption{Datasets empleados en el TFM. Los datos de SKG Tecnología son confidenciales y han sido anonimizados; en anomalías y series se usan como práctica (outliers inyectados / un corredor).}
+\caption{Datasets de clasificación (train/test entre paréntesis) e instancias de optimización. Fuente: elaboración propia.}
 \label{tab:datasets}
 \end{table}
 
 % =====================================================================
-\section{Repositorio del código fuente}
-\label{anx:repositorio}
+\section{Figuras complementarias de clasificación}
+\label{anx:figuras_clasif}
 % =====================================================================
 
-El código fuente completo del TFM ---incluyendo todos los notebooks de pruebas de concepto, los módulos de utilidades y los datos de entrada/salida generados--- está disponible públicamente en GitHub:
+Las Figuras~\ref{fig:anx_cls_accuracy} a~\ref{fig:anx_cls_gap} agregan los tres datasets de clasificación y complementan los resultados por dataset del Capítulo~\ref{cap:evaluacion}. Los valores medios se calculan sobre Iris, Bars and Stripes e Ising con el mismo peso.
 
-\begin{center}
-\large\url{https://github.com/juandapradam12/TFM_ComputacionCuantica}
-\end{center}
-
-La estructura principal del repositorio es la siguiente:
-
-\begin{itemize}
-    \item \texttt{Notebooks/} --- Experimentos de clasificación y optimización (Tabla~\ref{tab:notebooks})
-    \item \texttt{Notebooks/*/figures/} y \texttt{Results*/figures/} --- Figuras generadas por los notebooks
-    \item \texttt{Notebooks/*/Results*/metrics/} --- CSV de métricas agregadas
-    \item \texttt{datasets/} --- Datos de entrada (Iris vía sklearn; BS, Ising, HamLib en disco)
-    \item \texttt{requirements.txt} --- Dependencias del entorno (Sección~\ref{anx:entorno})
-    \item \texttt{Documento/} --- Fuente \LaTeX{} de este TFM
-    \item \texttt{Defensa/} --- Beamer de la defensa
-    \item \texttt{Notas/} --- Notas de argumento para documento y defensa
-\end{itemize}
-
-Para reproducir cualquier experimento: clonar el repositorio, crear un entorno virtual con \texttt{pip install -r requirements.txt} y ejecutar el notebook correspondiente desde \texttt{Notebooks/}.
-
-% =====================================================================
-\section{Figuras complementarias: Notebook~06 — Ventaja del kernel cuántico}
-\label{anx:figuras_nb06}
-% =====================================================================
-
-Las figuras del circuito ZZFeatureMap (Figura~\ref{fig:zzfeaturemap_circuit}) y de las fronteras de decisión (Figura~\ref{fig:kernel_boundaries}) se encuentran en el cuerpo del documento (Capítulos~\ref{cap:metodologia} y~5). Las siguientes figuras complementan esos resultados con la comparativa multi-dataset y la escalabilidad del cómputo del kernel.
-
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{cls_iris_vs_bs_vs_ising_vs_mean_accuracy.png}
-\caption{Comparativa de exactitud del QSVC frente al mejor clasificador clásico en los tres datasets del Notebook~06 (una única partición por dataset). La ventaja de $+8.9$~pp sobre el dataset cuántico-nativo ($n=150$, 45 puntos de test) contrasta con la desventaja de $-4.0$~pp sobre SKG Incidentes y $-3.8$~pp sobre Telco Churn.}
-\label{fig:quantum_kernel_3ds}
+\includegraphics[width=0.92\textwidth]{cls_iris_vs_bs_vs_ising_vs_mean_accuracy.png}
+\caption{Accuracy en test por modelo y dataset, con la media de los tres. QSVM y VQC son los modelos con mayor variación entre datasets.}
+\label{fig:anx_cls_accuracy}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.90\textwidth]{cls_performance_vs_cost.png}
-\caption{Exactitud del QSVM y del mejor clásico (Gradient Boosting) en el dataset cuántico-nativo según el número total de muestras ($n=50$ a $150$, 30\% de test) y diferencia entre ambos (Notebook~06). Cada barra procede de una única partición con 15 a 45 puntos de test (un acierto equivale a 2--7~pp): el QSVM queda por debajo de Gradient Boosting para $n=50$ y $80$ y por encima para $n\ge 100$. La repetición con 10 semillas (Tabla~\ref{tab:escala_clasificacion}) da una ventaja positiva en todos los tamaños, de modo que esta figura debe leerse como una realización ruidosa y no como un umbral de ventaja.}
-\label{fig:kernel_escalabilidad}
+\includegraphics[width=0.85\textwidth]{cls_test_heatmap.png}
+\caption{Métricas de test medias por modelo. El VQC no exporta probabilidades, por lo que no tiene AUC.}
+\label{fig:anx_cls_heatmap}
 \end{figure}
 
-% =====================================================================
-\section{Figuras complementarias: Notebook~07 — Síntesis visual de resultados}
-\label{anx:figuras_nb07}
-% =====================================================================
-
-El dashboard comparativo (Figura~\ref{fig:dashboard_sintesis}) y el mapa de calor (Figura~\ref{fig:heatmap_ventaja_body}) se encuentran en el cuerpo del documento (Capítulo~5 y Capítulo~7). La siguiente figura complementa ese análisis con la comparativa de complejidad computacional teórica.
-
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.90\textwidth]{cls_runtimes.png}
-\caption{Comparativa de complejidad computacional teórica de los algoritmos cuánticos y sus contrapartes clásicas en cada caso de uso. Las barras muestran el orden de crecimiento ($O(\cdot)$) en función del tamaño del problema $n$. En los casos de optimización combinatoria (Casos~4, 5 y~7), la brecha de complejidad teórica justifica la exploración cuántica a escala (Notebook~07).}
-\label{fig:complejidad_cuantico_clasico}
+\includegraphics[width=0.92\textwidth]{cls_runtimes.png}
+\caption{Tiempos medios de entrenamiento y predicción por modelo (escala logarítmica).}
+\label{fig:anx_cls_runtimes}
 \end{figure}
 
-% =====================================================================
-\section{Figura complementaria: Notebook~09 — Barrido de rotaciones QCR}
-\label{anx:figuras_nb0809}
-% =====================================================================
-
-El barrido sintético de cuanticidad (Figura~\ref{fig:barrido_sintetico_alpha}) y la correlación de indicadores (Figura~\ref{fig:correlacion_indicadores_body}) se encuentran en el Capítulo~\ref{cap:investigacion_original}. La siguiente figura complementa el análisis de la Estrategia~2 del Framework QCR.
-
-\begin{figure}[htbp]
+\begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.90\textwidth]{cls_generalization_gap.png}
-\caption{Barrido de la estrategia de rotación hacia máxima divergencia cuántico-clásica (Estrategia~2 del Framework QCR): variación de $d_F$, $\mathcal{Q}(\mathcal{D})$ y ventaja QSVM en función del ángulo de rotación $\theta \in [0, \pi/2]$ aplicado a SKG Incidentes y Telco Churn. La mejora de $d_F$ no se traduce consistentemente en ventaja empírica, confirmando la disociación entre capacidad teórica del kernel y rendimiento bajo muestras finitas (Notebook~09).}
-\label{fig:barrido_rotaciones}
+\includegraphics[width=0.85\textwidth]{cls_generalization_gap.png}
+\caption{Brecha de generalización media (train $-$ test) en accuracy y F1.}
+\label{fig:anx_cls_gap}
 \end{figure}
