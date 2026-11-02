@@ -14,17 +14,17 @@ Las líneas de la Tabla~\ref{tab:futuro} parten de las preguntas abiertas de la 
 \midrule
 Escala de la alineación & Cadenas de Ising de 6 a 12 espines con codificación directa en qubits; QSVM-ZZ frente a SVM-RBF. & ¿Se mantiene la paridad observada en Ising al crecer el sistema? \\
 \addlinespace
-Instancias QUBO mayores & TSP de 6 a 8 ciudades y MDS/MaxCut de 10 a 20 nodos de HamLib; QAOA con $p>1$ frente a SA \citep{zhou2020, sawaya2024hamlib, pennylaneHamlibTsp}. & ¿Separa la profundidad de QAOA su rendimiento del de un annealing sobre el mismo QUBO? \\
+Instancias QUBO mayores & TSP de 6 a 8 ciudades y MDS/MaxCut de 10 a 20 nodos de HamLib; QAOA con $p$ creciente frente a SA \citep{zhou2020, sawaya2024hamlib, pennylaneHamlibTsp}. & ¿Separa la profundidad de QAOA su rendimiento del de un annealing cuando el óptimo es único? \\
 \addlinespace
 Hardware real & Ejecución por shots con mitigación de errores, kernel por medidas aleatorizadas \citep{haug2023} y compilación estructurada \citep{rovara2026}. & ¿Qué parte del coste se debe a la simulación y cuál al método? \\
 \addlinespace
 Representación & Basis encoding sin PCA en Bars and Stripes, re-uploading \citep{perezSalinas2020}, embeddings entrenables \citep{lloyd2020} y elección del circuito según la complejidad del dato \citep{dePaulaNeto2025}. & ¿Puede elegirse el feature map antes de entrenar? \\
 \addlinespace
-Entrenabilidad & Búsqueda de hiperparámetros y varianza del gradiente al crecer profundidad y qubits \citep{mcclean2018, cerezo2023}. & ¿Limita el paisaje de pérdida a QNN, VQC y QAOA antes que la representación? \\
+Entrenabilidad & Búsqueda de hiperparámetros, validación cruzada con intervalos de confianza y varianza del gradiente al crecer profundidad y qubits \citep{mcclean2018, cerezo2023}. & ¿Limita el paisaje de pérdida a QNN, VQC y QAOA antes que la representación? \\
 \addlinespace
 Otras familias & Regresión sobre Friedman~\#1 \citep{friedman1991, kulkarniQlr}, clustering \citep{aimeur2007, sentis2019, kerenidis2019qmeans} y qPCA o autoencoders cuánticos en lugar de la PCA \citep{lloyd2014, romero2017}, con la salvedad de \citet{tang2021}. & ¿Se reproduce el patrón de alineación fuera de la clasificación? \\
 \bottomrule
 \end{tabularx}
-\caption{Líneas de trabajo futuro. Fuente: elaboración propia.}
+\caption{Líneas de trabajo futuro.}
 \label{tab:futuro}
 \end{table}

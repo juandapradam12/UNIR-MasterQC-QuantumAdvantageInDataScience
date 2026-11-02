@@ -1,13 +1,13 @@
 % !TEX root = ../main.tex
 \chapter{Resumen}
 
-Este Trabajo Fin de Máster (TFM) compara algoritmos de computación cuántica, algoritmos cuántico-inspirados y métodos clásicos en dos áreas de la ciencia de datos: clasificación y optimización combinatoria. Esas dos familias sirven aquí de punto de partida: a partir de ellas se pueden plantear, con el mismo criterio de comparación, otras aplicaciones como regresión lineal, clustering, series temporales, detección de anomalías, reinforcement learning, generativa o simulación de sistemas.
+Este Trabajo Fin de Máster (TFM) compara algoritmos de computación cuántica, algoritmos cuántico-inspirados y métodos clásicos en dos áreas de la ciencia de datos, clasificación y optimización combinatoria, con un mismo protocolo de preparación y medida y en simulación de 4 a 6 qubits.
 
 En clasificación se usan tres conjuntos de datos: Iris, Bars and Stripes e Ising unidimensional (clasificación de fases). Se comparan QSVM, QNN y VQC frente a SVM, Random Forest y XGBoost, con el mismo protocolo de partición, escalado y, cuando hace falta, PCA.
 
 En optimización se resuelven tres problemas: el Problema del Viajante (TSP), el Minimum Dominating Set (MDS) y Maximum Cut sobre una instancia de HamLib. Se evalúan QAOA y VQE frente a fuerza bruta, greedy, ILP y Simulated Annealing sobre QUBO.
 
-En las instancias y el régimen NISQ simulados aquí, los métodos clásicos igualan o superan a los cuánticos en precisión y en tiempo de cómputo. El aporte del trabajo es el protocolo de comparación y una lectura clara de hasta dónde llega (y no llega) la ventaja cuántica práctica en estos casos.
+El SVM obtiene el mejor F1 o empata con el mejor en los tres datasets y es el modelo más rápido. Los modelos cuánticos quedan por debajo en Iris y Bars and Stripes; el QSVM empata con el SVM solo en Ising, donde el feature map ZZ comparte estructura con el Hamiltoniano que genera el dato. En optimización, todos los métodos salvo el greedy en MDS alcanzan el óptimo o se quedan cerca, pero QAOA y VQE tardan de 0.6 a 12.6 segundos donde la enumeración tarda menos de un milisegundo, y QAOA falla una de ocho semillas en la instancia con óptimo único. En este régimen no hay ventaja cuántica; la paridad depende de la alineación entre representación y problema.
 
 \vspace{0.5em}
 \noindent\textbf{Palabras clave:} computación cuántica, quantum-inspired, ciencia de datos, clasificación, optimización combinatoria, Iris, Bars and Stripes, Ising, TSP, MDS, MaxCut, QSVM, VQC, QAOA, VQE, NISQ.

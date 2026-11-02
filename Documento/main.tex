@@ -31,9 +31,10 @@
 \usepackage{booktabs}   % líneas profesionales (\toprule, \midrule, \bottomrule)
 \newtheorem{conjetura}{Conjetura}[chapter]  % entorno para conjeturas originales del TFM
 \usepackage{caption}    % personalización de captions
-% Añade "Fuente: elaboración propia." debajo de cada figura
+% Añade "Fuente: elaboración propia." debajo de cada figura y tabla
 \DeclareCaptionTextFormat{fuente}{#1\par\footnotesize\normalfont\textit{Fuente: elaboración propia.}}
 \captionsetup[figure]{textformat=fuente}
+\captionsetup[table]{textformat=fuente}
 
 % Figuras del corpus actual (antes bajo POCs/)
 \graphicspath{%

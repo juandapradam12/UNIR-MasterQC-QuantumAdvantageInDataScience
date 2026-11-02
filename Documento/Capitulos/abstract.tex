@@ -1,13 +1,13 @@
 % !TEX root = ../main.tex
 \chapter{Abstract}
 
-This Master's Thesis compares quantum computing algorithms, quantum-inspired methods and classical baselines on two areas of data science: classification and combinatorial optimisation. Those two families are the starting point: the same comparison criteria can later be taken to other applications such as linear regression, clustering, time series, anomaly detection, reinforcement learning, generative models or system simulation.
+This Master's Thesis compares quantum computing algorithms, quantum-inspired methods and classical baselines on two areas of data science, classification and combinatorial optimisation, under a single preparation and measurement protocol and in simulation with 4 to 6 qubits.
 
 Classification uses three datasets: Iris, Bars and Stripes and one-dimensional Ising (phase classification). QSVM, QNN and VQC are compared with SVM, Random Forest and XGBoost under the same split, scaling and, when needed, PCA protocol.
 
 Optimisation covers three problems: the Travelling Salesperson Problem (TSP), the Minimum Dominating Set (MDS) and Maximum Cut on a HamLib instance. QAOA and VQE are evaluated against brute force, greedy, ILP and Simulated Annealing on QUBO.
 
-On the instances and simulated NISQ regime studied here, classical methods match or beat the quantum ones in accuracy and runtime. The contribution is the comparison protocol and a clear account of where practical quantum advantage does and does not appear in these cases.
+The SVM obtains the best or tied-best F1 on all three datasets and is the fastest model. Quantum models fall behind on Iris and Bars and Stripes; the QSVM ties the SVM only on Ising, where the ZZ feature map shares structure with the Hamiltonian that generates the data. In optimisation every method except greedy on MDS reaches or nearly reaches the optimum, but QAOA and VQE take 0.6 to 12.6 seconds where enumeration takes under a millisecond, and QAOA misses one of eight seeds on the instance with a unique optimum. There is no quantum advantage in this regime; parity depends on how well the representation is aligned with the problem.
 
 \vspace{0.5em}
 \noindent\textbf{Keywords:} quantum computing, quantum-inspired, data science, classification, combinatorial optimisation, Iris, Bars and Stripes, Ising, TSP, MDS, MaxCut, QSVM, VQC, QAOA, VQE, NISQ.
