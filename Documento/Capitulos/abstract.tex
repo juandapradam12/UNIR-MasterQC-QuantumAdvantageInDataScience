@@ -1,13 +1,13 @@
 % !TEX root = ../main.tex
 \chapter{Abstract}
 
-This Master's Thesis presents a rigorous comparative evaluation of quantum computing algorithms, quantum-inspired methods and traditional classical approaches on two fundamental areas of data science: classification and combinatorial optimisation.
+This Master's Thesis compares quantum computing algorithms, quantum-inspired methods and classical baselines on two areas of data science: classification and combinatorial optimisation.
 
-In classification, datasets of varying complexity are analysed ---from the classic Iris set to the one-dimensional Ising model and Bars and Stripes patterns. Quantum models (QSVM, QNN, VQC) are compared against established classical baselines (SVM, Random Forest, XGBoost) under a fair protocol for splitting, scaling and, when needed, PCA.
+Classification uses three datasets: Iris, Bars and Stripes and one-dimensional Ising (phase classification). QSVM, QNN and VQC are compared with SVM, Random Forest and XGBoost under the same split, scaling and, when needed, PCA protocol.
 
-On the optimisation side, representative problems are addressed: the Travelling Salesperson Problem (TSP), the Minimum Dominating Set (MDS) and Maximum Cut (MaxCut / HamLib). The performance of QAOA and VQE is evaluated against classical solvers (brute force, greedy, ILP) and Simulated Annealing on QUBO.
+Optimisation covers three problems: the Travelling Salesperson Problem (TSP), the Minimum Dominating Set (MDS) and Maximum Cut on a HamLib instance. QAOA and VQE are evaluated against brute force, greedy, ILP and Simulated Annealing on QUBO.
 
-The results show that, while current quantum computing (NISQ era) retains significant theoretical potential, within the instances and simulated regime of this thesis classical methods match or outperform quantum ones in accuracy and computational efficiency. The contribution is methodological: a fair comparison protocol, honest limits of the few-qubit regime, and representation (feature map / QUBO--Ising) as an open question. The work offers a critical reading of the current state of practical ``quantum advantage'' in data science.
+On the instances and simulated NISQ regime studied here, classical methods match or beat the quantum ones in accuracy and runtime. The contribution is the comparison protocol and a clear account of where practical quantum advantage does and does not appear in these cases.
 
 \vspace{0.5em}
-\noindent\textbf{Keywords:} quantum computing, quantum-inspired, data science, classification, combinatorial optimisation, QSVM, VQC, QAOA, VQE, NISQ.
+\noindent\textbf{Keywords:} quantum computing, quantum-inspired, data science, classification, combinatorial optimisation, Iris, Bars and Stripes, Ising, TSP, MDS, MaxCut, QSVM, VQC, QAOA, VQE, NISQ.

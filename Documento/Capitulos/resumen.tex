@@ -1,13 +1,13 @@
 % !TEX root = ../main.tex
 \chapter{Resumen}
 
-Este Trabajo Fin de Máster (TFM) se centra en una evaluación comparativa rigurosa entre algoritmos de computación cuántica, algoritmos cuántico-inspirados y métodos clásicos tradicionales, aplicados a dos áreas fundamentales de la ciencia de datos: la clasificación y la optimización combinatoria.
+Este Trabajo Fin de Máster (TFM) compara algoritmos de computación cuántica, algoritmos cuántico-inspirados y métodos clásicos en dos áreas de la ciencia de datos: clasificación y optimización combinatoria.
 
-En el ámbito de la clasificación, se analizan conjuntos de datos de diversa complejidad, desde el clásico Iris hasta el modelo de Ising unidimensional y patrones de Bars and Stripes. Se comparan modelos cuánticos (QSVM, QNN, VQC) frente a baselines clásicos consolidados (SVM, Random Forest, XGBoost) bajo un protocolo justo de partición, escalado y, cuando aplica, PCA.
+En clasificación se usan tres conjuntos de datos: Iris, Bars and Stripes e Ising unidimensional (clasificación de fases). Se comparan QSVM, QNN y VQC frente a SVM, Random Forest y XGBoost, con el mismo protocolo de partición, escalado y, cuando hace falta, PCA.
 
-En la vertiente de optimización, se abordan problemas representativos como el Problema del Viajante (TSP), el Minimum Dominating Set (MDS) y Maximum Cut (MaxCut / HamLib). Se evalúa el rendimiento de QAOA y VQE frente a aproximaciones clásicas (fuerza bruta, greedy, ILP) y a Simulated Annealing sobre QUBO.
+En optimización se resuelven tres problemas: el Problema del Viajante (TSP), el Minimum Dominating Set (MDS) y Maximum Cut sobre una instancia de HamLib. Se evalúan QAOA y VQE frente a fuerza bruta, greedy, ILP y Simulated Annealing sobre QUBO.
 
-Los resultados revelan que, si bien la computación cuántica actual (era NISQ) muestra un potencial teórico significativo, en las instancias y el régimen simulados de este TFM los métodos clásicos igualan o superan a los cuánticos en precisión y eficiencia computacional. El valor del trabajo es metodológico: protocolo comparable, límites honestos del régimen de pocos qubits y el papel de la representación (feature map / QUBO--Ising) como pregunta abierta. Este trabajo aporta una lectura crítica del estado actual de la ``ventaja cuántica'' práctica en ciencia de datos.
+En las instancias y el régimen NISQ simulados aquí, los métodos clásicos igualan o superan a los cuánticos en precisión y en tiempo de cómputo. El aporte del trabajo es el protocolo de comparación y una lectura clara de hasta dónde llega (y no llega) la ventaja cuántica práctica en estos casos.
 
 \vspace{0.5em}
-\noindent\textbf{Palabras clave:} computación cuántica, quantum-inspired, ciencia de datos, clasificación, optimización combinatoria, QSVM, VQC, QAOA, VQE, NISQ.
+\noindent\textbf{Palabras clave:} computación cuántica, quantum-inspired, ciencia de datos, clasificación, optimización combinatoria, Iris, Bars and Stripes, Ising, TSP, MDS, MaxCut, QSVM, VQC, QAOA, VQE, NISQ.
