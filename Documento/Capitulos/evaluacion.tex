@@ -286,6 +286,36 @@ F1 $0.969$, el mismo que el Random Forest, gap $0.000$ y $18.2\,\mathrm{s}$ de e
 
 Tres técnicas, tres resultados. El kernel RBF es el mejor o está empatado en los tres datasets y es el más barato. Los árboles se acercan cuando la geometría es simple (Iris, Ising) y generalizan peor cuando la nube está mezclada (Bars and Stripes, gap del bosque $0.146$). El mapa ZZ solo empata con el RBF en Ising, donde las features ya son un estado de un Hamiltoniano y la etiqueta es su fase; en Iris fragmenta la frontera y en Bars and Stripes paga segundos de fidelidad por un F1 inferior \citep{huang2021}. La QNN híbrida es el cuántico más estable fuera de Ising: su AUC en Bars and Stripes iguala al SVM, porque la cabeza clásica clasifica $\langle Z_i\rangle$. El VQC reproduce la calidad de los árboles en Iris e Ising y cae en Bars and Stripes, siempre con el mayor tiempo de entrenamiento. En simulación de $n=4$, la comparación cuantitativa no muestra una región en la que el circuito mejore al RBF en F1 y en tiempo a la vez \citep{bowles2024}.
 
+Las Figuras~\ref{fig:cls_acc_dataset} a~\ref{fig:cls_gap} agregan esa lectura. La accuracy por dataset (Figura~\ref{fig:cls_acc_dataset}) muestra que QSVM y VQC son los modelos con mayor variación entre datasets: el QSVM pasa de $0.733$ en Iris a $0.988$ en Ising y el VQC de $0.696$ en Bars and Stripes a $0.975$ en Ising, mientras que los clásicos se mueven en un rango más estrecho. El mapa de calor (Figura~\ref{fig:cls_heatmap}) confirma el orden medio en todas las métricas: SVM, Random Forest y XGBoost por encima; QNN como el mejor cuántico y QSVM el último. Los tiempos (Figura~\ref{fig:cls_runtimes}) separan entrenamiento y predicción: QSVM y VQC predicen dos órdenes de magnitud más lento que los clásicos porque cada predicción reevalúa el circuito, mientras que la QNN predice en milisegundos. La brecha de generalización media (Figura~\ref{fig:cls_gap}) es máxima en el QSVM, arrastrado por Iris, y casi nula en QNN y VQC.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{cls_iris_vs_bs_vs_ising_vs_mean_accuracy.png}
+\caption{Accuracy en test por modelo y dataset, con la media de los tres.}
+\label{fig:cls_acc_dataset}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{cls_test_heatmap.png}
+\caption{Métricas de test medias por modelo sobre los tres datasets. El VQC no exporta probabilidades, por lo que no tiene AUC.}
+\label{fig:cls_heatmap}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{cls_runtimes.png}
+\caption{Tiempos medios de entrenamiento y predicción por modelo (escala logarítmica).}
+\label{fig:cls_runtimes}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{cls_generalization_gap.png}
+\caption{Brecha de generalización media (train $-$ test) en accuracy y F1.}
+\label{fig:cls_gap}
+\end{figure}
+
 \section{Optimización}
 
 Las instancias tienen óptimo conocido y caben en enumeración: TSP con coste $C^\star=16$, MDS con $C^\star=2$, MaxCut con $C^\star=8$. La Figura~\ref{fig:opt_success} sitúa el success rate medio frente al tiempo. El detalle, y las dos excepciones (greedy en MDS, QAOA en MDS, SA en TSP), está en las tablas de cada problema. En este tamaño, alcanzar $C^\star$ es lo esperado de un método exacto; lo que distingue a los solvers es el camino y el wall-clock \citep{lubinski2024, lucas2014}.

@@ -14,21 +14,21 @@ Este capítulo describe cómo se ejecutaron los experimentos del TFM: entorno so
 \toprule
 \textbf{Capa} & \textbf{Stack} & \textbf{Versión} \\
 \midrule
-Lenguaje & Python & 3 \\
-Notebooks & Jupyter (\texttt{ipykernel}, \texttt{nbformat}) & --- \\
-Numérico / datos & NumPy, pandas, h5py & --- \\
-ML clásico & scikit-learn (SVM, Random Forest, PCA, métricas, splits); XGBoost \citep{chen2016} & 1.9; 3.1 \\
-QML / circuitos & PennyLane (\texttt{default.qubit}, \texttt{lightning.qubit}) \citep{pennylaneVariationalClassifier}; Qiskit y \texttt{qiskit-machine-learning} (kernel de fidelidad) \citep{Qiskit} & 0.45; 2.6 \\
-QNN híbrida & PyTorch (\texttt{TorchLayer} + cabeza lineal) & --- \\
-Optimización & PuLP + CBC (ILP); NetworkX (grafos); annealing simulado propio sobre QUBO & 2.9; 3.7 \\
-Visualización & matplotlib y utilidades propias de storytelling & --- \\
+Lenguaje & Python & 3.14 \\
+Notebooks & Jupyter (\texttt{ipykernel}, \texttt{nbformat}) & 7.4; 5.11 \\
+Numérico / datos & NumPy, SciPy, pandas, h5py & 2.5; 1.18; 3.1; 3.16 \\
+ML clásico & scikit-learn (SVM, Random Forest, PCA, métricas, splits); XGBoost \citep{chen2016} & 1.9.1; 3.1.2 \\
+QML / circuitos & PennyLane (\texttt{default.qubit}, \texttt{lightning.qubit}) \citep{pennylaneVariationalClassifier}; Qiskit y \texttt{qiskit-machine-learning} (kernel de fidelidad) \citep{Qiskit} & 0.45.1; 2.6.1 \\
+QNN híbrida & PyTorch (\texttt{TorchLayer} + cabeza lineal) & 2.15 \\
+Optimización & PuLP + CBC (ILP); NetworkX (grafos); annealing simulado propio sobre QUBO & 2.9.0; 3.7 \\
+Visualización & matplotlib y utilidades propias de storytelling & 3.11 \\
 \bottomrule
 \end{tabularx}
-\caption{Entorno software del estudio. Las versiones corresponden a las dependencias fijadas del repositorio.}
+\caption{Entorno software del estudio. Las versiones son las fijadas en las dependencias del repositorio, en el orden en que aparecen los paquetes. Fuente: elaboración propia.}
 \label{tab:entorno}
 \end{table}
 
-Todo el cómputo cuántico de este TFM es \textbf{simulación} de estado (sin hardware ruidoso) \citep{preskill2018}.
+Todo el cómputo cuántico de este TFM es \textbf{simulación} de estado sobre CPU, sin hardware ruidoso \citep{preskill2018}.
 \section{Diseño experimental}
 
 El estudio se organiza en tres ejes. Dos son familias de casos de uso; el tercero, la representación, es el paso que lleva el dato o el problema al espacio donde opera el método cuántico, y está presente en ambas \citep{lloyd2020, pennylaneEmbedBlog, parzygnat2025}.
@@ -81,7 +81,23 @@ Sobre esos ejes se fijan dos familias con la misma lógica de comparación justa
 
 \subsection{Datasets}
 
-Los tres datasets difieren en el origen del dato. Iris y Bars and Stripes son datasets \emph{convencionales}: el dato es clásico y cualquier estructura cuántica la introduce el feature map. Ising es dato \emph{de sistema}: cada muestra procede del estado fundamental de un Hamiltoniano y la etiqueta es su fase \citep{pennylaneWhatIsQuantumDataset, pennylaneConventionalDatasets, pennylaneIsing}. La diferencia condiciona qué representación tiene sentido.
+Los tres datasets difieren en el origen del dato. Iris y Bars and Stripes son datasets \emph{convencionales}: el dato es clásico y cualquier estructura cuántica la introduce el feature map. Ising es dato \emph{de sistema}: cada muestra procede del estado fundamental de un Hamiltoniano y la etiqueta es su fase \citep{pennylaneWhatIsQuantumDataset, pennylaneConventionalDatasets, pennylaneIsing}. La diferencia condiciona qué representación tiene sentido. La Tabla~\ref{tab:datasets_clasif} resume tamaño, dimensión y partición de cada uno.
+
+\begin{table}[!htbp]
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{2.6cm} c c c >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Dataset} & \textbf{Muestras} & \textbf{$d$} & \textbf{Clases} & \textbf{Train / test y reducción} \\
+\midrule
+Iris & 150 & 4 & 3 & 90 / 60; sin PCA \\
+Bars and Stripes & 1200 & 16 & 2 & 720 / 480; PCA a 4 (57.5\,\% de varianza) \\
+Ising 1D & 200 & 32 & 2 & 120 / 80; PCA a 4 (99.9\,\% de varianza) \\
+\bottomrule
+\end{tabularx}
+\caption{Datasets de clasificación. Partición estratificada con 40\,\% de test y semilla 123. Fuente: elaboración propia.}
+\label{tab:datasets_clasif}
+\end{table}
 
 \paragraph{Iris.}
 Benchmark clásico de 150 muestras, 4 características continuas y 3 clases \citep{sklearnIris}. Se carga con \texttt{sklearn.datasets.load\_iris}. Con $d=4$ cabe en 4 qubits \textbf{sin PCA}. La Figura~\ref{fig:iris_prelim} es el dato antes de cualquier clasificador: las cuatro variables proyectadas solo para verlas. Una clase queda separada; las otras dos se solapan.
@@ -247,9 +263,28 @@ Latencia & Wall-clock de entrenamiento (\texttt{fit}) y de inferencia sobre el t
 \label{tab:metricas_clasif}
 \end{table}
 
+\FloatBarrier
 \section{Optimización}
 
 \subsection{Problemas e instancias}
+
+Las tres instancias son pequeñas a propósito: la fuerza bruta da el óptimo $C^\star$ de referencia y cabe en el presupuesto de qubits de QAOA y VQE. La Tabla~\ref{tab:instancias} las resume.
+
+\begin{table}[!htbp]
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}l l l >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Problema} & \textbf{Instancia} & \textbf{Origen} & \textbf{Representación} \\
+\midrule
+TSP & 5 nodos, grafo completo & instancia propia & QUBO sobre rutas candidatas \\
+MDS & 6 vértices, 6 aristas & instancia propia & QUBO con penalización de cobertura \\
+MaxCut & 6 vértices, 12 aristas & HamLib \citep{sawaya2024hamlib} & Ising sin restricciones \\
+\bottomrule
+\end{tabularx}
+\caption{Instancias de optimización. Fuente: elaboración propia.}
+\label{tab:instancias}
+\end{table}
 
 \paragraph{TSP restringido.}
 TSP y MDS son NP-difíciles en su versión general \citep{garey1979}; aquí se usan instancias pequeñas con óptimo verificable. Grafo completo pequeño sobre 5 nodos con distancias fijas; origen fijado (Figura~\ref{fig:tsp_prelim}). Óptimo por enumeración (fuerza bruta). Formulación QUBO reducida: variables binarias sobre rutas candidatas factibles (una sola familia de selección), compatible con SA/QAOA/VQE \citep{lucas2014}.
@@ -369,6 +404,14 @@ Lectura & Generalización del clasificador, o distancia de la solución a $C^\st
 \end{table}
 
 \section{Reproducibilidad}
+
+El código, los datos de entrada, las métricas y las figuras están en el repositorio público
+
+\begin{center}
+\url{https://github.com/juandapradam12/UNIR-MasterQC-QuantumAdvantageInDataScience}
+\end{center}
+
+\noindent Cada dataset o instancia tiene un notebook por modelo o solver; una carpeta de resultados por familia agrega las métricas y genera las figuras comparativas (Apéndice~\ref{anx:notebooks}).
 
 \begin{itemize}
     \item Semillas fijadas en splits y, cuando aplica, en solvers.

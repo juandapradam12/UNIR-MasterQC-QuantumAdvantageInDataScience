@@ -6,15 +6,9 @@
 \renewcommand{\thetable}{\thechapter.\arabic{table}}
 
 % =====================================================================
-\section{Repositorio y catálogo de notebooks}
+\section{Catálogo de notebooks}
 \label{anx:notebooks}
 % =====================================================================
-
-El código, los datos de entrada, las métricas y las figuras del trabajo están en el repositorio público:
-
-\begin{center}
-\url{https://github.com/juandapradam12/UNIR-MasterQC-QuantumAdvantageInDataScience}
-\end{center}
 
 La Tabla~\ref{tab:notebooks} resume la organización del corpus experimental, repartido entre las carpetas \texttt{Notebooks/Classification/} y \texttt{Notebooks/Optimization/}. Cada dataset o instancia tiene un notebook por modelo o solver, y una carpeta de resultados agrega las métricas y genera las figuras comparativas del Capítulo~\ref{cap:evaluacion}.
 
@@ -40,94 +34,3 @@ La Tabla~\ref{tab:notebooks} resume la organización del corpus experimental, re
 \caption{Organización del corpus experimental. Fuente: elaboración propia.}
 \label{tab:notebooks}
 \end{table}
-
-% =====================================================================
-\section{Entorno de software}
-\label{anx:entorno}
-% =====================================================================
-
-La Tabla~\ref{tab:entornos} recoge las versiones fijadas en \texttt{requirements.txt}, con las que se ejecutaron todos los notebooks. Toda la computación cuántica se realiza en simulación de estado sobre CPU.
-
-\begin{table}[!htbp]
-\centering
-\small
-\begin{tabular}{@{}ll@{\hspace{2.5em}}ll@{}}
-\toprule
-\textbf{Paquete} & \textbf{Versión} & \textbf{Paquete} & \textbf{Versión} \\
-\midrule
-PennyLane & 0.45.1 & scikit-learn & 1.9.1 \\
-PennyLane Lightning & 0.45.0 & XGBoost & 3.1.2 \\
-Qiskit \citep{Qiskit} & 2.6.1 & PuLP (CBC) & 2.9.0 \\
-Qiskit Aer & 0.18.2 & NetworkX & 3.7 \\
-PyTorch & 2.15.0 & NumPy & 2.5.4 \\
-SciPy & 1.18.1 & pandas & 3.1.0 \\
-h5py & 3.16.0 & matplotlib & 3.11.2 \\
-\bottomrule
-\end{tabular}
-\caption{Versiones de las dependencias principales. Fuente: elaboración propia.}
-\label{tab:entornos}
-\end{table}
-
-% =====================================================================
-\section{Datasets e instancias}
-\label{anx:datasets}
-% =====================================================================
-
-La Tabla~\ref{tab:datasets} resume el tamaño de cada dataset e instancia y la partición usada. En clasificación, la partición es estratificada con 40\,\% de test y semilla 123; la varianza explicada se refiere a la PCA a cuatro componentes.
-
-\begin{table}[!htbp]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{5pt}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{3.0cm}@{}}
-\toprule
-\textbf{Dataset / instancia} & \textbf{Tamaño} & \textbf{Origen} & \textbf{Preparación} \\
-\midrule
-Iris & 150 muestras, $d=4$, 3 clases (90/60) & scikit-learn \citep{sklearnIris} & sin PCA \\
-Bars and Stripes & 1200 muestras, $d=16$, 2 clases (720/480) & PennyLane, $4\times 4$ \citep{pennylaneBarsAndStripes} & PCA a 4 (57.5\,\% var.) \\
-Ising 1D & 200 muestras, $d=32$, 2 fases (120/80) & PennyLane \texttt{qspin}, cadenas abierta y cerrada de 4 espines \citep{pennylaneIsing} & PCA a 4 (99.9\,\% var.) \\
-\addlinespace
-TSP & 5 nodos, grafo completo & instancia propia & QUBO \\
-MDS & 6 vértices, 6 aristas & instancia propia & QUBO con penalización \\
-MaxCut & 6 vértices, 12 aristas & HamLib \citep{sawaya2024hamlib} & Ising sin restricciones \\
-\bottomrule
-\end{tabularx}
-\caption{Datasets de clasificación (train/test entre paréntesis) e instancias de optimización. Fuente: elaboración propia.}
-\label{tab:datasets}
-\end{table}
-
-% =====================================================================
-\section{Figuras complementarias de clasificación}
-\label{anx:figuras_clasif}
-% =====================================================================
-
-Las Figuras~\ref{fig:anx_cls_accuracy} a~\ref{fig:anx_cls_gap} agregan los tres datasets de clasificación y complementan los resultados por dataset del Capítulo~\ref{cap:evaluacion}. Los valores medios se calculan sobre Iris, Bars and Stripes e Ising con el mismo peso.
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.92\textwidth]{cls_iris_vs_bs_vs_ising_vs_mean_accuracy.png}
-\caption{Accuracy en test por modelo y dataset, con la media de los tres. QSVM y VQC son los modelos con mayor variación entre datasets.}
-\label{fig:anx_cls_accuracy}
-\end{figure}
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.85\textwidth]{cls_test_heatmap.png}
-\caption{Métricas de test medias por modelo. El VQC no exporta probabilidades, por lo que no tiene AUC.}
-\label{fig:anx_cls_heatmap}
-\end{figure}
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.92\textwidth]{cls_runtimes.png}
-\caption{Tiempos medios de entrenamiento y predicción por modelo (escala logarítmica).}
-\label{fig:anx_cls_runtimes}
-\end{figure}
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.85\textwidth]{cls_generalization_gap.png}
-\caption{Brecha de generalización media (train $-$ test) en accuracy y F1.}
-\label{fig:anx_cls_gap}
-\end{figure}
