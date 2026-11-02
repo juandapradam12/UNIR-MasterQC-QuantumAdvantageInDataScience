@@ -61,7 +61,14 @@ Se fijan dos familias con la misma lógica de comparación justa \citep{bowles20
 \subsection{Datasets}
 
 \paragraph{Iris.}
-Benchmark clásico de 150 muestras, 4 características continuas y 3 clases \citep{sklearnIris}. Se carga con \texttt{sklearn.datasets.load\_iris}. Con $d=4$ cabe en 4 qubits \textbf{sin PCA}.
+Benchmark clásico de 150 muestras, 4 características continuas y 3 clases \citep{sklearnIris}. Se carga con \texttt{sklearn.datasets.load\_iris}. Con $d=4$ cabe en 4 qubits \textbf{sin PCA}. La Figura~\ref{fig:iris_prelim} es el dato antes de cualquier clasificador: las cuatro variables proyectadas solo para verlas. Una clase queda separada; las otras dos se solapan.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{svm_iris_pca_scatter.png}
+\caption{Iris antes de los clasificadores. Proyección visual de las cuatro variables originales; el modelo no usa esta PCA. Círculos huecos: test del protocolo.}
+\label{fig:iris_prelim}
+\end{figure}
 
 \paragraph{Bars and Stripes (BS).}
 Patrones binarios $4\times 4$ del catálogo PennyLane (\texttt{bars-and-stripes}) \citep{pennylaneBarsAndStripes, pennylaneConventionalDatasets}. Es un dataset \emph{convencional} etiquetado para QML, no un ``quantum dataset'' de sistema \citep{pennylaneWhatIsQuantumDataset}. Tras aplanar, $d=16$; se comprime con PCA a 4. La Figura~\ref{fig:bs_samples} muestra el patrón antes de ese aplanado.
@@ -69,12 +76,33 @@ Patrones binarios $4\times 4$ del catálogo PennyLane (\texttt{bars-and-stripes}
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.86\textwidth]{svm_bs_samples.png}
-\caption{Muestras de Bars and Stripes. Cada panel es un patrón $4\times 4$; $y\in\{+1,-1\}$ es la clase del catálogo. El vector de entrada aplana el patrón ($d=16$) y la PCA lo reduce a 4 componentes.}
+\caption{Bars and Stripes antes de aplanar y antes de cualquier clasificador. Cada panel es un patrón $4\times 4$; $y\in\{+1,-1\}$ es la clase del catálogo.}
 \label{fig:bs_samples}
 \end{figure}
 
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{svm_bs_pca_scatter.png}
+\caption{Bars and Stripes tras la reducción a componentes y antes de cualquier clasificador. Las dos clases comparten el mismo plano. Círculos huecos: test.}
+\label{fig:bs_prelim}
+\end{figure}
+
 \paragraph{Ising (fases).}
-Datos PennyLane \texttt{qspin} / Ising \citep{pennylaneIsing}: amplitudes del ground state (parte real e imaginaria) de cadenas 1D. La etiqueta de fase se deriva del campo transversal, $y=\mathbf{1}[h>|J|]$; $h$ \textbf{no} entra como feature (evitar fuga de etiqueta). Tras el aplanado, $d>4$; se aplica PCA a 4. El split estratifica también por $h$ en QNN/VQC.
+Datos PennyLane \texttt{qspin} / Ising \citep{pennylaneIsing}: amplitudes del ground state (parte real e imaginaria) de cadenas 1D de cuatro espines (Figura~\ref{fig:ising_chain}). La etiqueta de fase se deriva del campo transversal, $y=\mathbf{1}[h>|J|]$; $h$ \textbf{no} entra como feature (evitar fuga de etiqueta). Tras el aplanado, $d>4$; se aplica PCA a 4. El split estratifica también por $h$ en QNN/VQC. La Figura~\ref{fig:ising_prelim} es esa nube todavía sin frontera de clasificador.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.78\textwidth]{svm_ising_chain.png}
+\caption{Sistema de Ising antes de extraer features: cadena 1D de cuatro espines, abierta o cerrada. Las variables del modelo son las amplitudes del estado fundamental, no este grafo.}
+\label{fig:ising_chain}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{svm_ising_pca_scatter.png}
+\caption{Ising antes de los clasificadores. Proyección de las amplitudes; las dos fases ocupan ramas distintas. Círculos huecos: test.}
+\label{fig:ising_prelim}
+\end{figure}
 
 \subsection{Preparación compartida}
 
@@ -145,25 +173,7 @@ La PCA, cuando existe, se aplica a clásicos y cuánticos por igual: se compara 
 \label{fig:prep_clasif}
 \end{figure}
 
-La Figura~\ref{fig:pca_scatter} proyecta ese $X$ sobre las dos primeras componentes. El clasificador, cuando $d>4$, recibe las cuatro; en Iris la proyección es solo visual.
-
-\begin{figure}[!htbp]
-\centering
-\begin{minipage}[t]{0.48\textwidth}
-  \centering
-  \includegraphics[width=\linewidth]{svm_iris_pca_scatter.png}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
-  \centering
-  \includegraphics[width=\linewidth]{svm_bs_pca_scatter.png}
-\end{minipage}\\[0.6em]
-\begin{minipage}[t]{0.48\textwidth}
-  \centering
-  \includegraphics[width=\linewidth]{svm_ising_pca_scatter.png}
-\end{minipage}
-\caption{Geometría tras la PCA del protocolo compartido (ajustada en train). Círculos huecos: test. Iris separa una clase del par solapado; Bars and Stripes mezcla las dos clases en el plano; Ising se organiza en dos ramas.}
-\label{fig:pca_scatter}
-\end{figure}
+Las Figuras~\ref{fig:iris_prelim}, \ref{fig:bs_prelim} y~\ref{fig:ising_prelim} son esa geometría antes de ajustar ningún modelo. En Iris la proyección es solo visual ($d=4$); en Bars and Stripes e Ising el clasificador recibe cuatro componentes. El patrón crudo de Bars and Stripes está en la Figura~\ref{fig:bs_samples}.
 
 \subsection{Representación en el espacio de Hilbert}
 
@@ -226,30 +236,33 @@ Latencia & Wall-clock de entrenamiento (\texttt{fit}) y de inferencia sobre el t
 \subsection{Problemas e instancias}
 
 \paragraph{TSP restringido.}
-Grafo completo pequeño sobre 5 nodos con distancias fijas; origen fijado. Óptimo por enumeración (fuerza bruta). Formulación QUBO reducida: variables binarias sobre rutas candidatas factibles (una sola familia de selección), compatible con SA/QAOA/VQE \citep{lucas2014}.
-
-\paragraph{Minimum Dominating Set (MDS).}
-Grafo social de 6 vértices y 6 aristas. Objetivo: mínimo conjunto dominante. ILP de cobertura con PuLP/CBC; QUBO para SA/QAOA/VQE.
-
-\paragraph{MaxCut (HamLib).}
-Instancia HamLib (\texttt{hamlib\_maxcut.json}: $n=6$, 12 aristas, corte óptimo 8, id \texttt{circ\_offsets-1-2}) \citep{sawaya2024hamlib, pennylaneHamlibMaxcut}. Circuito QAOA al estilo del demo PennyLane MaxCut \citep{pennylaneQaoaMaxcut, farhi2014}. Las tres instancias están en la Figura~\ref{fig:instancias_opt}.
+Grafo completo pequeño sobre 5 nodos con distancias fijas; origen fijado (Figura~\ref{fig:tsp_prelim}). Óptimo por enumeración (fuerza bruta). Formulación QUBO reducida: variables binarias sobre rutas candidatas factibles (una sola familia de selección), compatible con SA/QAOA/VQE \citep{lucas2014}.
 
 \begin{figure}[!htbp]
 \centering
-\begin{minipage}[t]{0.48\textwidth}
-  \centering
-  \includegraphics[width=\linewidth]{instance_tsp_graph.png}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
-  \centering
-  \includegraphics[width=\linewidth]{instance_mds_graph.png}
-\end{minipage}\\[0.6em]
-\begin{minipage}[t]{0.48\textwidth}
-  \centering
-  \includegraphics[width=\linewidth]{instance_maxcut_graph.png}
-\end{minipage}
-\caption{Instancias de optimización. TSP: 5 nodos y distancias fijas. MDS: 6 vértices y 6 aristas. MaxCut: $n=6$, 12 aristas, corte óptimo 8.}
-\label{fig:instancias_opt}
+\includegraphics[width=0.62\textwidth]{instance_tsp_graph.png}
+\caption{Instancia de TSP antes de cualquier solver. Cinco nodos y las distancias de las aristas.}
+\label{fig:tsp_prelim}
+\end{figure}
+
+\paragraph{Minimum Dominating Set (MDS).}
+Grafo social de 6 vértices y 6 aristas (Figura~\ref{fig:mds_prelim}). Objetivo: mínimo conjunto dominante. ILP de cobertura con PuLP/CBC; QUBO para SA/QAOA/VQE.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{instance_mds_graph.png}
+\caption{Instancia de MDS antes de cualquier solver. Seis vértices y seis aristas.}
+\label{fig:mds_prelim}
+\end{figure}
+
+\paragraph{MaxCut (HamLib).}
+Instancia HamLib (\texttt{hamlib\_maxcut.json}: $n=6$, 12 aristas, corte óptimo 8, id \texttt{circ\_offsets-1-2}; Figura~\ref{fig:maxcut_prelim}) \citep{sawaya2024hamlib, pennylaneHamlibMaxcut}. Circuito QAOA al estilo del demo PennyLane MaxCut \citep{pennylaneQaoaMaxcut, farhi2014}.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{instance_maxcut_graph.png}
+\caption{Instancia de MaxCut antes de cualquier solver. Seis vértices y doce aristas; el corte óptimo es 8.}
+\label{fig:maxcut_prelim}
 \end{figure}
 
 \subsection{Preparación: de problema a QUBO/Ising}
