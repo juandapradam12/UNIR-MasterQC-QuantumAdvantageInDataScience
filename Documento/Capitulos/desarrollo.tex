@@ -3,7 +3,7 @@
 \label{cap:metodologia}
 \label{cap:desarrollo}
 
-Este capítulo describe cómo se ejecutaron los experimentos del TFM: entorno software, diseño experimental, datasets, preparación, representación en el espacio de Hilbert (o QUBO/Ising), modelos/solvers, y el protocolo de medición de calidad y latencia. El código vive en \texttt{Notebooks/Classification/} y \texttt{Notebooks/Optimization/}; las métricas agregadas en \texttt{ResultsClassification/} y \texttt{ResultsOptimization/}; utilidades en \texttt{Notebooks/lib/} \citep{bowles2024}.
+Este capítulo describe cómo se ejecutaron los experimentos del TFM: entorno software, diseño experimental, datasets, preparación, representación en el espacio de Hilbert (o QUBO/Ising), modelos/solvers, y el protocolo de medición de calidad y latencia \citep{bowles2024}.
 
 \section{Entorno tecnológico}
 
@@ -15,8 +15,8 @@ Este capítulo describe cómo se ejecutaron los experimentos del TFM: entorno so
     \item \textbf{QML / circuitos:} PennyLane (\texttt{default.qubit}, \texttt{lightning.qubit}) \citep{pennylaneVariationalClassifier}; Qiskit y \texttt{qiskit-machine-learning} (kernel de fidelidad / ZZFeatureMap en QSVM).
     \item \textbf{Deep learning (QNN híbrida):} PyTorch (\texttt{TorchLayer} + cabeza lineal).
     \item \textbf{Optimización clásica:} PuLP~2.9 con CBC (ILP); NetworkX (grafos); annealing simulado propio sobre QUBO.
-    \item \textbf{Visualización:} matplotlib; figuras de storytelling en \texttt{Notebooks/lib/storytelling.py}.
-    \item \textbf{Dependencias fijadas:} \texttt{requirements.txt} en la raíz del repositorio (PennyLane~0.45, Qiskit~2.6, scikit-learn~1.9, XGBoost~3.1, PuLP~2.9, NetworkX~3.7, entre otras).
+    \item \textbf{Visualización:} matplotlib y utilidades propias de storytelling.
+    \item \textbf{Dependencias fijadas:} PennyLane~0.45, Qiskit~2.6, scikit-learn~1.9, XGBoost~3.1, PuLP~2.9, NetworkX~3.7, entre otras.
 \end{itemize}
 
 Todo el cómputo cuántico de este TFM es \textbf{simulación} de estado (sin hardware ruidoso) \citep{preskill2018}.
@@ -40,8 +40,7 @@ Se fijan dos familias con la misma lógica de comparación justa \citep{bowles20
   \node[draw=unirnavy, fill=unirazul!12, rounded corners, align=center, inner sep=6pt, right=1.1cm of b] (c)
     {Modelos / solvers\\[-1pt]\footnotesize C vs Q};
   \node[draw=unirnavy, fill=unirazul!12, rounded corners, align=center, inner sep=6pt, right=1.1cm of c] (d)
-    {Métricas\\[-1pt]\footnotesize calidad + tiempo\\[-1pt]\footnotesize \texttt{Results\_*}};
-  \draw[->, unirnavy] (a) -- (b);
+    {Métricas\\[-1pt]\footnotesize calidad + tiempo};  \draw[->, unirnavy] (a) -- (b);
   \draw[->, unirnavy] (b) -- (c);
   \draw[->, unirnavy] (c) -- (d);
 \end{tikzpicture}
@@ -133,15 +132,16 @@ La PCA, cuando existe, se aplica a clásicos y cuánticos por igual: se compara 
 
 \subsection{Representación en el espacio de Hilbert}
 
-El feature map es un mapeo $\phi\colon\mathcal{X}\to\mathcal{H}$ que toma los datos en su espacio original $\mathcal{X}\subseteq\mathbb{R}^{d}$ y los transforma a estados en el espacio de Hilbert $\mathcal{H}=\bigl(\mathbb{C}^{2}\bigr)^{\otimes n}\simeq\mathbb{C}^{2^{n}}$: $\mathbf{x}\mapsto\lvert\phi(\mathbf{x})\rangle$ \citep{lloyd2020, pennylaneGlossaryEmbedding, schuld2021}. Tras PCA (si $d>n$) y MinMax$[0,\pi]$, cada muestra $\mathbf{x}\in[0,\pi]^{n}$ se prepara con un circuito unitario $U_{\phi}(\mathbf{x})$ tal que $\lvert\phi(\mathbf{x})\rangle=U_{\phi}(\mathbf{x})\lvert 0\rangle^{\otimes n}$. Sin ese embedding el dato clásico no es un estado cuántico; la utilidad del mapa depende de la alineación entre la geometría inducida por $\phi$ y la estructura del generador de etiquetas \citep{huang2021, pennylaneEmbedBlog, parzygnat2025}. Con presupuesto $n=4$, $\mathcal{H}\simeq\mathbb{C}^{16}$. En el corpus se emplean tres embeddings:
+El feature map es un mapeo $\phi\colon\mathcal{X}\to\mathcal{H}$ que toma los datos en su espacio original $\mathcal{X}\subseteq\mathbb{R}^{d}$ y los transforma a estados en el espacio de Hilbert $\mathcal{H}=\bigl(\mathbb{C}^{2}\bigr)^{\otimes n}\simeq\mathbb{C}^{2^{n}}$: $\mathbf{x}\mapsto\lvert\phi(\mathbf{x})\rangle$ \citep{lloyd2020, pennylaneGlossaryEmbedding, schuld2021, parateEncodingGuide}. Tras PCA (si $d>n$) y, cuando el mapa es angular o ZZ, MinMax$[0,\pi]$, cada muestra se prepara con un circuito unitario $U_{\phi}(\mathbf{x})$ tal que $\lvert\phi(\mathbf{x})\rangle=U_{\phi}(\mathbf{x})\lvert 0\rangle^{\otimes n}$. Sin ese embedding el dato clásico no es un estado cuántico; la utilidad de $\phi$ depende de la alineación entre la geometría inducida en $\mathcal{H}$ y la estructura del generador de etiquetas \citep{huang2021, pennylaneEmbedBlog, parzygnat2025}. Con presupuesto $n=4$, $\mathcal{H}\simeq\mathbb{C}^{16}$. Se consideran cuatro embeddings:
 
 \begin{itemize}
+    \item \textbf{Basis encoding.} Codifica cadenas binarias (o categorías discretizadas) en la base computacional: para $\mathbf{b}\in\{0,1\}^{n}$, $\lvert\phi(\mathbf{b})\rangle=\lvert b_1\cdots b_n\rangle=\bigotimes_{i}X^{b_i}\lvert 0\rangle$ \citep{parateEncodingGuide, pennylaneGlossaryEmbedding, pennylaneEmbedBlog}. Los estados son ortogonales; una medida en $Z$ recupera $\mathbf{b}$ con certeza. Escala como $\lceil\log_2 C\rceil$ qubits para $C$ categorías, pero no es natural para features continuas sin cuantización previa.
     \item \textbf{Mapa ZZ (\texttt{ZZFeatureMap}).} Preparación producto $H^{\otimes n}$ seguida de rotaciones $R_Z(x_i)$ y puertas de fase entrelazadas $e^{-i\,\theta_{ij}Z_iZ_j}$ con $\theta_{ij}\propto(\pi-x_i)(\pi-x_j)$ (\texttt{entanglement=full}, alineado con el mapa de Qiskit) \citep{havlicek2019}. El producto interno en $\mathcal{H}$ define el kernel de fidelidad $K(\mathbf{x},\mathbf{x}')=\lvert\langle\phi(\mathbf{x})\vert\phi(\mathbf{x}')\rangle\rvert^{2}$.
-    \item \textbf{Angle embedding.} \texttt{AngleEmbedding} aplica rotaciones locales $R_{\sigma}(x_i)$ ($\sigma\in\{X,Y,Z\}$) sobre el qubit $i$, de modo que $\lvert\phi(\mathbf{x})\rangle=\bigotimes_{i=1}^{n}R_{\sigma}(x_i)\lvert 0\rangle$ \citep{pennylaneGlossaryEmbedding, pennylaneVariationalClassifier}. Codificación angular separable: no introduce entrelazamiento en la preparación del estado.
+    \item \textbf{Angle embedding.} \texttt{AngleEmbedding} aplica rotaciones locales $R_{\sigma}(x_i)$ ($\sigma\in\{X,Y,Z\}$) sobre el qubit $i$, de modo que $\lvert\phi(\mathbf{x})\rangle=\bigotimes_{i=1}^{n}R_{\sigma}(x_i)\lvert 0\rangle$ \citep{pennylaneGlossaryEmbedding, pennylaneVariationalClassifier, parateEncodingGuide}. Codificación angular separable: no introduce entrelazamiento en la preparación del estado.
     \item \textbf{Preparación $R_Y(x_i)$.} Caso particular de angle embedding con $\sigma=Y$: $U_{\phi}(\mathbf{x})=\bigotimes_{i}R_Y(x_i)$, un parámetro de rotación por dimensión de feature \citep{pennylaneVariationalClassifier, cerezo2021}.
 \end{itemize}
 
-Las capas parametrizadas posteriores (\texttt{BasicEntanglerLayers}, \texttt{Rot}+CNOT), el estimador de $K$ y la cabeza de clasificación no forman parte de $\phi$: pertenecen al modelo y se detallan en la sección siguiente. En principio el mismo $\mathbf{x}$ admite cualquiera de los tres $U_{\phi}$; en los notebooks cada pipeline fija uno.
+Las capas parametrizadas posteriores (\texttt{BasicEntanglerLayers}, \texttt{Rot}+CNOT), el estimador de $K$ y la cabeza de clasificación no forman parte de $\phi$: pertenecen al modelo. En los experimentos de clasificación, tras el protocolo compartido (PCA + MinMax$[0,\pi]$), se emplean mapa ZZ, angle embedding y $R_Y$; el basis encoding queda como alternativa para datos ya binarios o categóricos (p.~ej.\ Bars and Stripes antes de la compresión) \citep{parateEncodingGuide}.
 
 \subsection{Modelos}
 
@@ -161,7 +161,7 @@ Cuántica & VQC & prep.\ $R_Y(x_i)$ + capas \texttt{Rot}+CNOT (Nesterov) \\
 \end{tabular}
 \end{center}
 
-Cada dataset tiene un notebook por modelo bajo \texttt{IrisClassification/}, \texttt{BSClassification/} e \texttt{IsingClassification/}. El mapa (datos$\to$Hilbert) queda fijado por el notebook; lo que diferencia a QSVM, QNN y VQC es cómo se \emph{usa} ese estado (kernel vs.\ circuito variacional + lectura $\langle Z\rangle$).
+Los seis clasificadores se evalúan sobre las mismas particiones y el mismo $\mathbf{x}$ post-preproceso. La rama clásica opera directamente en $\mathbb{R}^{n}$. En la rama cuántica, cada modelo fija un $U_{\phi}$ y una regla de decisión sobre $\lvert\phi(\mathbf{x})\rangle$: el QSVM estima la matriz Gram de fidelidad $K(\mathbf{x},\mathbf{x}')=\lvert\langle\phi(\mathbf{x})\vert\phi(\mathbf{x}')\rangle\rvert^{2}$ y la entrega a un SVM con kernel precomputado; la QNN y el VQC componen $U_{\phi}$ con un ansatz variacional y clasifican a partir de valores esperados $\langle Z_i\rangle$ (con cabeza lineal entrenable en el caso híbrido QNN) \citep{havlicek2019, pennylaneVariationalClassifier, cerezo2021}. Así, $\phi$ define la representación; el modelo define cómo se lee esa representación.
 
 \subsection{Métricas de clasificación y latencia}
 
@@ -169,11 +169,11 @@ Tras el entrenamiento se registran en test (y train, para gap):
 
 \begin{itemize}
     \item Calidad: accuracy, precision, recall, F1 (macro), AUC cuando aplica.
-    \item Latencia: \texttt{train\_time\_s} (wall-clock de \texttt{fit}/entrenamiento) e \texttt{inference\_time\_s} (predicción sobre el test).
+    \item Latencia: tiempo de entrenamiento (wall-clock de \texttt{fit}) y de inferencia sobre el conjunto de test.
     \item Gap de generalización: diferencia Acc train $-$ Acc test.
 \end{itemize}
 
-Los JSON por modelo se agregan en \texttt{ResultsClassification/metrics/*.csv} y se visualizan con \texttt{Results\_*.ipynb} / \texttt{storytelling.py} (rankings F1, clásico vs cuántico, performance vs coste).
+Las métricas por modelo se agregan en tablas CSV y se visualizan en series de comparación (rankings F1, clásico vs cuántico, calidad vs coste temporal).
 
 \section{Optimización}
 
@@ -228,18 +228,18 @@ Cuánt.-insp. & VQE & Ansatz + energía del Ising \citep{peruzzo2014} \\
 \end{tabular}
 \end{center}
 
-QAOA/VQE se ejecutan en simulación (\texttt{default.qubit}); se reportan varias semillas cuando el notebook lo define.
+QAOA/VQE se ejecutan en simulación de estado (\texttt{default.qubit}); se reportan varias semillas cuando el protocolo lo define.
 
 \subsection{Métricas de optimización y latencia}
 
 \begin{itemize}
     \item \textbf{Coste / corte} medio y mejor.
     \item \textbf{Gap} absoluto y relativo al óptimo conocido.
-    \item \textbf{Success rate:} fracción de ejecuciones que alcanzan el óptimo (criterio documentado por notebook).
+    \item \textbf{Success rate:} fracción de ejecuciones que alcanzan el óptimo (criterio fijado por problema).
     \item \textbf{Tiempo medio} wall-clock y, cuando aplica, evaluaciones de energía.
 \end{itemize}
 
-Agregación en \texttt{ResultsOptimization/metrics/} (\texttt{tsp\_*}, \texttt{mds\_*}, \texttt{maxcut\_*}, resúmenes cruzados) y figuras gap-vs-runtime, success-vs-runtime, heatmaps \citep{lubinski2024}.
+Las métricas se agregan por problema (TSP, MDS, MaxCut) y se visualizan en curvas gap--runtime, success--runtime y heatmaps \citep{lubinski2024}.
 
 \section{Comparación clásico vs cuántico}
 
@@ -252,15 +252,15 @@ La comparación no es ``el mejor cuántico contra un clásico débil'', sino:
     \item Lectura conjunta calidad--coste: un empate en Acc/gap con órdenes de magnitud más de tiempo no se interpreta como ventaja \citep{bowles2024, yu2026}.
 \end{enumerate}
 
-Los notebooks \texttt{Results\_*} materializan esa lectura con series storytelling (clásico vs cuántico, rankings, performance vs coste).
+Esa lectura se materializa en series de storytelling (clásico vs cuántico, rankings, calidad vs coste temporal).
 
 \section{Reproducibilidad}
 
 \begin{itemize}
     \item Semillas fijadas en splits y, cuando aplica, en solvers.
-    \item Rutas de métricas vía \texttt{case\_paths.resolve\_metrics\_dir} (marcadores \texttt{METRICS\_PATH\_OK}).
-    \item CSV/JSON versionados bajo \texttt{Results*/metrics/}; figuras bajo \texttt{*/figures/}.
-    \item Instalación: \texttt{pip install -r requirements.txt}.
+    \item Resolución uniforme del directorio de métricas por caso experimental.
+    \item CSV/JSON y figuras versionados junto al código del experimento.
+    \item Dependencias fijadas en \texttt{requirements.txt}.
 \end{itemize}
 
 \section{Limitaciones del diseño}
