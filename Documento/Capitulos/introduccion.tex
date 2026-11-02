@@ -1,7 +1,7 @@
 % !TEX root = ../main.tex
-\chapter{Introducción}
+\chapter{Introducción}\label{cap:introduccion}
 
-La computación cuántica y la ciencia de datos convergen en aprendizaje automático cuántico (QML) y optimización cuántico-inspirada. En la era NISQ, la ventaja práctica frente a métodos clásicos sigue sin estar demostrada de forma sistemática \citep{preskill2018, biamonte2017}. Los algoritmos variacionales (QAOA, VQE, VQC) y los kernels cuánticos son el enfoque habitual en hardware intermedio \citep{farhi2014, cerezo2021, havlicek2019}; en demos pequeñas y con protocolo justo, los baselines clásicos suelen igualar o ganar \citep{bowles2024, yu2026}.
+La computación cuántica y la ciencia de datos convergen en aprendizaje automático cuántico (QML) y optimización cuántico-inspirada. En la era NISQ, la ventaja práctica frente a métodos clásicos sigue sin estar demostrada de forma sistemática \citep{preskill2018, biamonte2017}. Los algoritmos variacionales (QAOA, VQE, VQC) y los kernels cuánticos son el enfoque habitual en hardware intermedio \citep{farhi2014, cerezo2021, havlicek2019}; en demos pequeñas y con protocolo justo, los baselines clásicos suelen igualar o ganar \citep{bowles2024, yu2026, githubZ537Qml}. El interés estratégico por la tecnología, visible en su consideración como asunto de seguridad nacional \citep{qzFbi}, hace más necesario separar lo medido de lo prometido.
 
 Este TFM hace una comparación reproducible en \textbf{simulación clásica}: tres tareas de clasificación y tres de optimización combinatoria, con el mismo preproceso y con métricas de calidad y de tiempo. El marco usa tres ejes: \emph{qué} (clasificar), \emph{cómo} (optimizar) y \emph{representación} (feature map / QUBO--Ising) \citep{lloyd2020, pennylaneEmbedBlog, parzygnat2025}.
 
@@ -26,13 +26,12 @@ Iris y Bars and Stripes son datasets convencionales para QML; Ising es dato de s
 \section{Estructura del trabajo}
 
 \begin{itemize}
-    \item \textbf{Capítulo~2 -- Contexto:} NISQ, QML, QAOA/VQE y el marco qué/cómo/representación.
-    \item \textbf{Capítulo~3 -- Objetivos:} objetivo general y específicos del estudio actual.
-    \item \textbf{Capítulo~4 -- Metodología:} pipelines en \texttt{Notebooks/Classification/} y \texttt{Notebooks/Optimization/}.
-    \item \textbf{Capítulo~5 -- Evaluación:} Acc/F1, gap/éxito y tiempos (\texttt{Results*/metrics}).
-    \item \textbf{Capítulo~6 -- Representación:} contribución conceptual (el puente dato/problema $\mapsto$ estado/QUBO).
-    \item \textbf{Capítulo~7 -- Conclusiones.}
-    \item \textbf{Capítulo~8 -- Trabajo futuro.}
+    \item \textbf{Capítulo~\ref{cap:contexto} -- Contexto y estado de la técnica:} era NISQ, QML, QAOA/VQE y limitaciones de los trabajos previos.
+    \item \textbf{Capítulo~\ref{cap:objetivos} -- Objetivos:} objetivo general y objetivos específicos.
+    \item \textbf{Capítulo~\ref{cap:metodologia} -- Metodología:} entorno, datasets e instancias, representación (feature maps y QUBO/Ising), modelos, solvers y métricas.
+    \item \textbf{Capítulo~\ref{cap:evaluacion} -- Resultados y análisis:} resultados por familia, dataset e implementación, y discusión centrada en la representación.
+    \item \textbf{Capítulo~\ref{cap:conclusiones} -- Conclusiones:} respuesta a la pregunta y cumplimiento de objetivos.
+    \item \textbf{Capítulo~\ref{cap:futuro} -- Trabajo futuro:} líneas que extienden el protocolo.
 \end{itemize}
 
 \begin{figure}[!htbp]
@@ -45,30 +44,28 @@ Iris y Bars and Stripes son datasets convencionales para QML; Ising es dato de s
                    inner sep=8pt, very thick},
     arr/.style={->, thick, gray!60}]
 
-  \node[capnodo, draw=blue!55!black, fill=blue!8]  (c1) at (0,    0) {\textbf{Cap. 1}\\\footnotesize Introducción};
-  \node[capnodo, draw=blue!55!black, fill=blue!8]  (c2) at (0,  -1.6) {\textbf{Cap. 2}\\\footnotesize Contexto};
-  \node[capnodo, draw=blue!55!black, fill=blue!8]  (c3) at (0,  -3.2) {\textbf{Cap. 3}\\\footnotesize Objetivos};
+  \node[capnodo, draw=blue!55!black, fill=blue!8]  (c1) at (0,    0) {\textbf{Cap.~\ref*{cap:introduccion}}\\\footnotesize Introducción};
+  \node[capnodo, draw=blue!55!black, fill=blue!8]  (c2) at (0,  -1.6) {\textbf{Cap.~\ref*{cap:contexto}}\\\footnotesize Contexto};
+  \node[capnodo, draw=blue!55!black, fill=blue!8]  (c3) at (0,  -3.2) {\textbf{Cap.~\ref*{cap:objetivos}}\\\footnotesize Objetivos};
 
-  \node[capnodo, draw=orange!60!black, fill=orange!7] (c4) at (5.4, -1.6) {\textbf{Cap. 4}\\\footnotesize Metodología};
-  \node[capnodo, draw=orange!60!black, fill=orange!7] (c5) at (5.4, -3.2) {\textbf{Cap. 5}\\\footnotesize Evaluación};
+  \node[capnodo, draw=orange!60!black, fill=orange!7] (c4) at (5.4, -1.6) {\textbf{Cap.~\ref*{cap:metodologia}}\\\footnotesize Metodología};
+  \node[capnodo, draw=orange!60!black, fill=orange!7] (c5) at (5.4, -3.2) {\textbf{Cap.~\ref*{cap:evaluacion}}\\\footnotesize Resultados y análisis};
 
-  \node[capnodo, draw=violet!60!black, fill=violet!7] (c6) at (10.8, -1.0) {\textbf{Cap. 6}\\\footnotesize Representación};
-  \node[capnodo, draw=violet!60!black, fill=violet!7] (c7) at (10.8, -2.6) {\textbf{Cap. 7}\\\footnotesize Conclusiones};
-  \node[capnodo, draw=violet!60!black, fill=violet!7] (c8) at (10.8, -4.2) {\textbf{Cap. 8}\\\footnotesize Trabajo futuro};
+  \node[capnodo, draw=violet!60!black, fill=violet!7] (c7) at (10.8, -1.6) {\textbf{Cap.~\ref*{cap:conclusiones}}\\\footnotesize Conclusiones};
+  \node[capnodo, draw=violet!60!black, fill=violet!7] (c8) at (10.8, -3.2) {\textbf{Cap.~\ref*{cap:futuro}}\\\footnotesize Trabajo futuro};
 
   \node[bloque, draw=blue!40, fit=(c1)(c2)(c3),
         label={[blue!60!black, font=\footnotesize\bfseries]above:Marco}] {};
   \node[bloque, draw=orange!45, fit=(c4)(c5),
         label={[orange!65!black, font=\footnotesize\bfseries]above:Experimentos}] {};
-  \node[bloque, draw=violet!45, fit=(c6)(c7)(c8),
+  \node[bloque, draw=violet!45, fit=(c7)(c8),
         label={[violet!60!black, font=\footnotesize\bfseries]above:Cierre}] {};
 
   \draw[arr] (c3.east) -- ++(0.65,0) |- (c4.west);
   \draw[arr] (c4.south) -- (c5.north);
-  \draw[arr] (c5.east) -- ++(0.65,0) |- (c6.west);
-  \draw[arr] (c6.south) -- (c7.north);
+  \draw[arr] (c5.east) -- ++(0.65,0) |- (c7.west);
   \draw[arr] (c7.south) -- (c8.north);
 \end{tikzpicture}
-\caption{Estructura del TFM alineada al corpus actual (clasificación + optimización + representación).}
+\caption{Estructura del TFM.}
 \label{fig:estructura_tfm}
 \end{figure}

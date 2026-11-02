@@ -17,8 +17,8 @@ Este capítulo describe cómo se ejecutaron los experimentos del TFM: entorno so
 Lenguaje & Python & 3 \\
 Notebooks & Jupyter (\texttt{ipykernel}, \texttt{nbformat}) & --- \\
 Numérico / datos & NumPy, pandas, h5py & --- \\
-ML clásico & scikit-learn (SVM, Random Forest, PCA, métricas, splits); XGBoost & 1.9; 3.1 \\
-QML / circuitos & PennyLane (\texttt{default.qubit}, \texttt{lightning.qubit}) \citep{pennylaneVariationalClassifier}; Qiskit y \texttt{qiskit-machine-learning} (kernel de fidelidad) & 0.45; 2.6 \\
+ML clásico & scikit-learn (SVM, Random Forest, PCA, métricas, splits); XGBoost \citep{chen2016} & 1.9; 3.1 \\
+QML / circuitos & PennyLane (\texttt{default.qubit}, \texttt{lightning.qubit}) \citep{pennylaneVariationalClassifier}; Qiskit y \texttt{qiskit-machine-learning} (kernel de fidelidad) \citep{Qiskit} & 0.45; 2.6 \\
 QNN híbrida & PyTorch (\texttt{TorchLayer} + cabeza lineal) & --- \\
 Optimización & PuLP + CBC (ILP); NetworkX (grafos); annealing simulado propio sobre QUBO & 2.9; 3.7 \\
 Visualización & matplotlib y utilidades propias de storytelling & --- \\
@@ -52,7 +52,7 @@ Representación & ¿En qué espacio se resuelve? & Feature map; QUBO--Ising \\
 
 En clasificación, la representación es el feature map $\mathbf{x}\mapsto\lvert\phi(\mathbf{x})\rangle$ (Sección~\ref{sec:hilbert}). En optimización, es la reformulación del problema combinatorio como QUBO o Hamiltoniano de Ising (Sección~\ref{sec:qubo}) \citep{lucas2014}. Otras familias, como regresión, clustering, series temporales, detección de anomalías, aprendizaje por refuerzo, modelos generativos o simulación, admiten el mismo planteamiento, pero quedan fuera del diseño experimental.
 
-Sobre esos ejes se fijan dos familias con la misma lógica de comparación justa \citep{bowles2024}:
+Sobre esos ejes se fijan dos familias con la misma lógica de comparación justa \citep{bowles2024, qmlBenchmarks}:
 
 \begin{enumerate}
     \item \textbf{Clasificación:} mismos splits, mismo escalado y, cuando $d>4$, misma PCA a 4 componentes para \emph{todos} los modelos (clásicos y cuánticos).
@@ -64,11 +64,11 @@ Sobre esos ejes se fijan dos familias con la misma lógica de comparación justa
 \begin{tikzpicture}[font=\small, thick, node distance=0.55cm]
   \node[draw=unirnavy, fill=unirazul!12, rounded corners, align=center, inner sep=6pt] (a)
     {Datasets\\[-1pt]\footnotesize Iris / BS / Ising\\[-1pt]\footnotesize TSP / MDS / MaxCut};
-  \node[draw=unirnavy, fill=unirazul!12, rounded corners, align=center, inner sep=6pt, right=1.1cm of a] (b)
+  \node[draw=unirnavy, fill=unirazul!12, rounded corners, align=center, inner sep=6pt, right=0.6cm of a] (b)
     {Preparación\\[-1pt]\footnotesize split, PCA, MinMax\\[-1pt]\footnotesize o QUBO/Ising};
-  \node[draw=unirnavy, fill=unirazul!12, rounded corners, align=center, inner sep=6pt, right=1.1cm of b] (c)
+  \node[draw=unirnavy, fill=unirazul!12, rounded corners, align=center, inner sep=6pt, right=0.6cm of b] (c)
     {Modelos / solvers\\[-1pt]\footnotesize C vs Q};
-  \node[draw=unirnavy, fill=unirazul!12, rounded corners, align=center, inner sep=6pt, right=1.1cm of c] (d)
+  \node[draw=unirnavy, fill=unirazul!12, rounded corners, align=center, inner sep=6pt, right=0.6cm of c] (d)
     {Métricas\\[-1pt]\footnotesize calidad + tiempo};  \draw[->, unirnavy] (a) -- (b);
   \draw[->, unirnavy] (b) -- (c);
   \draw[->, unirnavy] (c) -- (d);
@@ -208,18 +208,18 @@ Las capas parametrizadas posteriores (\texttt{BasicEntanglerLayers}, \texttt{Rot
 
 \begin{center}
 \small
-\begin{tabular}{@{}lll@{}}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}X@{}}
 \toprule
 \textbf{Familia} & \textbf{Modelo} & \textbf{Implementación} \\
 \midrule
-Clásica & SVM (RBF) & \texttt{sklearn.svm.SVC} \\
-Clásica & Random Forest & \texttt{sklearn.ensemble} \\
-Clásica & XGBoost & \texttt{XGBClassifier} \\
-Cuántica & QSVM & mapa ZZ + kernel fidelidad + \texttt{SVC} \\
-Cuántica & QNN & angle embedding + \texttt{BasicEntanglerLayers} + cabeza PyTorch \\
-Cuántica & VQC & prep.\ $R_Y(x_i)$ + capas \texttt{Rot}+CNOT (Nesterov) \\
+Clásica & SVM (RBF) \citep{cortes1995} & \texttt{sklearn.svm.SVC} \\
+Clásica & Random Forest \citep{breiman2001} & \texttt{sklearn.ensemble} \\
+Clásica & XGBoost \citep{chen2016} & \texttt{XGBClassifier} \\
+Cuántica & QSVM \citep{havlicek2019} & mapa ZZ + kernel fidelidad + \texttt{SVC} \\
+Cuántica & QNN \citep{pennylaneTransferLearning} & angle embedding + \texttt{BasicEntanglerLayers} + cabeza PyTorch \\
+Cuántica & VQC \citep{pennylaneVariationalClassifier} & prep.\ $R_Y(x_i)$ + capas \texttt{Rot}+CNOT (Nesterov) \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
 Los seis clasificadores se evalúan sobre las mismas particiones y el mismo $\mathbf{x}$ post-preproceso. La rama clásica opera directamente en $\mathbb{R}^{n}$. En la rama cuántica, cada modelo fija un $U_{\phi}$ y una regla de decisión sobre $\lvert\phi(\mathbf{x})\rangle$: el QSVM estima la matriz Gram de fidelidad $K(\mathbf{x},\mathbf{x}')=\lvert\langle\phi(\mathbf{x})\vert\phi(\mathbf{x}')\rangle\rvert^{2}$ y la entrega a un SVM con kernel precomputado; la QNN y el VQC componen $U_{\phi}$ con un ansatz variacional y clasifican a partir de valores esperados $\langle Z_i\rangle$ (con cabeza lineal entrenable en el caso híbrido QNN) \citep{havlicek2019, pennylaneVariationalClassifier, cerezo2021}. Así, $\phi$ define la representación; el modelo define cómo se lee esa representación.
@@ -252,7 +252,7 @@ Latencia & Wall-clock de entrenamiento (\texttt{fit}) y de inferencia sobre el t
 \subsection{Problemas e instancias}
 
 \paragraph{TSP restringido.}
-Grafo completo pequeño sobre 5 nodos con distancias fijas; origen fijado (Figura~\ref{fig:tsp_prelim}). Óptimo por enumeración (fuerza bruta). Formulación QUBO reducida: variables binarias sobre rutas candidatas factibles (una sola familia de selección), compatible con SA/QAOA/VQE \citep{lucas2014}.
+TSP y MDS son NP-difíciles en su versión general \citep{garey1979}; aquí se usan instancias pequeñas con óptimo verificable. Grafo completo pequeño sobre 5 nodos con distancias fijas; origen fijado (Figura~\ref{fig:tsp_prelim}). Óptimo por enumeración (fuerza bruta). Formulación QUBO reducida: variables binarias sobre rutas candidatas factibles (una sola familia de selección), compatible con SA/QAOA/VQE \citep{lucas2014}.
 
 \begin{figure}[!htbp]
 \centering
@@ -309,7 +309,7 @@ La calidad de la representación importa tanto como el solver: un QUBO mal penal
 
 \begin{center}
 \small
-\begin{tabular}{@{}lll@{}}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}p{3.4cm}>{\raggedright\arraybackslash}X@{}}
 \toprule
 \textbf{Familia} & \textbf{Solver} & \textbf{Notas} \\
 \midrule
@@ -320,7 +320,7 @@ Clásica & QUBO + SA & Annealing simulado propio \\
 Cuánt.-insp. & QAOA & PennyLane, capas $U_C U_B$ \citep{farhi2014, pennylaneQaoaIntro} \\
 Cuánt.-insp. & VQE & Ansatz + energía del Ising \citep{peruzzo2014} \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
 QAOA/VQE se ejecutan en simulación de estado (\texttt{default.qubit}); se reportan varias semillas cuando el protocolo lo define.
