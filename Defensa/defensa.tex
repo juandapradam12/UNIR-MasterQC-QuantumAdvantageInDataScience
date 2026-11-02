@@ -378,17 +378,17 @@ Evaluar de forma empírica si los algoritmos cuánticos NISQ ofrecen ventaja med
 \end{columns}
 \end{frame}
 
-\begin{frame}{Ising: el mapa comparte estructura con el dato}
+\begin{frame}{Ising: el dataset que todos resuelven}
 \begin{columns}[c]
 \begin{column}{0.44\textwidth}\centering
 \fig{0.48\textheight}{svm_ising_chain.png}\\[0.4em]
-{\small Hamiltoniano con términos $Z_iZ_{i+1}$,\\ los mismos que entrelaza el mapa ZZ}
+{\small Los seis modelos superan 0.95 de accuracy.\\ El mapa ZZ actúa sobre la PCA\\ de las amplitudes, no sobre los espines}
 \end{column}
 \begin{column}{0.54\textwidth}\centering
 \fig{0.68\textheight}{ising_f1_ranking.png}
 \end{column}
 \end{columns}
-\mensaje{QSVM = SVM: F1 0.985. Única paridad cuántica del corpus}
+\mensaje{QSVM = SVM: F1 0.985. Única paridad cuántica en clasificación}
 \end{frame}
 
 \begin{frame}{El coste de simular el circuito}
@@ -403,7 +403,7 @@ Evaluar de forma empírica si los algoritmos cuánticos NISQ ofrecen ventaja med
 \mensaje{SVM: mejor F1 en milisegundos. VQC: decenas de segundos sin mejorar la calidad}
 \end{frame}
 
-\begin{frame}{Optimización: todos llegan al óptimo, a distinto coste}
+\begin{frame}{Optimización: casi todos llegan al óptimo, a distinto coste}
 \begin{columns}[c]
 \begin{column}{0.55\textwidth}\centering
 \fig{0.72\textheight}{opt_success_vs_runtime_mean.png}
@@ -439,7 +439,7 @@ VQE & 1 & 1 & 1 \\
 \mensaje{Mismo óptimo que la enumeración: 0.6--2 s de simulación frente a $<1$ ms}
 \end{frame}
 
-\begin{frame}{MDS: óptimo único, el ansatz puede no encontrarlo}
+\begin{frame}{MDS: fallan el greedy y una semilla de QAOA}
 \begin{columns}[T]
 \begin{column}{0.48\textwidth}\centering
 \fig{0.60\textheight}{greedy_mds_dominating_set.png}\pie{Greedy: tamaño 3, no óptimo}
@@ -451,20 +451,20 @@ VQE & 1 & 1 & 1 \\
 \mensaje{La semilla fallida devuelve un conjunto infactible; SA resuelve el mismo QUBO en 7 ms}
 \end{frame}
 
-\begin{frame}{Discusión: la representación como eje}
+\begin{frame}{Discusión: dónde hay paridad y dónde no}
 \centering
 \begin{tikzpicture}[font=\small]
-  \node[head=unirazul] (a) at (0,0) {Representación alineada};
-  \node[head=unirgris] (b) at (6.6,0) {Representación no alineada};
+  \node[head=unirazul] (a) at (0,0) {Paridad con el clásico};
+  \node[head=unirgris] (b) at (6.6,0) {Déficit o fallo};
   \node[cuerpo=unirazul, text width=5.6cm, minimum height=3.2cm, below=0.1cm of a, align=left] {%
     \begin{itemize}\setlength{\itemsep}{4pt}
-      \item Ising + mapa ZZ: paridad con el SVM
-      \item MaxCut: $H_C$ es el corte, sin penalizaciones
+      \item Ising: QSVM = SVM, con todos los modelos por encima de 0.95
+      \item TSP y MaxCut: QAOA y VQE reproducen $C^\star$, más lentos
     \end{itemize}};
   \node[cuerpo=unirgris, text width=5.6cm, minimum height=3.2cm, below=0.1cm of b, align=left] {%
     \begin{itemize}\setlength{\itemsep}{4pt}
-      \item Iris y BS + mapa ZZ: frontera fragmentada
-      \item MDS: óptimo único que el ansatz no siempre alcanza
+      \item Iris y BS: el QSVM fragmenta la frontera (F1 0.730 y 0.758)
+      \item MDS: una semilla de QAOA termina en un conjunto infactible
     \end{itemize}};
 \end{tikzpicture}
 \mensaje{Con $n\le6$ qubits se mide cercanía al clásico, no ventaja asintótica \citep{preskill2018, thanasilp2022}}
@@ -480,13 +480,13 @@ VQE & 1 & 1 & 1 \\
   \node[numsq=unirazul] (c1) at (0,0) {1};
   \node[txt, right=0.2cm of c1] {\textbf{Sin ventaja en clasificación.} SVM-RBF mejor o empatado en los tres datasets};
   \node[numsq=unirnavy] (c2) at (6.7,0) {2};
-  \node[txt, right=0.2cm of c2] {\textbf{Decide el feature map.} ZZ solo empata donde comparte estructura con el dato};
+  \node[txt, right=0.2cm of c2] {\textbf{ZZ solo empata en Ising.} El dataset que todos resuelven por encima de 0.95};
   \node[numsq=unirnavy] (c3) at (0,-1.9) {3};
   \node[txt, right=0.2cm of c3] {\textbf{Optimización sin mejora.} QAOA y VQE reproducen $C^\star$ con más coste};
   \node[numsq=unirazul] (c4) at (6.7,-1.9) {4};
   \node[txt, right=0.2cm of c4] {\textbf{Régimen acotado.} 4--6 qubits simulados: cercanía, no ventaja};
 \end{tikzpicture}
-\mensaje{La paridad solo aparece con una representación alineada con la estructura del problema}
+\mensaje{La paridad de calidad, cuando aparece, llega con un coste temporal mayor}
 \end{frame}
 
 % =====================================================================
@@ -496,7 +496,7 @@ VQE & 1 & 1 & 1 \\
 \centering
 \begin{tikzpicture}[font=\small]
   \node[tile=unirazul] at (0,0)      {\textbf{Escala}\\ \scriptsize cadenas de Ising de 6--12 espines};
-  \node[tile=unirnavy] at (4.1,0)    {\textbf{QUBO mayores}\\ \scriptsize óptimo único; QAOA con $p$ creciente frente a SA};
+  \node[tile=unirnavy] at (4.1,0)    {\textbf{QUBO mayores}\\ \scriptsize probabilidad del óptimo; QAOA con $p$ creciente frente a SA};
   \node[tile=unirazul] at (8.2,0)    {\textbf{Hardware real}\\ \scriptsize shots y mitigación de errores};
   \node[tile=unirnavy] at (0,-1.9)   {\textbf{Representación}\\ \scriptsize basis encoding y embeddings entrenables};
   \node[tile=unirazul] at (4.1,-1.9) {\textbf{Entrenabilidad}\\ \scriptsize barren plateaus e hiperparámetros};
