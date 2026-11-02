@@ -73,7 +73,7 @@ El QSVM usa el mapa ZZ de Qiskit (dos repeticiones, entrelazamiento completo), q
 ```math
 U_\phi(\mathbf{x}) = \Big[\,U_Z(\mathbf{x})\,H^{\otimes 4}\Big]^2,
 \qquad
-U_Z(\mathbf{x}) = \exp\!\Big(-i\sum_{i} x_i Z_i \;-\; i\sum_{i<j}(\pi-x_i)(\pi-x_j)\,Z_iZ_j\Big),
+U_Z(\mathbf{x}) = \exp\!\Big(-i\sum_{i} x_i Z_i \;-\; i\sum_{i \lt j}(\pi-x_i)(\pi-x_j)\,Z_iZ_j\Big),
 ```
 
 y clasifica con un SVM sobre el kernel de fidelidad:
@@ -98,17 +98,17 @@ Las features son las $2^4$ amplitudes complejas del estado (32 valores reales), 
 
 ### Optimización: del problema al Hamiltoniano
 
-Los tres problemas se escriben como minimización de una forma cuadrática binaria. Con $x_i\in\{0,1\}$ y $z_i = 1-2x_i \in \{\pm1\}$, cada QUBO equivale a la energía de un Hamiltoniano de espines (Lucas, 2014):
+Los tres problemas se escriben como minimización de una forma cuadrática binaria. Con $`x_i\in\{0,1\}`$ y $`z_i = 1-2x_i \in \{\pm1\}`$, cada QUBO equivale a la energía de un Hamiltoniano de espines (Lucas, 2014):
 
 ```math
 \min_{\mathbf{x}\in\{0,1\}^n} \mathbf{x}^\top Q\,\mathbf{x}
 \quad\Longleftrightarrow\quad
-\min_{\mathbf{z}\in\{\pm1\}^n} H_C(\mathbf{z}) = \sum_{i<j} J_{ij}\, z_i z_j + \sum_i h_i\, z_i + \text{cte}.
+\min_{\mathbf{z}\in\{\pm1\}^n} H_C(\mathbf{z}) = \sum_{i \lt j} J_{ij}\, z_i z_j + \sum_i h_i\, z_i + \text{cte}.
 ```
 
 | Problema | QUBO / Ising usado |
 |---|---|
-| TSP | $\displaystyle \sum_{r} c_r\, y_r + P\Big(1-\sum_r y_r\Big)^2$, una variable por ruta candidata, $P=100$ |
+| TSP | $`\displaystyle \sum_{r} c_r\, y_r + P\Big(1-\sum_r y_r\Big)^2`$, una variable por ruta candidata, $P=100$ |
 | MDS | $\displaystyle A\sum_v x_v + B\sum_v\Big(1-\sum_{u\in N[v]}x_u\Big)^2$, con $A=1$, $B=2$ |
 | MaxCut | $\displaystyle C(\mathbf{z})=\sum_{(i,j)\in E}\frac{1-z_iz_j}{2}$, sin penalizaciones |
 
@@ -143,12 +143,35 @@ La accuracy media de la familia cuántica queda **0.083 por debajo de la clásic
 
 <table>
 <tr>
-<td align="center"><img src="Notebooks/Classification/IrisClassification/figures/svm_iris_pca_boundary.png" width="400"><br><sub>SVM-RBF: F1 0.967, 2 errores, ambos en el solape versicolor/virginica</sub></td>
-<td align="center"><img src="Notebooks/Classification/IrisClassification/figures/qsvm_iris_pca_boundary.png" width="400"><br><sub>QSVM-ZZ: F1 0.730, 16 errores</sub></td>
+<td align="center"><img src="Notebooks/Classification/IrisClassification/figures/svm_iris_pca_boundary.png" width="280"><br><sub>SVM-RBF: F1 0.967, 2 errores en el solape versicolor/virginica</sub></td>
+<td align="center"><img src="Notebooks/Classification/IrisClassification/figures/rf_iris_pca_boundary.png" width="280"><br><sub>Random Forest: F1 0.950</sub></td>
+<td align="center"><img src="Notebooks/Classification/IrisClassification/figures/xgb_iris_pca_boundary.png" width="280"><br><sub>XGBoost: F1 0.950</sub></td>
+</tr>
+<tr>
+<td align="center"><img src="Notebooks/Classification/IrisClassification/figures/qsvm_iris_pca_boundary.png" width="280"><br><sub>QSVM-ZZ: F1 0.730, 16 errores</sub></td>
+<td align="center"><img src="Notebooks/Classification/IrisClassification/figures/qnn_iris_pca_boundary.png" width="280"><br><sub>QNN: F1 0.933</sub></td>
+<td align="center"><img src="Notebooks/Classification/IrisClassification/figures/vqc_iris_pca_boundary.png" width="280"><br><sub>VQC: F1 0.950</sub></td>
 </tr>
 </table>
 
-<sub>Cada panel evalúa el modelo entrenado sobre el plano PC1–PC2, con las otras dos componentes fijas en la media del train; los círculos marcan los errores reales de test.</sub>
+<sub>Fronteras de decisión en Iris. Fila superior: modelos clásicos; fila inferior: cuánticos. Cada panel evalúa el modelo entrenado sobre el plano PC1–PC2, con las otras dos componentes fijas en la media del train; los círculos marcan los errores reales de test.</sub>
+
+Los árboles trazan cortes casi rectos y la QNN y el VQC, fronteras suaves; solo el QSVM fragmenta el plano. En Bars and Stripes, las dos primeras componentes no separan las clases: el SVM asigna casi todo el plano a una sola clase y aun así acierta el 87 % del test, porque su decisión depende de la tercera y la cuarta componentes. Sobre ese mismo plano, el QSVM vuelve a dividir el espacio en islas:
+
+<table>
+<tr>
+<td align="center"><img src="Notebooks/Classification/BSClassification/figures/svm_bs_pca_boundary.png" width="280"><br><sub>SVM-RBF: F1 0.870</sub></td>
+<td align="center"><img src="Notebooks/Classification/BSClassification/figures/rf_bs_pca_boundary.png" width="280"><br><sub>Random Forest: F1 0.854</sub></td>
+<td align="center"><img src="Notebooks/Classification/BSClassification/figures/xgb_bs_pca_boundary.png" width="280"><br><sub>XGBoost: F1 0.849</sub></td>
+</tr>
+<tr>
+<td align="center"><img src="Notebooks/Classification/BSClassification/figures/qsvm_bs_pca_boundary.png" width="280"><br><sub>QSVM-ZZ: F1 0.758</sub></td>
+<td align="center"><img src="Notebooks/Classification/BSClassification/figures/qnn_bs_pca_boundary.png" width="280"><br><sub>QNN: F1 0.815</sub></td>
+<td align="center"><img src="Notebooks/Classification/BSClassification/figures/vqc_bs_pca_boundary.png" width="280"><br><sub>VQC: F1 0.688</sub></td>
+</tr>
+</table>
+
+<sub>Fronteras de decisión en Bars and Stripes, con la misma construcción. El plano PC1–PC2 solo muestra una sección de cada frontera.</sub>
 
 **El empate en Ising no demuestra afinidad física.** Sería tentador leerlo como que el mapa ZZ captura la estructura $Z_iZ_{i+1}$ del Hamiltoniano. El experimento no lo permite: el mapa actúa sobre cuatro componentes principales de las amplitudes, no sobre los espines, y todos los modelos resuelven el dataset.
 
