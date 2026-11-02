@@ -244,7 +244,7 @@ Los seis clasificadores se evalúan sobre las mismas particiones y el mismo $\ma
 
 Tras el ajuste, la calidad se mide en el conjunto de test; el conjunto de train entra solo en el gap de generalización. La Tabla~\ref{tab:metricas_clasif} fija las definiciones. F1 macro es la métrica de ordenación entre modelos.
 
-\begin{table}[!htbp]
+\par\medskip\noindent\begin{minipage}{\linewidth}
 \centering
 \small
 \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.15cm} >{\raggedright\arraybackslash}X@{}}
@@ -259,18 +259,17 @@ Gap de generalización & $\mathrm{Acc}_{\mathrm{train}}-\mathrm{Acc}_{\mathrm{te
 Latencia & Wall-clock de entrenamiento (\texttt{fit}) y de inferencia sobre el test. \\
 \bottomrule
 \end{tabularx}
-\caption{Métricas de calidad y latencia en clasificación.}
+\captionof{table}{Métricas de calidad y latencia en clasificación.}
 \label{tab:metricas_clasif}
-\end{table}
+\end{minipage}\par\medskip
 
-\FloatBarrier
 \section{Optimización}
 
 \subsection{Problemas e instancias}
 
 Las tres instancias son pequeñas a propósito: la fuerza bruta da el óptimo $C^\star$ de referencia y cabe en el presupuesto de qubits de QAOA y VQE. La Tabla~\ref{tab:instancias} las resume.
 
-\begin{table}[!htbp]
+\par\medskip\noindent\begin{minipage}{\linewidth}
 \centering
 \small
 \begin{tabularx}{\linewidth}{@{}l l l >{\raggedright\arraybackslash}X@{}}
@@ -282,9 +281,9 @@ MDS & 6 vértices, 6 aristas & instancia propia & QUBO con penalización de cobe
 MaxCut & 6 vértices, 12 aristas & HamLib \citep{sawaya2024hamlib} & Ising sin restricciones \\
 \bottomrule
 \end{tabularx}
-\caption{Instancias de optimización. Fuente: elaboración propia.}
+\captionof{table}{Instancias de optimización. Fuente: elaboración propia.}
 \label{tab:instancias}
-\end{table}
+\end{minipage}\par\medskip
 
 \paragraph{TSP restringido.}
 TSP y MDS son NP-difíciles en su versión general \citep{garey1979}; aquí se usan instancias pequeñas con óptimo verificable. Grafo completo pequeño sobre 5 nodos con distancias fijas; origen fijado (Figura~\ref{fig:tsp_prelim}). Óptimo por enumeración (fuerza bruta). Formulación QUBO reducida: variables binarias sobre rutas candidatas factibles (una sola familia de selección), compatible con SA/QAOA/VQE \citep{lucas2014}.
