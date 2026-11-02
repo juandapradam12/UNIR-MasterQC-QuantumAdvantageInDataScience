@@ -7,20 +7,28 @@ Este capítulo describe cómo se ejecutaron los experimentos del TFM: entorno so
 
 \section{Entorno tecnológico}
 
-\begin{itemize}
-    \item \textbf{Lenguaje:} Python~3.
-    \item \textbf{Notebooks:} Jupyter (\texttt{ipykernel}, \texttt{nbformat}).
-    \item \textbf{Numérico / datos:} NumPy, pandas, h5py.
-    \item \textbf{ML clásico:} scikit-learn (SVM, Random Forest, PCA, métricas, splits), XGBoost.
-    \item \textbf{QML / circuitos:} PennyLane (\texttt{default.qubit}, \texttt{lightning.qubit}) \citep{pennylaneVariationalClassifier}; Qiskit y \texttt{qiskit-machine-learning} (kernel de fidelidad / ZZFeatureMap en QSVM).
-    \item \textbf{Deep learning (QNN híbrida):} PyTorch (\texttt{TorchLayer} + cabeza lineal).
-    \item \textbf{Optimización clásica:} PuLP~2.9 con CBC (ILP); NetworkX (grafos); annealing simulado propio sobre QUBO.
-    \item \textbf{Visualización:} matplotlib y utilidades propias de storytelling.
-    \item \textbf{Dependencias fijadas:} PennyLane~0.45, Qiskit~2.6, scikit-learn~1.9, XGBoost~3.1, PuLP~2.9, NetworkX~3.7, entre otras.
-\end{itemize}
+\begin{table}[!htbp]
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{2.7cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2.4cm}@{}}
+\toprule
+\textbf{Capa} & \textbf{Stack} & \textbf{Versión} \\
+\midrule
+Lenguaje & Python & 3 \\
+Notebooks & Jupyter (\texttt{ipykernel}, \texttt{nbformat}) & --- \\
+Numérico / datos & NumPy, pandas, h5py & --- \\
+ML clásico & scikit-learn (SVM, Random Forest, PCA, métricas, splits); XGBoost & 1.9; 3.1 \\
+QML / circuitos & PennyLane (\texttt{default.qubit}, \texttt{lightning.qubit}) \citep{pennylaneVariationalClassifier}; Qiskit y \texttt{qiskit-machine-learning} (kernel de fidelidad) & 0.45; 2.6 \\
+QNN híbrida & PyTorch (\texttt{TorchLayer} + cabeza lineal) & --- \\
+Optimización & PuLP + CBC (ILP); NetworkX (grafos); annealing simulado propio sobre QUBO & 2.9; 3.7 \\
+Visualización & matplotlib y utilidades propias de storytelling & --- \\
+\bottomrule
+\end{tabularx}
+\caption{Entorno software del estudio. Las versiones corresponden a las dependencias fijadas del repositorio.}
+\label{tab:entorno}
+\end{table}
 
 Todo el cómputo cuántico de este TFM es \textbf{simulación} de estado (sin hardware ruidoso) \citep{preskill2018}.
-
 \section{Diseño experimental}
 
 Se fijan dos familias con la misma lógica de comparación justa \citep{bowles2024}:
