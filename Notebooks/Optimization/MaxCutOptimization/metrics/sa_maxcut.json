@@ -1,0 +1,393 @@
+{
+  "problem": "maxcut",
+  "solver": "simulated_annealing",
+  "family": "classical",
+  "protocol": {
+    "n_runs": 20,
+    "max_iter": 4000,
+    "T0": 5.0,
+    "cooling": 0.995,
+    "sense": "maximize_cut",
+    "hamlib_index": 8,
+    "hamlib_id": "circ_offsets-1-2"
+  },
+  "instance": {
+    "n": 6,
+    "edges": [
+      [
+        0,
+        5
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        5,
+        1
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "source": "pennylane.data other/hamlib-maxcut"
+  },
+  "quality": {
+    "optimal_cost": 8.0,
+    "optimal_bits": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "cost_mean": 8.0,
+    "cost_best": 8.0,
+    "gap_mean": 0.0
+  },
+  "success_rate": 1.0,
+  "time_s": {
+    "mean": 0.0032960333988739875,
+    "std": 0.00012797617231321247,
+    "total": 0.06592066797747975
+  },
+  "effort": {
+    "energy_evals_mean": 4000.0
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "bits": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.003490832998068072,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 1,
+      "bits": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.003618874994572252,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 2,
+      "bits": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.0035331250037415884,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 3,
+      "bits": [
+        0,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.003253124996263068,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 4,
+      "bits": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.0032878749989322387,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 5,
+      "bits": [
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.0032804169968585484,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 6,
+      "bits": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.0032447500052512623,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 7,
+      "bits": [
+        1,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.003196999998181127,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 8,
+      "bits": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.003226917004212737,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 9,
+      "bits": [
+        1,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.0032146250014193356,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 10,
+      "bits": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.003203749998647254,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 11,
+      "bits": [
+        0,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.0031986669928301126,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 12,
+      "bits": [
+        1,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.00316783399466658,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 13,
+      "bits": [
+        1,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.003264874998421874,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 14,
+      "bits": [
+        0,
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.003312458000436891,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 15,
+      "bits": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.0033994170007645153,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 16,
+      "bits": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.0032195829990087077,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 17,
+      "bits": [
+        1,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.003409624994674232,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 18,
+      "bits": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.00310091699793702,
+      "energy_evals": 4000
+    },
+    {
+      "seed": 19,
+      "bits": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.0032960000025923364,
+      "energy_evals": 4000
+    }
+  ]
+}

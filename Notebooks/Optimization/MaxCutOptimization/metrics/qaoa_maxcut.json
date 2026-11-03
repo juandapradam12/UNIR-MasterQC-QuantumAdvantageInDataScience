@@ -1,0 +1,280 @@
+{
+  "problem": "maxcut",
+  "solver": "qaoa",
+  "family": "quantum_inspired",
+  "protocol": {
+    "n_runs": 8,
+    "p": 2,
+    "opt_steps": 40,
+    "optimizer": "Adagrad",
+    "backend": "pennylane_default.qubit",
+    "demo_ref": "https://pennylane.ai/demos/tutorial_qaoa_maxcut",
+    "sense": "maximize_cut",
+    "hamlib_index": 8,
+    "hamlib_id": "circ_offsets-1-2",
+    "shots_sample": 200
+  },
+  "instance": {
+    "n": 6,
+    "edges": [
+      [
+        0,
+        5
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        5,
+        1
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "source": "pennylane.data other/hamlib-maxcut"
+  },
+  "quality": {
+    "optimal_cost": 8.0,
+    "optimal_bits": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "cost_mean": 8.0,
+    "cost_best": 8.0,
+    "gap_mean": 0.0
+  },
+  "success_rate": 1.0,
+  "time_s": {
+    "mean": 0.6441235053762284,
+    "std": 0.06463476320486307,
+    "total": 5.152988043009827
+  },
+  "effort": {
+    "energy_evals_mean": 40.0
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "bits": [
+        1,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.6269978340060334,
+      "energy_evals": 40,
+      "params_gamma": [
+        -0.5078026265300716,
+        -0.7246930363748275
+      ],
+      "params_beta": [
+        0.4890933736582678,
+        -1.2468115684354077
+      ]
+    },
+    {
+      "seed": 1,
+      "bits": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.7018055419976008,
+      "energy_evals": 40,
+      "params_gamma": [
+        -0.5078024148548631,
+        -0.7245366574929802
+      ],
+      "params_beta": [
+        0.48903192498773435,
+        -1.2468358482661783
+      ]
+    },
+    {
+      "seed": 2,
+      "bits": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.6180500419941382,
+      "energy_evals": 40,
+      "params_gamma": [
+        -0.507805922593237,
+        -0.7249129147569576
+      ],
+      "params_beta": [
+        0.48918469695430783,
+        -1.2467993427931827
+      ]
+    },
+    {
+      "seed": 3,
+      "bits": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.5927486250002403,
+      "energy_evals": 40,
+      "params_gamma": [
+        -0.5078034738681415,
+        -0.7246168448445608
+      ],
+      "params_beta": [
+        0.48906595035834866,
+        -1.2468298355402243
+      ]
+    },
+    {
+      "seed": 4,
+      "bits": [
+        0,
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.6071559580013854,
+      "energy_evals": 40,
+      "params_gamma": [
+        -0.5077972129687528,
+        -0.7247417452260534
+      ],
+      "params_beta": [
+        0.48910785425883857,
+        -1.246791513933956
+      ]
+    },
+    {
+      "seed": 5,
+      "bits": [
+        1,
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.7926532500059693,
+      "energy_evals": 40,
+      "params_gamma": [
+        -0.5078093731951357,
+        -0.7246558581590461
+      ],
+      "params_beta": [
+        0.48909095097954947,
+        -1.246845179942426
+      ]
+    },
+    {
+      "seed": 6,
+      "bits": [
+        0,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.595255709005869,
+      "energy_evals": 40,
+      "params_gamma": [
+        -0.5077910899028659,
+        -0.7246987428576455
+      ],
+      "params_beta": [
+        0.48907965301807743,
+        -1.246768864090122
+      ]
+    },
+    {
+      "seed": 7,
+      "bits": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "cut": 8.0,
+      "success": true,
+      "time_s": 0.618321082998591,
+      "energy_evals": 40,
+      "params_gamma": [
+        -0.5078103765369579,
+        -0.724777637949127
+      ],
+      "params_beta": [
+        0.4891357361126702,
+        -1.246824368328271
+      ]
+    }
+  ]
+}

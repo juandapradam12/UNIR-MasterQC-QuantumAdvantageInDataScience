@@ -1,0 +1,188 @@
+{
+  "problem": "tsp",
+  "solver": "vqe",
+  "family": "quantum_inspired",
+  "protocol": {
+    "n_runs": 5,
+    "ansatz": "EfficientSU2",
+    "reps": 1,
+    "restarts": 6,
+    "shots": 3000,
+    "cobyla_maxiter": 120,
+    "n_qubits": 6,
+    "backend": "aer_statevector"
+  },
+  "instance": {
+    "nodes": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "origin": 0,
+    "d02": 4
+  },
+  "quality": {
+    "optimal_cost": 16.0,
+    "optimal_route": [
+      0,
+      4,
+      2,
+      3,
+      1,
+      0
+    ],
+    "cost_mean": 16.0,
+    "cost_best": 16.0,
+    "gap_mean": 0.0
+  },
+  "success_rate": 1.0,
+  "time_s": {
+    "mean": 2.0210119166004006,
+    "std": 0.04872857384995354,
+    "total": 10.105059583002003
+  },
+  "effort": {
+    "energy_evals_mean": 720.0,
+    "shots": 3000,
+    "n_parameters": 24
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "bits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "route": [
+        0,
+        4,
+        2,
+        3,
+        1,
+        0
+      ],
+      "cost": 16.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 2.0692821249976987,
+      "energy_evals": 720,
+      "expected_energy": -767.5569052925048,
+      "n_parameters": 24
+    },
+    {
+      "seed": 1,
+      "bits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "route": [
+        0,
+        4,
+        2,
+        3,
+        1,
+        0
+      ],
+      "cost": 16.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 2.068017959005374,
+      "energy_evals": 720,
+      "expected_energy": -763.6804517921684,
+      "n_parameters": 24
+    },
+    {
+      "seed": 2,
+      "bits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "route": [
+        0,
+        4,
+        2,
+        3,
+        1,
+        0
+      ],
+      "cost": 16.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 1.9908312499974272,
+      "energy_evals": 720,
+      "expected_energy": -762.7914952626255,
+      "n_parameters": 24
+    },
+    {
+      "seed": 3,
+      "bits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "route": [
+        0,
+        4,
+        2,
+        3,
+        1,
+        0
+      ],
+      "cost": 16.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 1.9420787909984938,
+      "energy_evals": 720,
+      "expected_energy": -766.0596539396015,
+      "n_parameters": 24
+    },
+    {
+      "seed": 4,
+      "bits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "route": [
+        0,
+        4,
+        2,
+        3,
+        1,
+        0
+      ],
+      "cost": 16.0,
+      "feasible": true,
+      "success": true,
+      "gap": 0.0,
+      "time_s": 2.034849458003009,
+      "energy_evals": 720,
+      "expected_energy": -766.520165886237,
+      "n_parameters": 24
+    }
+  ]
+}
