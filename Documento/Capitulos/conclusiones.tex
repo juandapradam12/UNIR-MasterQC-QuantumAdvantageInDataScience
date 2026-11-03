@@ -16,29 +16,3 @@ El trabajo partió de una pregunta: si los algoritmos cuánticos de la era NISQ 
 
 \item \textbf{El régimen estudiado mide proximidad al clásico, no ventaja.} Con 4 qubits en clasificación, como mucho 6 en optimización y simulación de estado exacta, los resultados no permiten afirmar ni descartar una ventaja a escala \citep{preskill2018, thanasilp2022}. Sí permiten afirmar que, en este rango, ningún modelo o solver cuántico supera al mejor clásico, y que la paridad de calidad, cuando aparece, va acompañada de un coste temporal mayor.
 \end{enumerate}
-
-\section{Cumplimiento de objetivos}
-
-La Tabla~\ref{tab:objetivos_cumplimiento} relaciona cada objetivo específico del Capítulo~\ref{cap:objetivos} con el lugar del documento donde se cumple y con las conclusiones que lo cierran.
-
-\begin{table}[!htbp]
-\centering
-\small
-\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}X c@{}}
-\toprule
-\textbf{Objetivo específico} & \textbf{Cumplimiento} & \textbf{Concl.} \\
-\midrule
-1. Marco conceptual & Ejes clasificación, optimización y representación (Tabla~\ref{tab:ejes}); feature maps (Sección~\ref{sec:hilbert}) y QUBO/Ising (Sección~\ref{sec:qubo}). & 2, 4 \\
-2. Pipelines de clasificación & Tres datasets y seis modelos con partición, PCA y escalado compartidos (Figura~\ref{fig:prep_clasif}). & 1--3 \\
-3. Pipelines de optimización & Tres instancias y seis solvers sobre un QUBO común (Figura~\ref{fig:prep_opt}). & 4 \\
-4. Calidad y esfuerzo & Métricas comunes (Tablas~\ref{tab:metricas_clasif} y~\ref{tab:metricas_opt}), semillas fijas y tiempos de entrenamiento, predicción y resolución. & 1--4 \\
-5. Interpretación en régimen NISQ & Discusión por representación (Sección~\ref{sec:discusion_representacion}) y límites del régimen. & 5 \\
-\bottomrule
-\end{tabularx}
-\caption{Objetivos específicos, evidencia y conclusiones asociadas.}
-\label{tab:objetivos_cumplimiento}
-\end{table}
-
-\section{Cierre}
-
-La respuesta a la pregunta inicial es negativa en el rango estudiado, y tiene una forma concreta: en clasificación, el modelo cuántico solo iguala al mejor clásico en el dataset en el que todos los modelos alcanzan al menos 0.95 de accuracy; en optimización, QAOA y VQE reproducen óptimos que la enumeración obtiene en menos de un milisegundo. Los cuellos de botella observados son la generalización del kernel ZZ, la optimización de los parámetros variacionales y el coste de simular el circuito. La validez de esta lectura está acotada por el diseño: no se usa hardware cuántico, el número de qubits es pequeño, los hiperparámetros son fijos, cada modelo se evalúa sobre una sola partición y los tiempos son comparables solo en orden de magnitud. El Capítulo~\ref{cap:futuro} parte de estos límites.
